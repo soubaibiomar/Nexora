@@ -1,0 +1,1781 @@
+{
+  "total_companies": 50,
+  "total_open_roles": 1160,
+  "industry_stats": [
+    {
+      "industry": "Technology",
+      "company_count": 9,
+      "avg_rating": 4.51,
+      "total_open_roles": 209,
+      "total_employees": 13290,
+      "avg_company_size": 1477
+    },
+    {
+      "industry": "Finance",
+      "company_count": 6,
+      "avg_rating": 4.27,
+      "total_open_roles": 181,
+      "total_employees": 31870,
+      "avg_company_size": 5312
+    },
+    {
+      "industry": "Healthcare",
+      "company_count": 4,
+      "avg_rating": 4.3,
+      "total_open_roles": 105,
+      "total_employees": 16250,
+      "avg_company_size": 4062
+    },
+    {
+      "industry": "Education",
+      "company_count": 3,
+      "avg_rating": 4.43,
+      "total_open_roles": 39,
+      "total_employees": 1760,
+      "avg_company_size": 587
+    },
+    {
+      "industry": "Biotechnology",
+      "company_count": 3,
+      "avg_rating": 4.43,
+      "total_open_roles": 91,
+      "total_employees": 11200,
+      "avg_company_size": 3733
+    },
+    {
+      "industry": "Architecture",
+      "company_count": 2,
+      "avg_rating": 4.55,
+      "total_open_roles": 18,
+      "total_employees": 1000,
+      "avg_company_size": 500
+    },
+    {
+      "industry": "Legal",
+      "company_count": 2,
+      "avg_rating": 4.05,
+      "total_open_roles": 27,
+      "total_employees": 3400,
+      "avg_company_size": 1700
+    },
+    {
+      "industry": "Consulting",
+      "company_count": 2,
+      "avg_rating": 4.05,
+      "total_open_roles": 100,
+      "total_employees": 23500,
+      "avg_company_size": 11750
+    },
+    {
+      "industry": "Hospitality",
+      "company_count": 2,
+      "avg_rating": 4.05,
+      "total_open_roles": 44,
+      "total_employees": 12700,
+      "avg_company_size": 6350
+    },
+    {
+      "industry": "Media",
+      "company_count": 2,
+      "avg_rating": 4.15,
+      "total_open_roles": 27,
+      "total_employees": 2150,
+      "avg_company_size": 1075
+    },
+    {
+      "industry": "Aerospace",
+      "company_count": 2,
+      "avg_rating": 4.3,
+      "total_open_roles": 47,
+      "total_employees": 9350,
+      "avg_company_size": 4675
+    },
+    {
+      "industry": "Design",
+      "company_count": 1,
+      "avg_rating": 4.7,
+      "total_open_roles": 8,
+      "total_employees": 180,
+      "avg_company_size": 180
+    },
+    {
+      "industry": "Marketing",
+      "company_count": 1,
+      "avg_rating": 4.3,
+      "total_open_roles": 15,
+      "total_employees": 950,
+      "avg_company_size": 950
+    },
+    {
+      "industry": "Transportation",
+      "company_count": 1,
+      "avg_rating": 4.3,
+      "total_open_roles": 16,
+      "total_employees": 1100,
+      "avg_company_size": 1100
+    },
+    {
+      "industry": "Energy",
+      "company_count": 1,
+      "avg_rating": 4.3,
+      "total_open_roles": 25,
+      "total_employees": 6200,
+      "avg_company_size": 6200
+    },
+    {
+      "industry": "Manufacturing",
+      "company_count": 1,
+      "avg_rating": 4.1,
+      "total_open_roles": 22,
+      "total_employees": 4800,
+      "avg_company_size": 4800
+    },
+    {
+      "industry": "Food & Beverage",
+      "company_count": 1,
+      "avg_rating": 4.6,
+      "total_open_roles": 7,
+      "total_employees": 220,
+      "avg_company_size": 220
+    },
+    {
+      "industry": "Environmental Science",
+      "company_count": 1,
+      "avg_rating": 4.4,
+      "total_open_roles": 10,
+      "total_employees": 380,
+      "avg_company_size": 380
+    },
+    {
+      "industry": "Entertainment",
+      "company_count": 1,
+      "avg_rating": 4.3,
+      "total_open_roles": 19,
+      "total_employees": 700,
+      "avg_company_size": 700
+    },
+    {
+      "industry": "Operations",
+      "company_count": 1,
+      "avg_rating": 3.8,
+      "total_open_roles": 48,
+      "total_employees": 14000,
+      "avg_company_size": 14000
+    },
+    {
+      "industry": "Agriculture",
+      "company_count": 1,
+      "avg_rating": 4.2,
+      "total_open_roles": 12,
+      "total_employees": 680,
+      "avg_company_size": 680
+    },
+    {
+      "industry": "Human Resources",
+      "company_count": 1,
+      "avg_rating": 4.2,
+      "total_open_roles": 13,
+      "total_employees": 620,
+      "avg_company_size": 620
+    },
+    {
+      "industry": "Real Estate",
+      "company_count": 1,
+      "avg_rating": 3.9,
+      "total_open_roles": 22,
+      "total_employees": 5500,
+      "avg_company_size": 5500
+    },
+    {
+      "industry": "Mining",
+      "company_count": 1,
+      "avg_rating": 3.7,
+      "total_open_roles": 55,
+      "total_employees": 18000,
+      "avg_company_size": 18000
+    }
+  ],
+  "size_distribution": [
+    {
+      "size": "Medium",
+      "count": 24,
+      "avg_rating": 4.37,
+      "avg_employees": 815
+    },
+    {
+      "size": "Large",
+      "count": 19,
+      "avg_rating": 4.1,
+      "avg_employees": 8363
+    },
+    {
+      "size": "Small",
+      "count": 7,
+      "avg_rating": 4.61,
+      "avg_employees": 191
+    }
+  ],
+  "tech_stack_frequency": [
+    {
+      "technology": "Python",
+      "company_count": 40
+    },
+    {
+      "technology": "React",
+      "company_count": 26
+    },
+    {
+      "technology": "AWS",
+      "company_count": 17
+    },
+    {
+      "technology": "PostgreSQL",
+      "company_count": 12
+    },
+    {
+      "technology": "C++",
+      "company_count": 11
+    },
+    {
+      "technology": "Node.js",
+      "company_count": 9
+    },
+    {
+      "technology": "TensorFlow",
+      "company_count": 8
+    },
+    {
+      "technology": "Kubernetes",
+      "company_count": 7
+    },
+    {
+      "technology": "Azure",
+      "company_count": 7
+    },
+    {
+      "technology": "SAP",
+      "company_count": 7
+    },
+    {
+      "technology": "Java",
+      "company_count": 6
+    },
+    {
+      "technology": "Kafka",
+      "company_count": 5
+    },
+    {
+      "technology": "IoT",
+      "company_count": 5
+    },
+    {
+      "technology": "Tableau",
+      "company_count": 4
+    },
+    {
+      "technology": "GIS",
+      "company_count": 4
+    },
+    {
+      "technology": "MATLAB",
+      "company_count": 4
+    },
+    {
+      "technology": "AutoCAD",
+      "company_count": 3
+    },
+    {
+      "technology": "MongoDB",
+      "company_count": 3
+    },
+    {
+      "technology": "R",
+      "company_count": 3
+    },
+    {
+      "technology": "PowerBI",
+      "company_count": 3
+    },
+    {
+      "technology": "Docker",
+      "company_count": 3
+    },
+    {
+      "technology": "Go",
+      "company_count": 3
+    },
+    {
+      "technology": "Rust",
+      "company_count": 3
+    },
+    {
+      "technology": "ROS",
+      "company_count": 3
+    },
+    {
+      "technology": "Linux",
+      "company_count": 3
+    },
+    {
+      "technology": "React Native",
+      "company_count": 3
+    },
+    {
+      "technology": "Salesforce",
+      "company_count": 3
+    },
+    {
+      "technology": "TypeScript",
+      "company_count": 2
+    },
+    {
+      "technology": "GraphQL",
+      "company_count": 2
+    },
+    {
+      "technology": "Revit",
+      "company_count": 2
+    }
+  ],
+  "tech_by_industry": [
+    {
+      "industry": "Technology",
+      "technology": "Python",
+      "count": 8
+    },
+    {
+      "industry": "Technology",
+      "technology": "Kubernetes",
+      "count": 5
+    },
+    {
+      "industry": "Technology",
+      "technology": "React",
+      "count": 4
+    },
+    {
+      "industry": "Technology",
+      "technology": "Go",
+      "count": 3
+    },
+    {
+      "industry": "Technology",
+      "technology": "TypeScript",
+      "count": 2
+    },
+    {
+      "industry": "Healthcare",
+      "technology": "React",
+      "count": 3
+    },
+    {
+      "industry": "Healthcare",
+      "technology": "AWS",
+      "count": 3
+    },
+    {
+      "industry": "Healthcare",
+      "technology": "Python",
+      "count": 3
+    },
+    {
+      "industry": "Healthcare",
+      "technology": "PostgreSQL",
+      "count": 2
+    },
+    {
+      "industry": "Healthcare",
+      "technology": "TensorFlow",
+      "count": 2
+    },
+    {
+      "industry": "Finance",
+      "technology": "Java",
+      "count": 5
+    },
+    {
+      "industry": "Finance",
+      "technology": "Python",
+      "count": 4
+    },
+    {
+      "industry": "Finance",
+      "technology": "Kafka",
+      "count": 4
+    },
+    {
+      "industry": "Finance",
+      "technology": "React",
+      "count": 4
+    },
+    {
+      "industry": "Finance",
+      "technology": "PostgreSQL",
+      "count": 3
+    },
+    {
+      "industry": "Architecture",
+      "technology": "AutoCAD",
+      "count": 2
+    },
+    {
+      "industry": "Architecture",
+      "technology": "Revit",
+      "count": 2
+    },
+    {
+      "industry": "Architecture",
+      "technology": "Rhino",
+      "count": 2
+    },
+    {
+      "industry": "Architecture",
+      "technology": "BIM 360",
+      "count": 1
+    },
+    {
+      "industry": "Architecture",
+      "technology": "Grasshopper",
+      "count": 1
+    },
+    {
+      "industry": "Education",
+      "technology": "Python",
+      "count": 3
+    },
+    {
+      "industry": "Education",
+      "technology": "MongoDB",
+      "count": 3
+    },
+    {
+      "industry": "Education",
+      "technology": "React",
+      "count": 2
+    },
+    {
+      "industry": "Education",
+      "technology": "TensorFlow",
+      "count": 2
+    },
+    {
+      "industry": "Education",
+      "technology": "AWS",
+      "count": 2
+    },
+    {
+      "industry": "Legal",
+      "technology": "Python",
+      "count": 2
+    },
+    {
+      "industry": "Legal",
+      "technology": "NLP",
+      "count": 1
+    },
+    {
+      "industry": "Legal",
+      "technology": "React",
+      "count": 1
+    },
+    {
+      "industry": "Legal",
+      "technology": "Elasticsearch",
+      "count": 1
+    },
+    {
+      "industry": "Legal",
+      "technology": "Azure",
+      "count": 1
+    },
+    {
+      "industry": "Biotechnology",
+      "technology": "Python",
+      "count": 3
+    },
+    {
+      "industry": "Biotechnology",
+      "technology": "R",
+      "count": 2
+    },
+    {
+      "industry": "Biotechnology",
+      "technology": "AWS",
+      "count": 2
+    },
+    {
+      "industry": "Biotechnology",
+      "technology": "LIMS",
+      "count": 2
+    },
+    {
+      "industry": "Biotechnology",
+      "technology": "Bioinformatics Tools",
+      "count": 1
+    },
+    {
+      "industry": "Design",
+      "technology": "Adobe Creative Suite",
+      "count": 1
+    },
+    {
+      "industry": "Design",
+      "technology": "Figma",
+      "count": 1
+    },
+    {
+      "industry": "Design",
+      "technology": "Blender",
+      "count": 1
+    },
+    {
+      "industry": "Design",
+      "technology": "After Effects",
+      "count": 1
+    },
+    {
+      "industry": "Design",
+      "technology": "Unity",
+      "count": 1
+    },
+    {
+      "industry": "Consulting",
+      "technology": "PowerBI",
+      "count": 2
+    },
+    {
+      "industry": "Consulting",
+      "technology": "Tableau",
+      "count": 2
+    },
+    {
+      "industry": "Consulting",
+      "technology": "Python",
+      "count": 2
+    },
+    {
+      "industry": "Consulting",
+      "technology": "SAP",
+      "count": 2
+    },
+    {
+      "industry": "Consulting",
+      "technology": "Excel",
+      "count": 1
+    },
+    {
+      "industry": "Marketing",
+      "technology": "Python",
+      "count": 1
+    },
+    {
+      "industry": "Marketing",
+      "technology": "Google Analytics",
+      "count": 1
+    },
+    {
+      "industry": "Marketing",
+      "technology": "HubSpot",
+      "count": 1
+    },
+    {
+      "industry": "Marketing",
+      "technology": "React",
+      "count": 1
+    },
+    {
+      "industry": "Marketing",
+      "technology": "BigQuery",
+      "count": 1
+    },
+    {
+      "industry": "Transportation",
+      "technology": "Python",
+      "count": 1
+    },
+    {
+      "industry": "Transportation",
+      "technology": "C++",
+      "count": 1
+    },
+    {
+      "industry": "Transportation",
+      "technology": "ROS",
+      "count": 1
+    },
+    {
+      "industry": "Transportation",
+      "technology": "TensorFlow",
+      "count": 1
+    },
+    {
+      "industry": "Transportation",
+      "technology": "Docker",
+      "count": 1
+    },
+    {
+      "industry": "Hospitality",
+      "technology": "Oracle Hospitality",
+      "count": 2
+    },
+    {
+      "industry": "Hospitality",
+      "technology": "React",
+      "count": 2
+    },
+    {
+      "industry": "Hospitality",
+      "technology": "Node.js",
+      "count": 2
+    },
+    {
+      "industry": "Hospitality",
+      "technology": "AWS",
+      "count": 2
+    },
+    {
+      "industry": "Hospitality",
+      "technology": "SAP",
+      "count": 1
+    },
+    {
+      "industry": "Energy",
+      "technology": "Python",
+      "count": 1
+    },
+    {
+      "industry": "Energy",
+      "technology": "SCADA",
+      "count": 1
+    },
+    {
+      "industry": "Energy",
+      "technology": "IoT Platforms",
+      "count": 1
+    },
+    {
+      "industry": "Energy",
+      "technology": "GIS",
+      "count": 1
+    },
+    {
+      "industry": "Energy",
+      "technology": "Azure",
+      "count": 1
+    },
+    {
+      "industry": "Media",
+      "technology": "Python",
+      "count": 2
+    },
+    {
+      "industry": "Media",
+      "technology": "React",
+      "count": 2
+    },
+    {
+      "industry": "Media",
+      "technology": "Node.js",
+      "count": 2
+    },
+    {
+      "industry": "Media",
+      "technology": "AWS",
+      "count": 2
+    },
+    {
+      "industry": "Media",
+      "technology": "FFmpeg",
+      "count": 1
+    },
+    {
+      "industry": "Manufacturing",
+      "technology": "C++",
+      "count": 1
+    },
+    {
+      "industry": "Manufacturing",
+      "technology": "Python",
+      "count": 1
+    },
+    {
+      "industry": "Manufacturing",
+      "technology": "ROS",
+      "count": 1
+    },
+    {
+      "industry": "Manufacturing",
+      "technology": "PLC Programming",
+      "count": 1
+    },
+    {
+      "industry": "Manufacturing",
+      "technology": "MATLAB",
+      "count": 1
+    },
+    {
+      "industry": "Aerospace",
+      "technology": "C++",
+      "count": 2
+    },
+    {
+      "industry": "Aerospace",
+      "technology": "Python",
+      "count": 2
+    },
+    {
+      "industry": "Aerospace",
+      "technology": "MATLAB",
+      "count": 2
+    },
+    {
+      "industry": "Aerospace",
+      "technology": "Linux",
+      "count": 2
+    },
+    {
+      "industry": "Aerospace",
+      "technology": "VHDL",
+      "count": 1
+    },
+    {
+      "industry": "Food & Beverage",
+      "technology": "Python",
+      "count": 1
+    },
+    {
+      "industry": "Food & Beverage",
+      "technology": "Solidity",
+      "count": 1
+    },
+    {
+      "industry": "Food & Beverage",
+      "technology": "React",
+      "count": 1
+    },
+    {
+      "industry": "Food & Beverage",
+      "technology": "IoT",
+      "count": 1
+    },
+    {
+      "industry": "Food & Beverage",
+      "technology": "Node.js",
+      "count": 1
+    },
+    {
+      "industry": "Environmental Science",
+      "technology": "Python",
+      "count": 1
+    },
+    {
+      "industry": "Environmental Science",
+      "technology": "React",
+      "count": 1
+    },
+    {
+      "industry": "Environmental Science",
+      "technology": "PostgreSQL",
+      "count": 1
+    },
+    {
+      "industry": "Environmental Science",
+      "technology": "GIS",
+      "count": 1
+    },
+    {
+      "industry": "Environmental Science",
+      "technology": "Docker",
+      "count": 1
+    },
+    {
+      "industry": "Entertainment",
+      "technology": "C++",
+      "count": 1
+    },
+    {
+      "industry": "Entertainment",
+      "technology": "Unreal Engine",
+      "count": 1
+    },
+    {
+      "industry": "Entertainment",
+      "technology": "Unity",
+      "count": 1
+    },
+    {
+      "industry": "Entertainment",
+      "technology": "Python",
+      "count": 1
+    },
+    {
+      "industry": "Entertainment",
+      "technology": "AWS GameLift",
+      "count": 1
+    },
+    {
+      "industry": "Operations",
+      "technology": "SAP",
+      "count": 1
+    },
+    {
+      "industry": "Operations",
+      "technology": "Python",
+      "count": 1
+    },
+    {
+      "industry": "Operations",
+      "technology": "IoT",
+      "count": 1
+    },
+    {
+      "industry": "Operations",
+      "technology": "React",
+      "count": 1
+    },
+    {
+      "industry": "Operations",
+      "technology": "Oracle",
+      "count": 1
+    },
+    {
+      "industry": "Agriculture",
+      "technology": "Python",
+      "count": 1
+    },
+    {
+      "industry": "Agriculture",
+      "technology": "TensorFlow",
+      "count": 1
+    },
+    {
+      "industry": "Agriculture",
+      "technology": "GIS",
+      "count": 1
+    },
+    {
+      "industry": "Agriculture",
+      "technology": "IoT",
+      "count": 1
+    },
+    {
+      "industry": "Agriculture",
+      "technology": "React",
+      "count": 1
+    },
+    {
+      "industry": "Human Resources",
+      "technology": "Python",
+      "count": 1
+    },
+    {
+      "industry": "Human Resources",
+      "technology": "React",
+      "count": 1
+    },
+    {
+      "industry": "Human Resources",
+      "technology": "Node.js",
+      "count": 1
+    },
+    {
+      "industry": "Human Resources",
+      "technology": "PostgreSQL",
+      "count": 1
+    },
+    {
+      "industry": "Human Resources",
+      "technology": "AWS",
+      "count": 1
+    },
+    {
+      "industry": "Real Estate",
+      "technology": "SAP",
+      "count": 1
+    },
+    {
+      "industry": "Real Estate",
+      "technology": "React",
+      "count": 1
+    },
+    {
+      "industry": "Real Estate",
+      "technology": "Node.js",
+      "count": 1
+    },
+    {
+      "industry": "Real Estate",
+      "technology": "PostgreSQL",
+      "count": 1
+    },
+    {
+      "industry": "Real Estate",
+      "technology": "Salesforce",
+      "count": 1
+    },
+    {
+      "industry": "Mining",
+      "technology": "Python",
+      "count": 1
+    },
+    {
+      "industry": "Mining",
+      "technology": "SCADA",
+      "count": 1
+    },
+    {
+      "industry": "Mining",
+      "technology": "AutoCAD",
+      "count": 1
+    },
+    {
+      "industry": "Mining",
+      "technology": "GIS",
+      "count": 1
+    },
+    {
+      "industry": "Mining",
+      "technology": "SAP",
+      "count": 1
+    }
+  ],
+  "geographic_distribution": [
+    {
+      "location": "New York, NY",
+      "company_count": 3,
+      "total_employees": 15750,
+      "total_open_roles": 91
+    },
+    {
+      "location": "London, UK",
+      "company_count": 3,
+      "total_employees": 16820,
+      "total_open_roles": 95
+    },
+    {
+      "location": "Singapore",
+      "company_count": 3,
+      "total_employees": 10200,
+      "total_open_roles": 72
+    },
+    {
+      "location": "San Francisco, CA",
+      "company_count": 2,
+      "total_employees": 5420,
+      "total_open_roles": 49
+    },
+    {
+      "location": "Los Angeles, CA",
+      "company_count": 2,
+      "total_employees": 830,
+      "total_open_roles": 19
+    },
+    {
+      "location": "Toronto, Canada",
+      "company_count": 2,
+      "total_employees": 900,
+      "total_open_roles": 33
+    },
+    {
+      "location": "Berlin, Germany",
+      "company_count": 2,
+      "total_employees": 1620,
+      "total_open_roles": 37
+    },
+    {
+      "location": "Dubai, UAE",
+      "company_count": 2,
+      "total_employees": 9650,
+      "total_open_roles": 36
+    },
+    {
+      "location": "Boston, MA",
+      "company_count": 1,
+      "total_employees": 8300,
+      "total_open_roles": 35
+    },
+    {
+      "location": "Portland, OR",
+      "company_count": 1,
+      "total_employees": 850,
+      "total_open_roles": 12
+    },
+    {
+      "location": "Austin, TX",
+      "company_count": 1,
+      "total_employees": 1200,
+      "total_open_roles": 18
+    },
+    {
+      "location": "Washington, DC",
+      "company_count": 1,
+      "total_employees": 600,
+      "total_open_roles": 9
+    },
+    {
+      "location": "San Diego, CA",
+      "company_count": 1,
+      "total_employees": 3500,
+      "total_open_roles": 28
+    },
+    {
+      "location": "Chicago, IL",
+      "company_count": 1,
+      "total_employees": 6800,
+      "total_open_roles": 45
+    },
+    {
+      "location": "Paris, France",
+      "company_count": 1,
+      "total_employees": 450,
+      "total_open_roles": 22
+    },
+    {
+      "location": "Seattle, WA",
+      "company_count": 1,
+      "total_employees": 4200,
+      "total_open_roles": 38
+    },
+    {
+      "location": "Basel, Switzerland",
+      "company_count": 1,
+      "total_employees": 7500,
+      "total_open_roles": 52
+    },
+    {
+      "location": "Tel Aviv, Israel",
+      "company_count": 1,
+      "total_employees": 780,
+      "total_open_roles": 19
+    },
+    {
+      "location": "Amsterdam, Netherlands",
+      "company_count": 1,
+      "total_employees": 550,
+      "total_open_roles": 17
+    },
+    {
+      "location": "Copenhagen, Denmark",
+      "company_count": 1,
+      "total_employees": 6200,
+      "total_open_roles": 25
+    },
+    {
+      "location": "Munich, Germany",
+      "company_count": 1,
+      "total_employees": 4800,
+      "total_open_roles": 22
+    },
+    {
+      "location": "Zurich, Switzerland",
+      "company_count": 1,
+      "total_employees": 11000,
+      "total_open_roles": 40
+    },
+    {
+      "location": "Arlington, VA",
+      "company_count": 1,
+      "total_employees": 8900,
+      "total_open_roles": 32
+    },
+    {
+      "location": "Oslo, Norway",
+      "company_count": 1,
+      "total_employees": 380,
+      "total_open_roles": 10
+    },
+    {
+      "location": "Tokyo, Japan",
+      "company_count": 1,
+      "total_employees": 700,
+      "total_open_roles": 19
+    },
+    {
+      "location": "Rotterdam, Netherlands",
+      "company_count": 1,
+      "total_employees": 14000,
+      "total_open_roles": 48
+    },
+    {
+      "location": "Cambridge, MA",
+      "company_count": 1,
+      "total_employees": 900,
+      "total_open_roles": 15
+    },
+    {
+      "location": "S\u00e3o Paulo, Brazil",
+      "company_count": 1,
+      "total_employees": 680,
+      "total_open_roles": 12
+    },
+    {
+      "location": "Mumbai, India",
+      "company_count": 1,
+      "total_employees": 3200,
+      "total_open_roles": 14
+    },
+    {
+      "location": "Lausanne, Switzerland",
+      "company_count": 1,
+      "total_employees": 200,
+      "total_open_roles": 11
+    },
+    {
+      "location": "Stockholm, Sweden",
+      "company_count": 1,
+      "total_employees": 830,
+      "total_open_roles": 20
+    },
+    {
+      "location": "Hawthorne, CA",
+      "company_count": 1,
+      "total_employees": 450,
+      "total_open_roles": 15
+    },
+    {
+      "location": "Shenzhen, China",
+      "company_count": 1,
+      "total_employees": 350,
+      "total_open_roles": 18
+    },
+    {
+      "location": "Sydney, Australia",
+      "company_count": 1,
+      "total_employees": 5500,
+      "total_open_roles": 22
+    },
+    {
+      "location": "Boulder, CO",
+      "company_count": 1,
+      "total_employees": 180,
+      "total_open_roles": 9
+    },
+    {
+      "location": "Hartford, CT",
+      "company_count": 1,
+      "total_employees": 7200,
+      "total_open_roles": 28
+    },
+    {
+      "location": "Dublin, Ireland",
+      "company_count": 1,
+      "total_employees": 160,
+      "total_open_roles": 8
+    },
+    {
+      "location": "Perth, Australia",
+      "company_count": 1,
+      "total_employees": 18000,
+      "total_open_roles": 55
+    },
+    {
+      "location": "Denver, CO",
+      "company_count": 1,
+      "total_employees": 250,
+      "total_open_roles": 10
+    }
+  ],
+  "company_rankings": [
+    {
+      "id": "comp_001",
+      "name": "TechNova",
+      "industry": "Technology",
+      "rating": 4.5,
+      "employees": 5200,
+      "open_roles": 42,
+      "location": "San Francisco, CA",
+      "tech_diversity": 7,
+      "specialty_count": 4,
+      "attractiveness_score": 131.0
+    },
+    {
+      "id": "comp_015",
+      "name": "NeuraMind AI",
+      "industry": "Technology",
+      "rating": 4.8,
+      "employees": 280,
+      "open_roles": 20,
+      "location": "Toronto, Canada",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 130.0
+    },
+    {
+      "id": "comp_014",
+      "name": "CloudScale Systems",
+      "industry": "Technology",
+      "rating": 4.4,
+      "employees": 4200,
+      "open_roles": 38,
+      "location": "Seattle, WA",
+      "tech_diversity": 7,
+      "specialty_count": 4,
+      "attractiveness_score": 129.0
+    },
+    {
+      "id": "comp_012",
+      "name": "ExpertLink",
+      "industry": "Technology",
+      "rating": 4.6,
+      "employees": 450,
+      "open_roles": 22,
+      "location": "Paris, France",
+      "tech_diversity": 7,
+      "specialty_count": 4,
+      "attractiveness_score": 128.0
+    },
+    {
+      "id": "comp_003",
+      "name": "FinanceHub",
+      "industry": "Finance",
+      "rating": 4.3,
+      "employees": 12000,
+      "open_roles": 58,
+      "location": "New York, NY",
+      "tech_diversity": 7,
+      "specialty_count": 4,
+      "attractiveness_score": 127.0
+    },
+    {
+      "id": "comp_020",
+      "name": "DataForge Analytics",
+      "industry": "Technology",
+      "rating": 4.5,
+      "employees": 550,
+      "open_roles": 17,
+      "location": "Amsterdam, Netherlands",
+      "tech_diversity": 7,
+      "specialty_count": 4,
+      "attractiveness_score": 126.0
+    },
+    {
+      "id": "comp_040",
+      "name": "SwiftPay",
+      "industry": "Finance",
+      "rating": 4.5,
+      "employees": 830,
+      "open_roles": 20,
+      "location": "Stockholm, Sweden",
+      "tech_diversity": 7,
+      "specialty_count": 4,
+      "attractiveness_score": 126.0
+    },
+    {
+      "id": "comp_046",
+      "name": "Quantum Computing Inc",
+      "industry": "Technology",
+      "rating": 4.8,
+      "employees": 180,
+      "open_roles": 9,
+      "location": "Boulder, CO",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 125.0
+    },
+    {
+      "id": "comp_002",
+      "name": "MedCore Solutions",
+      "industry": "Healthcare",
+      "rating": 4.2,
+      "employees": 8300,
+      "open_roles": 35,
+      "location": "Boston, MA",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 123.0
+    },
+    {
+      "id": "comp_008",
+      "name": "CreativeWave Studios",
+      "industry": "Design",
+      "rating": 4.7,
+      "employees": 180,
+      "open_roles": 8,
+      "location": "Los Angeles, CA",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 123.0
+    },
+    {
+      "id": "comp_016",
+      "name": "VitalCare Pharma",
+      "industry": "Biotechnology",
+      "rating": 4.2,
+      "employees": 7500,
+      "open_roles": 52,
+      "location": "Basel, Switzerland",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 123.0
+    },
+    {
+      "id": "comp_038",
+      "name": "Cortex Neurotech",
+      "industry": "Biotechnology",
+      "rating": 4.7,
+      "employees": 200,
+      "open_roles": 11,
+      "location": "Lausanne, Switzerland",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 123.0
+    },
+    {
+      "id": "comp_005",
+      "name": "EduVerse",
+      "industry": "Education",
+      "rating": 4.4,
+      "employees": 1200,
+      "open_roles": 18,
+      "location": "Austin, TX",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 122.0
+    },
+    {
+      "id": "comp_017",
+      "name": "UrbanFlow Mobility",
+      "industry": "Transportation",
+      "rating": 4.3,
+      "employees": 1100,
+      "open_roles": 16,
+      "location": "Berlin, Germany",
+      "tech_diversity": 7,
+      "specialty_count": 4,
+      "attractiveness_score": 122.0
+    },
+    {
+      "id": "comp_018",
+      "name": "SecureNet Cyber",
+      "industry": "Technology",
+      "rating": 4.4,
+      "employees": 780,
+      "open_roles": 19,
+      "location": "Tel Aviv, Israel",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 122.0
+    },
+    {
+      "id": "comp_031",
+      "name": "Solaris Fintech",
+      "industry": "Finance",
+      "rating": 4.4,
+      "employees": 520,
+      "open_roles": 21,
+      "location": "Berlin, Germany",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 122.0
+    },
+    {
+      "id": "comp_036",
+      "name": "Nimbus Cloud",
+      "industry": "Technology",
+      "rating": 4.3,
+      "employees": 1300,
+      "open_roles": 24,
+      "location": "Singapore",
+      "tech_diversity": 7,
+      "specialty_count": 4,
+      "attractiveness_score": 122.0
+    },
+    {
+      "id": "comp_026",
+      "name": "FoodChain Labs",
+      "industry": "Food & Beverage",
+      "rating": 4.6,
+      "employees": 220,
+      "open_roles": 7,
+      "location": "San Francisco, CA",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 121.0
+    },
+    {
+      "id": "comp_041",
+      "name": "Orbital Space",
+      "industry": "Aerospace",
+      "rating": 4.6,
+      "employees": 450,
+      "open_roles": 15,
+      "location": "Hawthorne, CA",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 121.0
+    },
+    {
+      "id": "comp_043",
+      "name": "Catalyst Consulting",
+      "industry": "Consulting",
+      "rating": 4.1,
+      "employees": 8500,
+      "open_roles": 35,
+      "location": "Singapore",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 121.0
+    },
+    {
+      "id": "comp_050",
+      "name": "Elysium Wellness",
+      "industry": "Healthcare",
+      "rating": 4.6,
+      "employees": 250,
+      "open_roles": 10,
+      "location": "Denver, CO",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 121.0
+    },
+    {
+      "id": "comp_007",
+      "name": "BioGenix",
+      "industry": "Biotechnology",
+      "rating": 4.4,
+      "employees": 3500,
+      "open_roles": 28,
+      "location": "San Diego, CA",
+      "tech_diversity": 5,
+      "specialty_count": 4,
+      "attractiveness_score": 120.0
+    },
+    {
+      "id": "comp_021",
+      "name": "GreenEnergy Corp",
+      "industry": "Energy",
+      "rating": 4.3,
+      "employees": 6200,
+      "open_roles": 25,
+      "location": "Copenhagen, Denmark",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 120.0
+    },
+    {
+      "id": "comp_029",
+      "name": "PixelForge Games",
+      "industry": "Entertainment",
+      "rating": 4.3,
+      "employees": 700,
+      "open_roles": 19,
+      "location": "Tokyo, Japan",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 120.0
+    },
+    {
+      "id": "comp_044",
+      "name": "NovaTech Robotics",
+      "industry": "Technology",
+      "rating": 4.3,
+      "employees": 350,
+      "open_roles": 18,
+      "location": "Shenzhen, China",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 120.0
+    },
+    {
+      "id": "comp_004",
+      "name": "GreenBuild Co.",
+      "industry": "Architecture",
+      "rating": 4.6,
+      "employees": 850,
+      "open_roles": 12,
+      "location": "Portland, OR",
+      "tech_diversity": 5,
+      "specialty_count": 4,
+      "attractiveness_score": 119.0
+    },
+    {
+      "id": "comp_010",
+      "name": "HealthFirst",
+      "industry": "Healthcare",
+      "rating": 4.1,
+      "employees": 6800,
+      "open_roles": 45,
+      "location": "Chicago, IL",
+      "tech_diversity": 5,
+      "specialty_count": 4,
+      "attractiveness_score": 119.0
+    },
+    {
+      "id": "comp_013",
+      "name": "QuantEdge Capital",
+      "industry": "Finance",
+      "rating": 4.5,
+      "employees": 320,
+      "open_roles": 14,
+      "location": "London, UK",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 119.0
+    },
+    {
+      "id": "comp_025",
+      "name": "AeroVista Defense",
+      "industry": "Aerospace",
+      "rating": 4.0,
+      "employees": 8900,
+      "open_roles": 32,
+      "location": "Arlington, VA",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 119.0
+    },
+    {
+      "id": "comp_027",
+      "name": "SparkEd Learning",
+      "industry": "Education",
+      "rating": 4.5,
+      "employees": 400,
+      "open_roles": 13,
+      "location": "Singapore",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 119.0
+    },
+    {
+      "id": "comp_033",
+      "name": "Vertex Architects",
+      "industry": "Architecture",
+      "rating": 4.5,
+      "employees": 150,
+      "open_roles": 6,
+      "location": "Dubai, UAE",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 119.0
+    },
+    {
+      "id": "comp_009",
+      "name": "GlobalConsult",
+      "industry": "Consulting",
+      "rating": 4.0,
+      "employees": 15000,
+      "open_roles": 65,
+      "location": "London, UK",
+      "tech_diversity": 5,
+      "specialty_count": 4,
+      "attractiveness_score": 117.0
+    },
+    {
+      "id": "comp_024",
+      "name": "Nexus Insurance",
+      "industry": "Finance",
+      "rating": 3.9,
+      "employees": 11000,
+      "open_roles": 40,
+      "location": "Zurich, Switzerland",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 117.0
+    },
+    {
+      "id": "comp_028",
+      "name": "EcoTech Solutions",
+      "industry": "Environmental Science",
+      "rating": 4.4,
+      "employees": 380,
+      "open_roles": 10,
+      "location": "Oslo, Norway",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 117.0
+    },
+    {
+      "id": "comp_048",
+      "name": "StudyBridge",
+      "industry": "Education",
+      "rating": 4.4,
+      "employees": 160,
+      "open_roles": 8,
+      "location": "Dublin, Ireland",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 117.0
+    },
+    {
+      "id": "comp_023",
+      "name": "RoboWorks Industrial",
+      "industry": "Manufacturing",
+      "rating": 4.1,
+      "employees": 4800,
+      "open_roles": 22,
+      "location": "Munich, Germany",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 116.0
+    },
+    {
+      "id": "comp_039",
+      "name": "TrueMedia Network",
+      "industry": "Media",
+      "rating": 4.1,
+      "employees": 1500,
+      "open_roles": 16,
+      "location": "London, UK",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 116.0
+    },
+    {
+      "id": "comp_011",
+      "name": "MarketPulse",
+      "industry": "Marketing",
+      "rating": 4.3,
+      "employees": 950,
+      "open_roles": 15,
+      "location": "New York, NY",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 115.0
+    },
+    {
+      "id": "comp_022",
+      "name": "MediaStream Studios",
+      "industry": "Media",
+      "rating": 4.2,
+      "employees": 650,
+      "open_roles": 11,
+      "location": "Los Angeles, CA",
+      "tech_diversity": 7,
+      "specialty_count": 4,
+      "attractiveness_score": 115.0
+    },
+    {
+      "id": "comp_030",
+      "name": "PrimeLogistics",
+      "industry": "Operations",
+      "rating": 3.8,
+      "employees": 14000,
+      "open_roles": 48,
+      "location": "Rotterdam, Netherlands",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 115.0
+    },
+    {
+      "id": "comp_032",
+      "name": "CureX Diagnostics",
+      "industry": "Healthcare",
+      "rating": 4.3,
+      "employees": 900,
+      "open_roles": 15,
+      "location": "Cambridge, MA",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 115.0
+    },
+    {
+      "id": "comp_034",
+      "name": "AgriTech Global",
+      "industry": "Agriculture",
+      "rating": 4.2,
+      "employees": 680,
+      "open_roles": 12,
+      "location": "S\u00e3o Paulo, Brazil",
+      "tech_diversity": 7,
+      "specialty_count": 4,
+      "attractiveness_score": 115.0
+    },
+    {
+      "id": "comp_049",
+      "name": "TerraFirm Mining",
+      "industry": "Mining",
+      "rating": 3.7,
+      "employees": 18000,
+      "open_roles": 55,
+      "location": "Perth, Australia",
+      "tech_diversity": 7,
+      "specialty_count": 4,
+      "attractiveness_score": 115.0
+    },
+    {
+      "id": "comp_047",
+      "name": "SafeHarbor Insurance",
+      "industry": "Finance",
+      "rating": 4.0,
+      "employees": 7200,
+      "open_roles": 28,
+      "location": "Hartford, CT",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 114.0
+    },
+    {
+      "id": "comp_042",
+      "name": "Pinnacle HR Solutions",
+      "industry": "Human Resources",
+      "rating": 4.2,
+      "employees": 620,
+      "open_roles": 13,
+      "location": "Toronto, Canada",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 113.0
+    },
+    {
+      "id": "comp_019",
+      "name": "Apex Hotels Group",
+      "industry": "Hospitality",
+      "rating": 4.0,
+      "employees": 9500,
+      "open_roles": 30,
+      "location": "Dubai, UAE",
+      "tech_diversity": 5,
+      "specialty_count": 4,
+      "attractiveness_score": 112.0
+    },
+    {
+      "id": "comp_035",
+      "name": "Atlas Legal Group",
+      "industry": "Legal",
+      "rating": 4.0,
+      "employees": 2800,
+      "open_roles": 18,
+      "location": "New York, NY",
+      "tech_diversity": 5,
+      "specialty_count": 4,
+      "attractiveness_score": 112.0
+    },
+    {
+      "id": "comp_045",
+      "name": "Meridian Realty",
+      "industry": "Real Estate",
+      "rating": 3.9,
+      "employees": 5500,
+      "open_roles": 22,
+      "location": "Sydney, Australia",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 112.0
+    },
+    {
+      "id": "comp_006",
+      "name": "LegalEdge",
+      "industry": "Legal",
+      "rating": 4.1,
+      "employees": 600,
+      "open_roles": 9,
+      "location": "Washington, DC",
+      "tech_diversity": 6,
+      "specialty_count": 4,
+      "attractiveness_score": 111.0
+    },
+    {
+      "id": "comp_037",
+      "name": "Heritage Hotels",
+      "industry": "Hospitality",
+      "rating": 4.1,
+      "employees": 3200,
+      "open_roles": 14,
+      "location": "Mumbai, India",
+      "tech_diversity": 5,
+      "specialty_count": 4,
+      "attractiveness_score": 109.0
+    }
+  ],
+  "skill_match_samples": []
+}

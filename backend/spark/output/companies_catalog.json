@@ -1,0 +1,1706 @@
+[
+  {
+    "id": "comp_001",
+    "name": "TechNova",
+    "industry": "Technology",
+    "size": "Large",
+    "employees": 5200,
+    "location": "San Francisco, CA",
+    "headquarters": "San Francisco, CA",
+    "founded": 2012,
+    "description": "Leading cloud-native software company specializing in AI-powered enterprise solutions and developer tools.",
+    "tech_stack": [
+      "Python",
+      "React",
+      "TypeScript",
+      "Kubernetes",
+      "AWS",
+      "PostgreSQL",
+      "GraphQL"
+    ],
+    "open_roles": 42,
+    "rating": 4.5,
+    "website": "https://technova.io",
+    "specialties": [
+      "Cloud Computing",
+      "AI/ML",
+      "Developer Tools",
+      "Enterprise SaaS"
+    ],
+    "benefits": [
+      "Remote-first",
+      "Stock options",
+      "Unlimited PTO",
+      "Learning budget"
+    ]
+  },
+  {
+    "id": "comp_002",
+    "name": "MedCore Solutions",
+    "industry": "Healthcare",
+    "size": "Large",
+    "employees": 8300,
+    "location": "Boston, MA",
+    "headquarters": "Boston, MA",
+    "founded": 2005,
+    "description": "Healthcare technology company building next-generation electronic health records and clinical decision support systems.",
+    "tech_stack": [
+      "Java",
+      "Spring Boot",
+      "React",
+      "AWS",
+      "HIPAA Compliance",
+      "PostgreSQL"
+    ],
+    "open_roles": 35,
+    "rating": 4.2,
+    "website": "https://medcore.com",
+    "specialties": [
+      "EHR Systems",
+      "Clinical Analytics",
+      "Telemedicine",
+      "HIPAA Compliance"
+    ],
+    "benefits": [
+      "Health insurance",
+      "401k match",
+      "Parental leave",
+      "Tuition reimbursement"
+    ]
+  },
+  {
+    "id": "comp_003",
+    "name": "FinanceHub",
+    "industry": "Finance",
+    "size": "Large",
+    "employees": 12000,
+    "location": "New York, NY",
+    "headquarters": "New York, NY",
+    "founded": 1998,
+    "description": "Global fintech leader providing investment management platforms, algorithmic trading systems, and digital banking solutions.",
+    "tech_stack": [
+      "Python",
+      "C++",
+      "Java",
+      "Kafka",
+      "PostgreSQL",
+      "Bloomberg API",
+      "React"
+    ],
+    "open_roles": 58,
+    "rating": 4.3,
+    "website": "https://financehub.com",
+    "specialties": [
+      "Investment Management",
+      "Algorithmic Trading",
+      "Risk Analytics",
+      "Digital Banking"
+    ],
+    "benefits": [
+      "Performance bonus",
+      "Stock purchase plan",
+      "Gym membership",
+      "Commuter benefits"
+    ]
+  },
+  {
+    "id": "comp_004",
+    "name": "GreenBuild Co.",
+    "industry": "Architecture",
+    "size": "Medium",
+    "employees": 850,
+    "location": "Portland, OR",
+    "headquarters": "Portland, OR",
+    "founded": 2010,
+    "description": "Sustainable architecture and construction firm specializing in LEED-certified commercial and residential projects.",
+    "tech_stack": [
+      "AutoCAD",
+      "Revit",
+      "BIM 360",
+      "Rhino",
+      "Grasshopper"
+    ],
+    "open_roles": 12,
+    "rating": 4.6,
+    "website": "https://greenbuild.co",
+    "specialties": [
+      "Sustainable Design",
+      "LEED Certification",
+      "Green Construction",
+      "Urban Planning"
+    ],
+    "benefits": [
+      "Flexible hours",
+      "Professional development",
+      "Bike-to-work program",
+      "Volunteer days"
+    ]
+  },
+  {
+    "id": "comp_005",
+    "name": "EduVerse",
+    "industry": "Education",
+    "size": "Medium",
+    "employees": 1200,
+    "location": "Austin, TX",
+    "headquarters": "Austin, TX",
+    "founded": 2015,
+    "description": "EdTech platform delivering personalized learning experiences through AI-driven content recommendation and adaptive assessments.",
+    "tech_stack": [
+      "Python",
+      "Django",
+      "React",
+      "TensorFlow",
+      "AWS",
+      "MongoDB"
+    ],
+    "open_roles": 18,
+    "rating": 4.4,
+    "website": "https://eduverse.io",
+    "specialties": [
+      "Adaptive Learning",
+      "LMS Platforms",
+      "Educational AI",
+      "Content Creation"
+    ],
+    "benefits": [
+      "Remote work",
+      "Education stipend",
+      "Wellness programs",
+      "Team retreats"
+    ]
+  },
+  {
+    "id": "comp_006",
+    "name": "LegalEdge",
+    "industry": "Legal",
+    "size": "Medium",
+    "employees": 600,
+    "location": "Washington, DC",
+    "headquarters": "Washington, DC",
+    "founded": 2008,
+    "description": "Legal technology company providing AI-powered contract analysis, compliance automation, and case management platforms.",
+    "tech_stack": [
+      "Python",
+      "NLP",
+      "React",
+      "Elasticsearch",
+      "Azure",
+      "PostgreSQL"
+    ],
+    "open_roles": 9,
+    "rating": 4.1,
+    "website": "https://legaledge.io",
+    "specialties": [
+      "Contract Analytics",
+      "Compliance Automation",
+      "Legal AI",
+      "Case Management"
+    ],
+    "benefits": [
+      "Bar exam support",
+      "Health insurance",
+      "Professional memberships",
+      "Flexible schedule"
+    ]
+  },
+  {
+    "id": "comp_007",
+    "name": "BioGenix",
+    "industry": "Biotechnology",
+    "size": "Large",
+    "employees": 3500,
+    "location": "San Diego, CA",
+    "headquarters": "San Diego, CA",
+    "founded": 2003,
+    "description": "Biotechnology company focused on gene therapy, CRISPR research, and precision medicine for rare diseases.",
+    "tech_stack": [
+      "Python",
+      "R",
+      "Bioinformatics Tools",
+      "AWS",
+      "LIMS"
+    ],
+    "open_roles": 28,
+    "rating": 4.4,
+    "website": "https://biogenix.com",
+    "specialties": [
+      "Gene Therapy",
+      "CRISPR",
+      "Precision Medicine",
+      "Drug Discovery"
+    ],
+    "benefits": [
+      "Lab facilities",
+      "Research funding",
+      "Conference travel",
+      "Relocation assistance"
+    ]
+  },
+  {
+    "id": "comp_008",
+    "name": "CreativeWave Studios",
+    "industry": "Design",
+    "size": "Small",
+    "employees": 180,
+    "location": "Los Angeles, CA",
+    "headquarters": "Los Angeles, CA",
+    "founded": 2017,
+    "description": "Award-winning creative agency specializing in brand design, motion graphics, 3D visualization, and immersive experiences.",
+    "tech_stack": [
+      "Adobe Creative Suite",
+      "Figma",
+      "Blender",
+      "After Effects",
+      "Unity",
+      "Cinema 4D"
+    ],
+    "open_roles": 8,
+    "rating": 4.7,
+    "website": "https://creativewave.studio",
+    "specialties": [
+      "Brand Design",
+      "Motion Graphics",
+      "3D Visualization",
+      "UX Design"
+    ],
+    "benefits": [
+      "Creative freedom",
+      "Portfolio showcases",
+      "Design conferences",
+      "Equipment budget"
+    ]
+  },
+  {
+    "id": "comp_009",
+    "name": "GlobalConsult",
+    "industry": "Consulting",
+    "size": "Large",
+    "employees": 15000,
+    "location": "London, UK",
+    "headquarters": "London, UK",
+    "founded": 1995,
+    "description": "Top-tier management consulting firm advising Fortune 500 companies on strategy, digital transformation, and organizational design.",
+    "tech_stack": [
+      "PowerBI",
+      "Tableau",
+      "Python",
+      "Excel",
+      "SAP"
+    ],
+    "open_roles": 65,
+    "rating": 4.0,
+    "website": "https://globalconsult.com",
+    "specialties": [
+      "Strategy Consulting",
+      "Digital Transformation",
+      "Organizational Design",
+      "M&A Advisory"
+    ],
+    "benefits": [
+      "Travel opportunities",
+      "MBA sponsorship",
+      "Performance bonus",
+      "Global mobility"
+    ]
+  },
+  {
+    "id": "comp_010",
+    "name": "HealthFirst",
+    "industry": "Healthcare",
+    "size": "Large",
+    "employees": 6800,
+    "location": "Chicago, IL",
+    "headquarters": "Chicago, IL",
+    "founded": 2001,
+    "description": "Integrated healthcare network operating hospitals, clinics, and telehealth services across the Midwest region.",
+    "tech_stack": [
+      "Epic EHR",
+      "Python",
+      "React",
+      "Azure",
+      "HL7 FHIR"
+    ],
+    "open_roles": 45,
+    "rating": 4.1,
+    "website": "https://healthfirst.org",
+    "specialties": [
+      "Hospital Management",
+      "Telehealth",
+      "Clinical Research",
+      "Patient Care"
+    ],
+    "benefits": [
+      "Medical benefits",
+      "Pension plan",
+      "Continuing education",
+      "On-site childcare"
+    ]
+  },
+  {
+    "id": "comp_011",
+    "name": "MarketPulse",
+    "industry": "Marketing",
+    "size": "Medium",
+    "employees": 950,
+    "location": "New York, NY",
+    "headquarters": "New York, NY",
+    "founded": 2013,
+    "description": "Data-driven marketing agency leveraging AI analytics, programmatic advertising, and customer journey optimization.",
+    "tech_stack": [
+      "Python",
+      "Google Analytics",
+      "HubSpot",
+      "React",
+      "BigQuery",
+      "Looker"
+    ],
+    "open_roles": 15,
+    "rating": 4.3,
+    "website": "https://marketpulse.io",
+    "specialties": [
+      "Digital Marketing",
+      "Programmatic Ads",
+      "Customer Analytics",
+      "Brand Strategy"
+    ],
+    "benefits": [
+      "Remote hybrid",
+      "Creative lunches",
+      "Conference budget",
+      "Wellness stipend"
+    ]
+  },
+  {
+    "id": "comp_012",
+    "name": "ExpertLink",
+    "industry": "Technology",
+    "size": "Medium",
+    "employees": 450,
+    "location": "Paris, France",
+    "headquarters": "Paris, France",
+    "founded": 2019,
+    "description": "Professional networking platform connecting experts across industries using AI-powered recommendation and knowledge graph technology.",
+    "tech_stack": [
+      "Python",
+      "FastAPI",
+      "React",
+      "Neo4j",
+      "TypeScript",
+      "Docker",
+      "PySpark"
+    ],
+    "open_roles": 22,
+    "rating": 4.6,
+    "website": "https://expertlink.io",
+    "specialties": [
+      "Knowledge Graphs",
+      "AI Recommendations",
+      "Professional Networking",
+      "Skill Analytics"
+    ],
+    "benefits": [
+      "Remote-first",
+      "Stock options",
+      "Learning budget",
+      "Team offsites"
+    ]
+  },
+  {
+    "id": "comp_013",
+    "name": "QuantEdge Capital",
+    "industry": "Finance",
+    "size": "Medium",
+    "employees": 320,
+    "location": "London, UK",
+    "headquarters": "London, UK",
+    "founded": 2011,
+    "description": "Quantitative hedge fund using machine learning and statistical models for systematic trading strategies across global markets.",
+    "tech_stack": [
+      "Python",
+      "C++",
+      "R",
+      "Kafka",
+      "KDB+",
+      "GPU Computing"
+    ],
+    "open_roles": 14,
+    "rating": 4.5,
+    "website": "https://quantedge.capital",
+    "specialties": [
+      "Quantitative Trading",
+      "Statistical Modeling",
+      "Market Making",
+      "Risk Management"
+    ],
+    "benefits": [
+      "Top-tier compensation",
+      "Research freedom",
+      "Gym on-site",
+      "Catered meals"
+    ]
+  },
+  {
+    "id": "comp_014",
+    "name": "CloudScale Systems",
+    "industry": "Technology",
+    "size": "Large",
+    "employees": 4200,
+    "location": "Seattle, WA",
+    "headquarters": "Seattle, WA",
+    "founded": 2014,
+    "description": "Enterprise cloud infrastructure company providing serverless computing, container orchestration, and multi-cloud management platforms.",
+    "tech_stack": [
+      "Go",
+      "Rust",
+      "Kubernetes",
+      "Terraform",
+      "AWS",
+      "GCP",
+      "Azure"
+    ],
+    "open_roles": 38,
+    "rating": 4.4,
+    "website": "https://cloudscale.systems",
+    "specialties": [
+      "Cloud Infrastructure",
+      "Serverless",
+      "Container Orchestration",
+      "DevOps"
+    ],
+    "benefits": [
+      "Remote work",
+      "Stock options",
+      "Home office stipend",
+      "Sabbatical program"
+    ]
+  },
+  {
+    "id": "comp_015",
+    "name": "NeuraMind AI",
+    "industry": "Technology",
+    "size": "Medium",
+    "employees": 280,
+    "location": "Toronto, Canada",
+    "headquarters": "Toronto, Canada",
+    "founded": 2018,
+    "description": "AI research lab building foundation models for natural language understanding, computer vision, and multimodal reasoning.",
+    "tech_stack": [
+      "Python",
+      "PyTorch",
+      "JAX",
+      "CUDA",
+      "Kubernetes",
+      "Weights & Biases"
+    ],
+    "open_roles": 20,
+    "rating": 4.8,
+    "website": "https://neuramind.ai",
+    "specialties": [
+      "Foundation Models",
+      "NLP",
+      "Computer Vision",
+      "AI Safety"
+    ],
+    "benefits": [
+      "Research publications",
+      "GPU access",
+      "Conference travel",
+      "Flexible hours"
+    ]
+  },
+  {
+    "id": "comp_016",
+    "name": "VitalCare Pharma",
+    "industry": "Biotechnology",
+    "size": "Large",
+    "employees": 7500,
+    "location": "Basel, Switzerland",
+    "headquarters": "Basel, Switzerland",
+    "founded": 1996,
+    "description": "Global pharmaceutical company developing breakthrough therapies in oncology, immunology, and neuroscience through cutting-edge R&D.",
+    "tech_stack": [
+      "Python",
+      "R",
+      "SAS",
+      "LIMS",
+      "AWS",
+      "Bioinformatics"
+    ],
+    "open_roles": 52,
+    "rating": 4.2,
+    "website": "https://vitalcare.pharma",
+    "specialties": [
+      "Oncology",
+      "Immunotherapy",
+      "Clinical Trials",
+      "Drug Development"
+    ],
+    "benefits": [
+      "Relocation package",
+      "Research sabbatical",
+      "Health insurance",
+      "Pension"
+    ]
+  },
+  {
+    "id": "comp_017",
+    "name": "UrbanFlow Mobility",
+    "industry": "Transportation",
+    "size": "Medium",
+    "employees": 1100,
+    "location": "Berlin, Germany",
+    "headquarters": "Berlin, Germany",
+    "founded": 2016,
+    "description": "Smart mobility startup developing autonomous vehicle systems, ride-sharing platforms, and urban transportation analytics.",
+    "tech_stack": [
+      "Python",
+      "C++",
+      "ROS",
+      "TensorFlow",
+      "Docker",
+      "PostgreSQL",
+      "React"
+    ],
+    "open_roles": 16,
+    "rating": 4.3,
+    "website": "https://urbanflow.io",
+    "specialties": [
+      "Autonomous Vehicles",
+      "Ride-Sharing",
+      "Urban Analytics",
+      "IoT"
+    ],
+    "benefits": [
+      "Mobility credits",
+      "Stock options",
+      "Hackathon days",
+      "Bike sharing"
+    ]
+  },
+  {
+    "id": "comp_018",
+    "name": "SecureNet Cyber",
+    "industry": "Technology",
+    "size": "Medium",
+    "employees": 780,
+    "location": "Tel Aviv, Israel",
+    "headquarters": "Tel Aviv, Israel",
+    "founded": 2013,
+    "description": "Cybersecurity company providing zero-trust architecture, threat intelligence, and security operations automation for enterprises.",
+    "tech_stack": [
+      "Python",
+      "Go",
+      "Rust",
+      "Elasticsearch",
+      "Kubernetes",
+      "Splunk"
+    ],
+    "open_roles": 19,
+    "rating": 4.4,
+    "website": "https://securenet.cyber",
+    "specialties": [
+      "Zero Trust",
+      "Threat Intelligence",
+      "SOC Automation",
+      "Cloud Security"
+    ],
+    "benefits": [
+      "Competitive salary",
+      "Training programs",
+      "Stock options",
+      "Team events"
+    ]
+  },
+  {
+    "id": "comp_019",
+    "name": "Apex Hotels Group",
+    "industry": "Hospitality",
+    "size": "Large",
+    "employees": 9500,
+    "location": "Dubai, UAE",
+    "headquarters": "Dubai, UAE",
+    "founded": 2002,
+    "description": "Luxury hospitality group managing premium hotels, resorts, and dining experiences across the Middle East, Europe, and Asia.",
+    "tech_stack": [
+      "SAP",
+      "Oracle Hospitality",
+      "React",
+      "Node.js",
+      "AWS"
+    ],
+    "open_roles": 30,
+    "rating": 4.0,
+    "website": "https://apexhotels.com",
+    "specialties": [
+      "Luxury Hospitality",
+      "Revenue Management",
+      "Guest Experience",
+      "F&B Operations"
+    ],
+    "benefits": [
+      "Hotel discounts",
+      "Travel perks",
+      "Career development",
+      "Relocation support"
+    ]
+  },
+  {
+    "id": "comp_020",
+    "name": "DataForge Analytics",
+    "industry": "Technology",
+    "size": "Medium",
+    "employees": 550,
+    "location": "Amsterdam, Netherlands",
+    "headquarters": "Amsterdam, Netherlands",
+    "founded": 2015,
+    "description": "Big data analytics company specializing in real-time data pipelines, business intelligence, and predictive analytics platforms.",
+    "tech_stack": [
+      "Python",
+      "Spark",
+      "Kafka",
+      "Airflow",
+      "Snowflake",
+      "dbt",
+      "React"
+    ],
+    "open_roles": 17,
+    "rating": 4.5,
+    "website": "https://dataforge.io",
+    "specialties": [
+      "Data Engineering",
+      "Business Intelligence",
+      "Predictive Analytics",
+      "Real-Time Pipelines"
+    ],
+    "benefits": [
+      "Remote-first",
+      "Stock options",
+      "Conference budget",
+      "Home office setup"
+    ]
+  },
+  {
+    "id": "comp_021",
+    "name": "GreenEnergy Corp",
+    "industry": "Energy",
+    "size": "Large",
+    "employees": 6200,
+    "location": "Copenhagen, Denmark",
+    "headquarters": "Copenhagen, Denmark",
+    "founded": 2007,
+    "description": "Renewable energy company developing offshore wind farms, solar installations, and energy storage solutions across Europe.",
+    "tech_stack": [
+      "Python",
+      "SCADA",
+      "IoT Platforms",
+      "GIS",
+      "Azure",
+      "Power BI"
+    ],
+    "open_roles": 25,
+    "rating": 4.3,
+    "website": "https://greenenergy.corp",
+    "specialties": [
+      "Wind Energy",
+      "Solar Power",
+      "Energy Storage",
+      "Grid Management"
+    ],
+    "benefits": [
+      "Sustainability bonus",
+      "Electric vehicle program",
+      "Flexible hours",
+      "Pension plan"
+    ]
+  },
+  {
+    "id": "comp_022",
+    "name": "MediaStream Studios",
+    "industry": "Media",
+    "size": "Medium",
+    "employees": 650,
+    "location": "Los Angeles, CA",
+    "headquarters": "Los Angeles, CA",
+    "founded": 2014,
+    "description": "Digital media company producing streaming content, podcasts, and interactive entertainment for global audiences.",
+    "tech_stack": [
+      "Python",
+      "React",
+      "Node.js",
+      "AWS",
+      "FFmpeg",
+      "CDN",
+      "GraphQL"
+    ],
+    "open_roles": 11,
+    "rating": 4.2,
+    "website": "https://mediastream.studio",
+    "specialties": [
+      "Content Production",
+      "Streaming Technology",
+      "Podcasting",
+      "Interactive Media"
+    ],
+    "benefits": [
+      "Screening passes",
+      "Creative sabbatical",
+      "Equipment access",
+      "Flexible schedule"
+    ]
+  },
+  {
+    "id": "comp_023",
+    "name": "RoboWorks Industrial",
+    "industry": "Manufacturing",
+    "size": "Large",
+    "employees": 4800,
+    "location": "Munich, Germany",
+    "headquarters": "Munich, Germany",
+    "founded": 2009,
+    "description": "Industrial robotics and automation company designing smart factory solutions, collaborative robots, and manufacturing AI systems.",
+    "tech_stack": [
+      "C++",
+      "Python",
+      "ROS",
+      "PLC Programming",
+      "MATLAB",
+      "Computer Vision"
+    ],
+    "open_roles": 22,
+    "rating": 4.1,
+    "website": "https://roboworks.industrial",
+    "specialties": [
+      "Industrial Robotics",
+      "Factory Automation",
+      "Collaborative Robots",
+      "Manufacturing AI"
+    ],
+    "benefits": [
+      "Innovation labs",
+      "Patent bonuses",
+      "Engineering conferences",
+      "Relocation"
+    ]
+  },
+  {
+    "id": "comp_024",
+    "name": "Nexus Insurance",
+    "industry": "Finance",
+    "size": "Large",
+    "employees": 11000,
+    "location": "Zurich, Switzerland",
+    "headquarters": "Zurich, Switzerland",
+    "founded": 1985,
+    "description": "Global insurance and reinsurance company providing life, health, property, and specialty insurance products across 40+ countries.",
+    "tech_stack": [
+      "Java",
+      "Python",
+      "SAP",
+      "Guidewire",
+      "Azure",
+      "Tableau"
+    ],
+    "open_roles": 40,
+    "rating": 3.9,
+    "website": "https://nexusinsurance.com",
+    "specialties": [
+      "Life Insurance",
+      "Reinsurance",
+      "Actuarial Science",
+      "Claims Management"
+    ],
+    "benefits": [
+      "Pension plan",
+      "Insurance discounts",
+      "Global mobility",
+      "Professional certifications"
+    ]
+  },
+  {
+    "id": "comp_025",
+    "name": "AeroVista Defense",
+    "industry": "Aerospace",
+    "size": "Large",
+    "employees": 8900,
+    "location": "Arlington, VA",
+    "headquarters": "Arlington, VA",
+    "founded": 2000,
+    "description": "Aerospace and defense technology company developing satellite systems, drone platforms, and space communication networks.",
+    "tech_stack": [
+      "C++",
+      "Python",
+      "MATLAB",
+      "VHDL",
+      "Linux",
+      "Real-Time Systems"
+    ],
+    "open_roles": 32,
+    "rating": 4.0,
+    "website": "https://aerovista.defense",
+    "specialties": [
+      "Satellite Systems",
+      "Drone Technology",
+      "Space Communications",
+      "Defense Electronics"
+    ],
+    "benefits": [
+      "Security clearance support",
+      "STEM education",
+      "Relocation",
+      "Retirement plan"
+    ]
+  },
+  {
+    "id": "comp_026",
+    "name": "FoodChain Labs",
+    "industry": "Food & Beverage",
+    "size": "Small",
+    "employees": 220,
+    "location": "San Francisco, CA",
+    "headquarters": "San Francisco, CA",
+    "founded": 2019,
+    "description": "Food tech startup using blockchain and IoT to enable farm-to-table supply chain transparency and food safety compliance.",
+    "tech_stack": [
+      "Python",
+      "Solidity",
+      "React",
+      "IoT",
+      "Node.js",
+      "PostgreSQL"
+    ],
+    "open_roles": 7,
+    "rating": 4.6,
+    "website": "https://foodchain.labs",
+    "specialties": [
+      "Supply Chain",
+      "Blockchain",
+      "Food Safety",
+      "IoT Tracking"
+    ],
+    "benefits": [
+      "Free meals",
+      "Equity",
+      "Remote work",
+      "Impact-driven culture"
+    ]
+  },
+  {
+    "id": "comp_027",
+    "name": "SparkEd Learning",
+    "industry": "Education",
+    "size": "Medium",
+    "employees": 400,
+    "location": "Singapore",
+    "headquarters": "Singapore",
+    "founded": 2016,
+    "description": "K-12 education platform providing gamified learning, virtual classrooms, and AI-powered tutoring for students across Asia-Pacific.",
+    "tech_stack": [
+      "Python",
+      "React Native",
+      "Firebase",
+      "TensorFlow",
+      "Node.js",
+      "MongoDB"
+    ],
+    "open_roles": 13,
+    "rating": 4.5,
+    "website": "https://sparked.edu",
+    "specialties": [
+      "K-12 Education",
+      "Gamified Learning",
+      "Virtual Classrooms",
+      "AI Tutoring"
+    ],
+    "benefits": [
+      "Education benefits",
+      "Remote work",
+      "Stock options",
+      "Annual retreats"
+    ]
+  },
+  {
+    "id": "comp_028",
+    "name": "EcoTech Solutions",
+    "industry": "Environmental Science",
+    "size": "Medium",
+    "employees": 380,
+    "location": "Oslo, Norway",
+    "headquarters": "Oslo, Norway",
+    "founded": 2014,
+    "description": "Environmental technology company developing carbon tracking platforms, sustainability analytics, and ESG reporting tools.",
+    "tech_stack": [
+      "Python",
+      "React",
+      "PostgreSQL",
+      "GIS",
+      "Docker",
+      "AWS"
+    ],
+    "open_roles": 10,
+    "rating": 4.4,
+    "website": "https://ecotech.solutions",
+    "specialties": [
+      "Carbon Tracking",
+      "ESG Reporting",
+      "Sustainability Analytics",
+      "Environmental Monitoring"
+    ],
+    "benefits": [
+      "Carbon offset",
+      "Green commute bonus",
+      "Flexible hours",
+      "Impact mission"
+    ]
+  },
+  {
+    "id": "comp_029",
+    "name": "PixelForge Games",
+    "industry": "Entertainment",
+    "size": "Medium",
+    "employees": 700,
+    "location": "Tokyo, Japan",
+    "headquarters": "Tokyo, Japan",
+    "founded": 2011,
+    "description": "Game development studio creating AAA titles and mobile games with cutting-edge graphics engines and multiplayer infrastructure.",
+    "tech_stack": [
+      "C++",
+      "Unreal Engine",
+      "Unity",
+      "Python",
+      "AWS GameLift",
+      "Vulkan"
+    ],
+    "open_roles": 19,
+    "rating": 4.3,
+    "website": "https://pixelforge.games",
+    "specialties": [
+      "AAA Game Development",
+      "Mobile Games",
+      "Graphics Engineering",
+      "Multiplayer Systems"
+    ],
+    "benefits": [
+      "Game library access",
+      "Crunch-free culture",
+      "Equipment budget",
+      "Team gaming events"
+    ]
+  },
+  {
+    "id": "comp_030",
+    "name": "PrimeLogistics",
+    "industry": "Operations",
+    "size": "Large",
+    "employees": 14000,
+    "location": "Rotterdam, Netherlands",
+    "headquarters": "Rotterdam, Netherlands",
+    "founded": 1990,
+    "description": "Global logistics and supply chain company managing freight forwarding, warehousing, and last-mile delivery across 60+ countries.",
+    "tech_stack": [
+      "SAP",
+      "Python",
+      "IoT",
+      "React",
+      "Oracle",
+      "Tableau"
+    ],
+    "open_roles": 48,
+    "rating": 3.8,
+    "website": "https://primelogistics.com",
+    "specialties": [
+      "Freight Forwarding",
+      "Warehousing",
+      "Last-Mile Delivery",
+      "Supply Chain Optimization"
+    ],
+    "benefits": [
+      "Global transfer program",
+      "Pension",
+      "Health insurance",
+      "Career development"
+    ]
+  },
+  {
+    "id": "comp_031",
+    "name": "Solaris Fintech",
+    "industry": "Finance",
+    "size": "Medium",
+    "employees": 520,
+    "location": "Berlin, Germany",
+    "headquarters": "Berlin, Germany",
+    "founded": 2016,
+    "description": "Banking-as-a-service platform providing API-driven digital banking, payment processing, and lending infrastructure to fintechs.",
+    "tech_stack": [
+      "Java",
+      "Kotlin",
+      "React",
+      "Kubernetes",
+      "PostgreSQL",
+      "Kafka"
+    ],
+    "open_roles": 21,
+    "rating": 4.4,
+    "website": "https://solaris.fintech",
+    "specialties": [
+      "Banking-as-a-Service",
+      "Payment Processing",
+      "Digital Lending",
+      "Regulatory Tech"
+    ],
+    "benefits": [
+      "Stock options",
+      "Remote work",
+      "Urban sports membership",
+      "Learning days"
+    ]
+  },
+  {
+    "id": "comp_032",
+    "name": "CureX Diagnostics",
+    "industry": "Healthcare",
+    "size": "Medium",
+    "employees": 900,
+    "location": "Cambridge, MA",
+    "headquarters": "Cambridge, MA",
+    "founded": 2012,
+    "description": "Medical diagnostics company developing AI-powered imaging systems, rapid testing kits, and point-of-care diagnostic devices.",
+    "tech_stack": [
+      "Python",
+      "TensorFlow",
+      "DICOM",
+      "React",
+      "AWS",
+      "C++"
+    ],
+    "open_roles": 15,
+    "rating": 4.3,
+    "website": "https://curex.diagnostics",
+    "specialties": [
+      "Medical Imaging AI",
+      "Rapid Diagnostics",
+      "Point-of-Care",
+      "FDA Compliance"
+    ],
+    "benefits": [
+      "Health benefits",
+      "Research funding",
+      "Patent bonuses",
+      "Conference travel"
+    ]
+  },
+  {
+    "id": "comp_033",
+    "name": "Vertex Architects",
+    "industry": "Architecture",
+    "size": "Small",
+    "employees": 150,
+    "location": "Dubai, UAE",
+    "headquarters": "Dubai, UAE",
+    "founded": 2011,
+    "description": "Luxury architecture firm designing landmark skyscrapers, mixed-use developments, and cultural institutions in the Middle East.",
+    "tech_stack": [
+      "AutoCAD",
+      "3ds Max",
+      "Revit",
+      "Rhino",
+      "V-Ray",
+      "BIM"
+    ],
+    "open_roles": 6,
+    "rating": 4.5,
+    "website": "https://vertex.architects",
+    "specialties": [
+      "Luxury Architecture",
+      "High-Rise Design",
+      "Cultural Buildings",
+      "Urban Master Planning"
+    ],
+    "benefits": [
+      "Travel projects",
+      "Design awards",
+      "Professional development",
+      "Studio culture"
+    ]
+  },
+  {
+    "id": "comp_034",
+    "name": "AgriTech Global",
+    "industry": "Agriculture",
+    "size": "Medium",
+    "employees": 680,
+    "location": "S\u00e3o Paulo, Brazil",
+    "headquarters": "S\u00e3o Paulo, Brazil",
+    "founded": 2015,
+    "description": "Agricultural technology company using satellite imagery, drone mapping, and IoT sensors for precision farming and crop analytics.",
+    "tech_stack": [
+      "Python",
+      "TensorFlow",
+      "GIS",
+      "IoT",
+      "React",
+      "AWS",
+      "Drone SDKs"
+    ],
+    "open_roles": 12,
+    "rating": 4.2,
+    "website": "https://agritech.global",
+    "specialties": [
+      "Precision Agriculture",
+      "Satellite Imagery",
+      "Crop Analytics",
+      "Smart Irrigation"
+    ],
+    "benefits": [
+      "Farm visits",
+      "Remote work",
+      "Stock options",
+      "Impact mission"
+    ]
+  },
+  {
+    "id": "comp_035",
+    "name": "Atlas Legal Group",
+    "industry": "Legal",
+    "size": "Large",
+    "employees": 2800,
+    "location": "New York, NY",
+    "headquarters": "New York, NY",
+    "founded": 1988,
+    "description": "Full-service international law firm with expertise in corporate law, IP litigation, international arbitration, and regulatory compliance.",
+    "tech_stack": [
+      "Relativity",
+      "Westlaw",
+      "iManage",
+      "Python",
+      "SharePoint"
+    ],
+    "open_roles": 18,
+    "rating": 4.0,
+    "website": "https://atlaslegal.group",
+    "specialties": [
+      "Corporate Law",
+      "IP Litigation",
+      "International Arbitration",
+      "Regulatory Compliance"
+    ],
+    "benefits": [
+      "Bar prep support",
+      "Pro bono hours",
+      "Partner track",
+      "Global secondments"
+    ]
+  },
+  {
+    "id": "comp_036",
+    "name": "Nimbus Cloud",
+    "industry": "Technology",
+    "size": "Medium",
+    "employees": 1300,
+    "location": "Singapore",
+    "headquarters": "Singapore",
+    "founded": 2015,
+    "description": "Cloud services provider specializing in multi-cloud management, edge computing, and cloud-native application development in APAC.",
+    "tech_stack": [
+      "Go",
+      "Python",
+      "Kubernetes",
+      "Terraform",
+      "React",
+      "GCP",
+      "Azure"
+    ],
+    "open_roles": 24,
+    "rating": 4.3,
+    "website": "https://nimbus.cloud",
+    "specialties": [
+      "Multi-Cloud",
+      "Edge Computing",
+      "Cloud-Native Apps",
+      "Managed Services"
+    ],
+    "benefits": [
+      "Remote work",
+      "Stock options",
+      "Certification budget",
+      "Team retreats"
+    ]
+  },
+  {
+    "id": "comp_037",
+    "name": "Heritage Hotels",
+    "industry": "Hospitality",
+    "size": "Medium",
+    "employees": 3200,
+    "location": "Mumbai, India",
+    "headquarters": "Mumbai, India",
+    "founded": 2006,
+    "description": "Boutique hotel chain restoring and managing heritage properties across India, offering cultural tourism and authentic experiences.",
+    "tech_stack": [
+      "Oracle Hospitality",
+      "React",
+      "Node.js",
+      "AWS",
+      "Salesforce"
+    ],
+    "open_roles": 14,
+    "rating": 4.1,
+    "website": "https://heritagehotels.in",
+    "specialties": [
+      "Heritage Tourism",
+      "Boutique Hotels",
+      "Cultural Experiences",
+      "Property Restoration"
+    ],
+    "benefits": [
+      "Hotel stays",
+      "Cultural trips",
+      "Health insurance",
+      "Career growth"
+    ]
+  },
+  {
+    "id": "comp_038",
+    "name": "Cortex Neurotech",
+    "industry": "Biotechnology",
+    "size": "Small",
+    "employees": 200,
+    "location": "Lausanne, Switzerland",
+    "headquarters": "Lausanne, Switzerland",
+    "founded": 2017,
+    "description": "Neurotechnology startup developing brain-computer interfaces, neural implants, and cognitive enhancement technologies.",
+    "tech_stack": [
+      "Python",
+      "C++",
+      "MATLAB",
+      "TensorFlow",
+      "Real-Time Systems",
+      "Signal Processing"
+    ],
+    "open_roles": 11,
+    "rating": 4.7,
+    "website": "https://cortex.neurotech",
+    "specialties": [
+      "Brain-Computer Interfaces",
+      "Neural Implants",
+      "Cognitive Enhancement",
+      "Neuroscience"
+    ],
+    "benefits": [
+      "Research freedom",
+      "Patent co-ownership",
+      "Cutting-edge lab",
+      "Conference travel"
+    ]
+  },
+  {
+    "id": "comp_039",
+    "name": "TrueMedia Network",
+    "industry": "Media",
+    "size": "Medium",
+    "employees": 1500,
+    "location": "London, UK",
+    "headquarters": "London, UK",
+    "founded": 2010,
+    "description": "Global digital media network producing investigative journalism, documentary content, and multimedia storytelling across web and broadcast.",
+    "tech_stack": [
+      "React",
+      "Node.js",
+      "Python",
+      "WordPress",
+      "AWS",
+      "Video APIs"
+    ],
+    "open_roles": 16,
+    "rating": 4.1,
+    "website": "https://truemedia.network",
+    "specialties": [
+      "Investigative Journalism",
+      "Documentary Production",
+      "Digital Newsroom",
+      "Multimedia"
+    ],
+    "benefits": [
+      "Press credentials",
+      "Travel assignments",
+      "Creative freedom",
+      "Award programs"
+    ]
+  },
+  {
+    "id": "comp_040",
+    "name": "SwiftPay",
+    "industry": "Finance",
+    "size": "Medium",
+    "employees": 830,
+    "location": "Stockholm, Sweden",
+    "headquarters": "Stockholm, Sweden",
+    "founded": 2014,
+    "description": "Digital payments company providing mobile payment solutions, merchant services, and cross-border transaction processing.",
+    "tech_stack": [
+      "Java",
+      "Kotlin",
+      "React",
+      "Kafka",
+      "PostgreSQL",
+      "Kubernetes",
+      "PCI DSS"
+    ],
+    "open_roles": 20,
+    "rating": 4.5,
+    "website": "https://swiftpay.io",
+    "specialties": [
+      "Mobile Payments",
+      "Merchant Services",
+      "Cross-Border Payments",
+      "Payment Security"
+    ],
+    "benefits": [
+      "Stock options",
+      "Remote-first",
+      "Wellness budget",
+      "Team events"
+    ]
+  },
+  {
+    "id": "comp_041",
+    "name": "Orbital Space",
+    "industry": "Aerospace",
+    "size": "Medium",
+    "employees": 450,
+    "location": "Hawthorne, CA",
+    "headquarters": "Hawthorne, CA",
+    "founded": 2018,
+    "description": "Space technology company developing small satellite constellations, orbital launch services, and space debris tracking systems.",
+    "tech_stack": [
+      "C++",
+      "Python",
+      "Rust",
+      "MATLAB",
+      "Linux",
+      "FPGA"
+    ],
+    "open_roles": 15,
+    "rating": 4.6,
+    "website": "https://orbital.space",
+    "specialties": [
+      "Small Satellites",
+      "Launch Services",
+      "Space Debris",
+      "Orbital Mechanics"
+    ],
+    "benefits": [
+      "Launch viewing",
+      "Stock options",
+      "Mission bonuses",
+      "Engineering resources"
+    ]
+  },
+  {
+    "id": "comp_042",
+    "name": "Pinnacle HR Solutions",
+    "industry": "Human Resources",
+    "size": "Medium",
+    "employees": 620,
+    "location": "Toronto, Canada",
+    "headquarters": "Toronto, Canada",
+    "founded": 2012,
+    "description": "HR technology company providing AI-powered talent acquisition, workforce analytics, and employee engagement platforms.",
+    "tech_stack": [
+      "Python",
+      "React",
+      "Node.js",
+      "PostgreSQL",
+      "AWS",
+      "NLP"
+    ],
+    "open_roles": 13,
+    "rating": 4.2,
+    "website": "https://pinnacle-hr.com",
+    "specialties": [
+      "Talent Acquisition AI",
+      "Workforce Analytics",
+      "Employee Engagement",
+      "HRIS"
+    ],
+    "benefits": [
+      "Remote work",
+      "Learning stipend",
+      "Wellness programs",
+      "Equity"
+    ]
+  },
+  {
+    "id": "comp_043",
+    "name": "Catalyst Consulting",
+    "industry": "Consulting",
+    "size": "Large",
+    "employees": 8500,
+    "location": "Singapore",
+    "headquarters": "Singapore",
+    "founded": 2001,
+    "description": "Asia-Pacific consulting firm specializing in digital transformation, technology strategy, and operational excellence for enterprises.",
+    "tech_stack": [
+      "PowerBI",
+      "Python",
+      "SAP",
+      "Salesforce",
+      "Azure",
+      "Tableau"
+    ],
+    "open_roles": 35,
+    "rating": 4.1,
+    "website": "https://catalyst.consulting",
+    "specialties": [
+      "Digital Transformation",
+      "Technology Strategy",
+      "Operational Excellence",
+      "Change Management"
+    ],
+    "benefits": [
+      "Travel allowance",
+      "MBA support",
+      "Performance bonus",
+      "Global projects"
+    ]
+  },
+  {
+    "id": "comp_044",
+    "name": "NovaTech Robotics",
+    "industry": "Technology",
+    "size": "Medium",
+    "employees": 350,
+    "location": "Shenzhen, China",
+    "headquarters": "Shenzhen, China",
+    "founded": 2016,
+    "description": "Consumer robotics company designing home assistants, educational robots, and service robots for retail and hospitality.",
+    "tech_stack": [
+      "C++",
+      "Python",
+      "ROS",
+      "TensorFlow",
+      "React Native",
+      "IoT"
+    ],
+    "open_roles": 18,
+    "rating": 4.3,
+    "website": "https://novatech.robotics",
+    "specialties": [
+      "Consumer Robotics",
+      "Home Assistants",
+      "Educational Robots",
+      "Service Robotics"
+    ],
+    "benefits": [
+      "Innovation days",
+      "Patent bonuses",
+      "Robot demos",
+      "Team hackathons"
+    ]
+  },
+  {
+    "id": "comp_045",
+    "name": "Meridian Realty",
+    "industry": "Real Estate",
+    "size": "Large",
+    "employees": 5500,
+    "location": "Sydney, Australia",
+    "headquarters": "Sydney, Australia",
+    "founded": 1999,
+    "description": "Commercial and residential real estate company managing premium properties, development projects, and investment portfolios across Oceania.",
+    "tech_stack": [
+      "SAP",
+      "React",
+      "Node.js",
+      "PostgreSQL",
+      "Salesforce",
+      "PowerBI"
+    ],
+    "open_roles": 22,
+    "rating": 3.9,
+    "website": "https://meridian.realty",
+    "specialties": [
+      "Commercial Real Estate",
+      "Property Development",
+      "Investment Management",
+      "Facilities"
+    ],
+    "benefits": [
+      "Property discounts",
+      "Commission structure",
+      "Career development",
+      "Health insurance"
+    ]
+  },
+  {
+    "id": "comp_046",
+    "name": "Quantum Computing Inc",
+    "industry": "Technology",
+    "size": "Small",
+    "employees": 180,
+    "location": "Boulder, CO",
+    "headquarters": "Boulder, CO",
+    "founded": 2019,
+    "description": "Quantum computing startup building quantum processors, simulators, and cloud-accessible quantum development environments.",
+    "tech_stack": [
+      "Python",
+      "Qiskit",
+      "Cirq",
+      "C++",
+      "Cryogenics",
+      "Linux"
+    ],
+    "open_roles": 9,
+    "rating": 4.8,
+    "website": "https://quantumci.com",
+    "specialties": [
+      "Quantum Processors",
+      "Quantum Simulation",
+      "Quantum Cloud",
+      "Error Correction"
+    ],
+    "benefits": [
+      "Research freedom",
+      "Publication support",
+      "Stock options",
+      "Cutting-edge hardware"
+    ]
+  },
+  {
+    "id": "comp_047",
+    "name": "SafeHarbor Insurance",
+    "industry": "Finance",
+    "size": "Large",
+    "employees": 7200,
+    "location": "Hartford, CT",
+    "headquarters": "Hartford, CT",
+    "founded": 1992,
+    "description": "Insurance company providing property, casualty, life, and specialty insurance with digital-first customer experience and AI-driven underwriting.",
+    "tech_stack": [
+      "Java",
+      "Python",
+      "React",
+      "Guidewire",
+      "AWS",
+      "Machine Learning"
+    ],
+    "open_roles": 28,
+    "rating": 4.0,
+    "website": "https://safeharbor.insurance",
+    "specialties": [
+      "Property Insurance",
+      "AI Underwriting",
+      "Claims Automation",
+      "Digital Experience"
+    ],
+    "benefits": [
+      "Insurance benefits",
+      "Pension",
+      "Tuition reimbursement",
+      "Volunteer days"
+    ]
+  },
+  {
+    "id": "comp_048",
+    "name": "StudyBridge",
+    "industry": "Education",
+    "size": "Small",
+    "employees": 160,
+    "location": "Dublin, Ireland",
+    "headquarters": "Dublin, Ireland",
+    "founded": 2018,
+    "description": "Online education platform connecting students with tutors worldwide, offering live sessions, async courses, and certification programs.",
+    "tech_stack": [
+      "React",
+      "Node.js",
+      "WebRTC",
+      "MongoDB",
+      "AWS",
+      "Python"
+    ],
+    "open_roles": 8,
+    "rating": 4.4,
+    "website": "https://studybridge.io",
+    "specialties": [
+      "Online Tutoring",
+      "Live Classes",
+      "Certification Programs",
+      "Student Matching"
+    ],
+    "benefits": [
+      "Remote work",
+      "Free courses",
+      "Stock options",
+      "Annual summit"
+    ]
+  },
+  {
+    "id": "comp_049",
+    "name": "TerraFirm Mining",
+    "industry": "Mining",
+    "size": "Large",
+    "employees": 18000,
+    "location": "Perth, Australia",
+    "headquarters": "Perth, Australia",
+    "founded": 1978,
+    "description": "Mining and resources company operating iron ore, lithium, and copper mines with AI-driven exploration and autonomous mining equipment.",
+    "tech_stack": [
+      "Python",
+      "SCADA",
+      "AutoCAD",
+      "GIS",
+      "SAP",
+      "IoT",
+      "Machine Learning"
+    ],
+    "open_roles": 55,
+    "rating": 3.7,
+    "website": "https://terrafirm.mining",
+    "specialties": [
+      "Mining Operations",
+      "Autonomous Equipment",
+      "Resource Exploration",
+      "ESG Compliance"
+    ],
+    "benefits": [
+      "FIFO rosters",
+      "High salary",
+      "Health coverage",
+      "Career pathways"
+    ]
+  },
+  {
+    "id": "comp_050",
+    "name": "Elysium Wellness",
+    "industry": "Healthcare",
+    "size": "Small",
+    "employees": 250,
+    "location": "Denver, CO",
+    "headquarters": "Denver, CO",
+    "founded": 2017,
+    "description": "Digital health and wellness platform combining telemedicine, mental health support, and personalized nutrition coaching powered by AI.",
+    "tech_stack": [
+      "React Native",
+      "Python",
+      "FastAPI",
+      "PostgreSQL",
+      "AWS",
+      "TensorFlow"
+    ],
+    "open_roles": 10,
+    "rating": 4.6,
+    "website": "https://elysium.wellness",
+    "specialties": [
+      "Telemedicine",
+      "Mental Health Tech",
+      "Nutrition AI",
+      "Wellness Programs"
+    ],
+    "benefits": [
+      "Wellness stipend",
+      "Remote work",
+      "Mental health days",
+      "Equity"
+    ]
+  }
+]

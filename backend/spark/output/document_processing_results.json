@@ -1,0 +1,585 @@
+{
+  "total_documents": 200,
+  "documents_by_type": [
+    {
+      "type": "Article",
+      "count": 43
+    },
+    {
+      "type": "Guide",
+      "count": 36
+    },
+    {
+      "type": "Case Study",
+      "count": 33
+    },
+    {
+      "type": "Tutorial",
+      "count": 32
+    },
+    {
+      "type": "Report",
+      "count": 32
+    },
+    {
+      "type": "Documentation",
+      "count": 24
+    }
+  ],
+  "documents_by_topic": [
+    {
+      "topic": "Cloud",
+      "count": 43,
+      "avg_rating": 4.04,
+      "avg_views": 6862.26
+    },
+    {
+      "topic": "Security",
+      "count": 39,
+      "avg_rating": 4.02,
+      "avg_views": 6920.31
+    },
+    {
+      "topic": "Web Development",
+      "count": 36,
+      "avg_rating": 4.05,
+      "avg_views": 8509.94
+    },
+    {
+      "topic": "AI",
+      "count": 31,
+      "avg_rating": 3.87,
+      "avg_views": 7644.16
+    },
+    {
+      "topic": "Machine Learning",
+      "count": 27,
+      "avg_rating": 3.82,
+      "avg_views": 8982.33
+    },
+    {
+      "topic": "DevOps",
+      "count": 24,
+      "avg_rating": 4.0,
+      "avg_views": 6818.25
+    }
+  ],
+  "top_words": [
+    {
+      "word": "guide",
+      "frequency": 46
+    },
+    {
+      "word": "article",
+      "frequency": 43
+    },
+    {
+      "word": "case",
+      "frequency": 33
+    },
+    {
+      "word": "study",
+      "frequency": 33
+    },
+    {
+      "word": "tutorial",
+      "frequency": 32
+    },
+    {
+      "word": "report",
+      "frequency": 32
+    },
+    {
+      "word": "cloud",
+      "frequency": 24
+    },
+    {
+      "word": "documentation",
+      "frequency": 24
+    },
+    {
+      "word": "management",
+      "frequency": 22
+    },
+    {
+      "word": "security",
+      "frequency": 22
+    },
+    {
+      "word": "applications",
+      "frequency": 20
+    },
+    {
+      "word": "design",
+      "frequency": 19
+    },
+    {
+      "word": "deployment",
+      "frequency": 16
+    },
+    {
+      "word": "configuration",
+      "frequency": 15
+    },
+    {
+      "word": "architecture",
+      "frequency": 14
+    },
+    {
+      "word": "implementation",
+      "frequency": 14
+    },
+    {
+      "word": "optimization",
+      "frequency": 14
+    },
+    {
+      "word": "aws",
+      "frequency": 13
+    },
+    {
+      "word": "practices",
+      "frequency": 12
+    },
+    {
+      "word": "development",
+      "frequency": 12
+    },
+    {
+      "word": "strategies",
+      "frequency": 11
+    },
+    {
+      "word": "large",
+      "frequency": 11
+    },
+    {
+      "word": "networks",
+      "frequency": 11
+    },
+    {
+      "word": "language",
+      "frequency": 10
+    },
+    {
+      "word": "zero",
+      "frequency": 9
+    },
+    {
+      "word": "models",
+      "frequency": 9
+    },
+    {
+      "word": "container",
+      "frequency": 9
+    },
+    {
+      "word": "neural",
+      "frequency": 8
+    },
+    {
+      "word": "network",
+      "frequency": 8
+    },
+    {
+      "word": "computer",
+      "frequency": 8
+    },
+    {
+      "word": "vision",
+      "frequency": 8
+    },
+    {
+      "word": "techniques",
+      "frequency": 7
+    },
+    {
+      "word": "incident",
+      "frequency": 7
+    },
+    {
+      "word": "response",
+      "frequency": 7
+    },
+    {
+      "word": "forensics",
+      "frequency": 7
+    },
+    {
+      "word": "fine",
+      "frequency": 7
+    },
+    {
+      "word": "tuning",
+      "frequency": 7
+    },
+    {
+      "word": "scalable",
+      "frequency": 7
+    },
+    {
+      "word": "compliance",
+      "frequency": 7
+    },
+    {
+      "word": "framework",
+      "frequency": 7
+    },
+    {
+      "word": "state",
+      "frequency": 7
+    },
+    {
+      "word": "redux",
+      "frequency": 7
+    },
+    {
+      "word": "mobx",
+      "frequency": 7
+    },
+    {
+      "word": "trust",
+      "frequency": 6
+    },
+    {
+      "word": "infrastructure",
+      "frequency": 6
+    },
+    {
+      "word": "firewall",
+      "frequency": 6
+    },
+    {
+      "word": "convolutional",
+      "frequency": 6
+    },
+    {
+      "word": "processing",
+      "frequency": 5
+    },
+    {
+      "word": "networking",
+      "frequency": 5
+    },
+    {
+      "word": "vpc",
+      "frequency": 5
+    }
+  ],
+  "topic_keywords": [
+    {
+      "topic": "Web Development",
+      "word": "guide",
+      "frequency": 9
+    },
+    {
+      "topic": "Web Development",
+      "word": "development",
+      "frequency": 8
+    },
+    {
+      "topic": "Web Development",
+      "word": "report",
+      "frequency": 8
+    },
+    {
+      "topic": "Web Development",
+      "word": "applications",
+      "frequency": 7
+    },
+    {
+      "topic": "Web Development",
+      "word": "design",
+      "frequency": 7
+    },
+    {
+      "topic": "Web Development",
+      "word": "state",
+      "frequency": 7
+    },
+    {
+      "topic": "Web Development",
+      "word": "management",
+      "frequency": 7
+    },
+    {
+      "topic": "Web Development",
+      "word": "redux",
+      "frequency": 7
+    },
+    {
+      "topic": "Web Development",
+      "word": "mobx",
+      "frequency": 7
+    },
+    {
+      "topic": "Web Development",
+      "word": "documentation",
+      "frequency": 6
+    },
+    {
+      "topic": "AI",
+      "word": "models",
+      "frequency": 9
+    },
+    {
+      "topic": "AI",
+      "word": "deployment",
+      "frequency": 9
+    },
+    {
+      "topic": "AI",
+      "word": "tutorial",
+      "frequency": 7
+    },
+    {
+      "topic": "AI",
+      "word": "large",
+      "frequency": 7
+    },
+    {
+      "topic": "AI",
+      "word": "language",
+      "frequency": 7
+    },
+    {
+      "topic": "AI",
+      "word": "fine",
+      "frequency": 7
+    },
+    {
+      "topic": "AI",
+      "word": "tuning",
+      "frequency": 7
+    },
+    {
+      "topic": "AI",
+      "word": "article",
+      "frequency": 7
+    },
+    {
+      "topic": "AI",
+      "word": "guide",
+      "frequency": 6
+    },
+    {
+      "topic": "AI",
+      "word": "powered",
+      "frequency": 5
+    },
+    {
+      "topic": "Cloud",
+      "word": "cloud",
+      "frequency": 24
+    },
+    {
+      "topic": "Cloud",
+      "word": "aws",
+      "frequency": 12
+    },
+    {
+      "topic": "Cloud",
+      "word": "design",
+      "frequency": 12
+    },
+    {
+      "topic": "Cloud",
+      "word": "tutorial",
+      "frequency": 11
+    },
+    {
+      "topic": "Cloud",
+      "word": "article",
+      "frequency": 8
+    },
+    {
+      "topic": "Cloud",
+      "word": "report",
+      "frequency": 8
+    },
+    {
+      "topic": "Cloud",
+      "word": "architecture",
+      "frequency": 7
+    },
+    {
+      "topic": "Cloud",
+      "word": "scalable",
+      "frequency": 7
+    },
+    {
+      "topic": "Cloud",
+      "word": "applications",
+      "frequency": 7
+    },
+    {
+      "topic": "Cloud",
+      "word": "security",
+      "frequency": 7
+    },
+    {
+      "topic": "Security",
+      "word": "guide",
+      "frequency": 15
+    },
+    {
+      "topic": "Security",
+      "word": "security",
+      "frequency": 12
+    },
+    {
+      "topic": "Security",
+      "word": "management",
+      "frequency": 11
+    },
+    {
+      "topic": "Security",
+      "word": "article",
+      "frequency": 10
+    },
+    {
+      "topic": "Security",
+      "word": "documentation",
+      "frequency": 7
+    },
+    {
+      "topic": "Security",
+      "word": "incident",
+      "frequency": 7
+    },
+    {
+      "topic": "Security",
+      "word": "response",
+      "frequency": 7
+    },
+    {
+      "topic": "Security",
+      "word": "forensics",
+      "frequency": 7
+    },
+    {
+      "topic": "Security",
+      "word": "zero",
+      "frequency": 6
+    },
+    {
+      "topic": "Security",
+      "word": "trust",
+      "frequency": 6
+    },
+    {
+      "topic": "Machine Learning",
+      "word": "networks",
+      "frequency": 11
+    },
+    {
+      "topic": "Machine Learning",
+      "word": "neural",
+      "frequency": 8
+    },
+    {
+      "topic": "Machine Learning",
+      "word": "article",
+      "frequency": 6
+    },
+    {
+      "topic": "Machine Learning",
+      "word": "computer",
+      "frequency": 6
+    },
+    {
+      "topic": "Machine Learning",
+      "word": "vision",
+      "frequency": 6
+    },
+    {
+      "topic": "Machine Learning",
+      "word": "convolutional",
+      "frequency": 6
+    },
+    {
+      "topic": "Machine Learning",
+      "word": "case",
+      "frequency": 5
+    },
+    {
+      "topic": "Machine Learning",
+      "word": "study",
+      "frequency": 5
+    },
+    {
+      "topic": "Machine Learning",
+      "word": "guide",
+      "frequency": 5
+    },
+    {
+      "topic": "Machine Learning",
+      "word": "time",
+      "frequency": 5
+    },
+    {
+      "topic": "DevOps",
+      "word": "article",
+      "frequency": 7
+    },
+    {
+      "topic": "DevOps",
+      "word": "case",
+      "frequency": 6
+    },
+    {
+      "topic": "DevOps",
+      "word": "study",
+      "frequency": 6
+    },
+    {
+      "topic": "DevOps",
+      "word": "container",
+      "frequency": 6
+    },
+    {
+      "topic": "DevOps",
+      "word": "deployment",
+      "frequency": 5
+    },
+    {
+      "topic": "DevOps",
+      "word": "guide",
+      "frequency": 5
+    },
+    {
+      "topic": "DevOps",
+      "word": "monitoring",
+      "frequency": 5
+    },
+    {
+      "topic": "DevOps",
+      "word": "observability",
+      "frequency": 5
+    },
+    {
+      "topic": "DevOps",
+      "word": "prometheus",
+      "frequency": 5
+    },
+    {
+      "topic": "DevOps",
+      "word": "grafana",
+      "frequency": 5
+    }
+  ],
+  "rating_distribution": [
+    {
+      "rating_category": "Good",
+      "count": 96
+    },
+    {
+      "rating_category": "Excellent",
+      "count": 56
+    },
+    {
+      "rating_category": "Average",
+      "count": 48
+    }
+  ]
+}

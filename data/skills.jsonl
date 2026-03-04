@@ -1,0 +1,59 @@
+{"id": "skill_1", "name": "Python", "category": "Programming Languages", "level": "Advanced", "demand": 95}
+{"id": "skill_2", "name": "JavaScript", "category": "Programming Languages", "level": "Advanced", "demand": 92}
+{"id": "skill_3", "name": "TypeScript", "category": "Programming Languages", "level": "Advanced", "demand": 88}
+{"id": "skill_4", "name": "Java", "category": "Programming Languages", "level": "Advanced", "demand": 85}
+{"id": "skill_5", "name": "Go", "category": "Programming Languages", "level": "Intermediate", "demand": 75}
+{"id": "skill_6", "name": "Rust", "category": "Programming Languages", "level": "Intermediate", "demand": 65}
+{"id": "skill_7", "name": "C++", "category": "Programming Languages", "level": "Advanced", "demand": 60}
+{"id": "skill_8", "name": "C#", "category": "Programming Languages", "level": "Advanced", "demand": 70}
+{"id": "skill_9", "name": "Ruby", "category": "Programming Languages", "level": "Intermediate", "demand": 45}
+{"id": "skill_10", "name": "PHP", "category": "Programming Languages", "level": "Intermediate", "demand": 50}
+{"id": "skill_11", "name": "Kotlin", "category": "Programming Languages", "level": "Intermediate", "demand": 55}
+{"id": "skill_12", "name": "Swift", "category": "Programming Languages", "level": "Intermediate", "demand": 52}
+{"id": "skill_13", "name": "React", "category": "Frameworks", "level": "Advanced", "demand": 90}
+{"id": "skill_14", "name": "Vue.js", "category": "Frameworks", "level": "Advanced", "demand": 70}
+{"id": "skill_15", "name": "Angular", "category": "Frameworks", "level": "Advanced", "demand": 65}
+{"id": "skill_16", "name": "Django", "category": "Frameworks", "level": "Advanced", "demand": 75}
+{"id": "skill_17", "name": "FastAPI", "category": "Frameworks", "level": "Intermediate", "demand": 80}
+{"id": "skill_18", "name": "Spring Boot", "category": "Frameworks", "level": "Advanced", "demand": 70}
+{"id": "skill_19", "name": "Node.js", "category": "Frameworks", "level": "Advanced", "demand": 88}
+{"id": "skill_20", "name": "Next.js", "category": "Frameworks", "level": "Advanced", "demand": 82}
+{"id": "skill_21", "name": "Flask", "category": "Frameworks", "level": "Intermediate", "demand": 65}
+{"id": "skill_22", "name": "Express.js", "category": "Frameworks", "level": "Advanced", "demand": 75}
+{"id": "skill_23", "name": "NestJS", "category": "Frameworks", "level": "Intermediate", "demand": 60}
+{"id": "skill_24", "name": "Rails", "category": "Frameworks", "level": "Intermediate", "demand": 45}
+{"id": "skill_25", "name": "AWS", "category": "Cloud Platforms", "level": "Advanced", "demand": 92}
+{"id": "skill_26", "name": "Azure", "category": "Cloud Platforms", "level": "Advanced", "demand": 85}
+{"id": "skill_27", "name": "Google Cloud", "category": "Cloud Platforms", "level": "Advanced", "demand": 78}
+{"id": "skill_28", "name": "Kubernetes", "category": "Cloud Platforms", "level": "Advanced", "demand": 88}
+{"id": "skill_29", "name": "Docker", "category": "Cloud Platforms", "level": "Advanced", "demand": 95}
+{"id": "skill_30", "name": "Terraform", "category": "Cloud Platforms", "level": "Advanced", "demand": 82}
+{"id": "skill_31", "name": "AWS Lambda", "category": "Cloud Platforms", "level": "Intermediate", "demand": 75}
+{"id": "skill_32", "name": "Azure Functions", "category": "Cloud Platforms", "level": "Intermediate", "demand": 65}
+{"id": "skill_33", "name": "TensorFlow", "category": "Data & AI", "level": "Advanced", "demand": 80}
+{"id": "skill_34", "name": "PyTorch", "category": "Data & AI", "level": "Advanced", "demand": 82}
+{"id": "skill_35", "name": "Scikit-learn", "category": "Data & AI", "level": "Advanced", "demand": 75}
+{"id": "skill_36", "name": "Pandas", "category": "Data & AI", "level": "Advanced", "demand": 90}
+{"id": "skill_37", "name": "NumPy", "category": "Data & AI", "level": "Advanced", "demand": 88}
+{"id": "skill_38", "name": "Spark", "category": "Data & AI", "level": "Intermediate", "demand": 70}
+{"id": "skill_39", "name": "Kafka", "category": "Data & AI", "level": "Intermediate", "demand": 65}
+{"id": "skill_40", "name": "Elasticsearch", "category": "Data & AI", "level": "Advanced", "demand": 72}
+{"id": "skill_41", "name": "MongoDB", "category": "Data & AI", "level": "Advanced", "demand": 78}
+{"id": "skill_42", "name": "PostgreSQL", "category": "Data & AI", "level": "Advanced", "demand": 85}
+{"id": "skill_43", "name": "Redis", "category": "Data & AI", "level": "Advanced", "demand": 80}
+{"id": "skill_44", "name": "GraphQL", "category": "Data & AI", "level": "Intermediate", "demand": 68}
+{"id": "skill_45", "name": "Git", "category": "DevOps & Tools", "level": "Advanced", "demand": 98}
+{"id": "skill_46", "name": "Jenkins", "category": "DevOps & Tools", "level": "Advanced", "demand": 75}
+{"id": "skill_47", "name": "GitLab CI", "category": "DevOps & Tools", "level": "Advanced", "demand": 80}
+{"id": "skill_48", "name": "GitHub Actions", "category": "DevOps & Tools", "level": "Advanced", "demand": 85}
+{"id": "skill_49", "name": "Ansible", "category": "DevOps & Tools", "level": "Intermediate", "demand": 65}
+{"id": "skill_50", "name": "Prometheus", "category": "DevOps & Tools", "level": "Intermediate", "demand": 70}
+{"id": "skill_51", "name": "Grafana", "category": "DevOps & Tools", "level": "Intermediate", "demand": 72}
+{"id": "skill_52", "name": "ArgoCD", "category": "DevOps & Tools", "level": "Intermediate", "demand": 55}
+{"id": "skill_53", "name": "Helm", "category": "DevOps & Tools", "level": "Intermediate", "demand": 60}
+{"id": "skill_54", "name": "OWASP", "category": "Security", "level": "Advanced", "demand": 70}
+{"id": "skill_55", "name": "Penetration Testing", "category": "Security", "level": "Intermediate", "demand": 55}
+{"id": "skill_56", "name": "Security Auditing", "category": "Security", "level": "Intermediate", "demand": 60}
+{"id": "skill_57", "name": "IAM", "category": "Security", "level": "Advanced", "demand": 75}
+{"id": "skill_58", "name": "Encryption", "category": "Security", "level": "Advanced", "demand": 80}
+{"id": "skill_59", "name": "Network Security", "category": "Security", "level": "Intermediate", "demand": 65}

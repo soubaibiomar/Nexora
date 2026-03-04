@@ -1,0 +1,30 @@
+
+# Dependencies
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# Build outputs
+dist/
+build/
+
+# IDEs
+.idea/
+.vscode/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Large/Auto-generated data
+dbms-*/
+*.log
+
+# Temp scripts
+verify_*.py
+reproduce_*.py
