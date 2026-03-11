@@ -1,0 +1,156 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\geometry{margin=2.5cm}
+
+% ── Couleur unique : bleu des titres ──────────────────────────
+\definecolor{bleu}{HTML}{2B6CB0}
+
+% ── Style des sections (bleu comme dans le Word) ─────────────
+\titleformat{\section}
+  {\Large\bfseries\color{bleu}}{}{0em}{\thesection. }
+
+\titleformat{\subsection}
+  {\large\bfseries\color{bleu}}{\thesubsection\ }{0em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{bleu}}{\thesubsubsection\ }{0em}{}
+
+% ── Header / Footer ──────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Cahier des Charges — Nexora}
+\fancyhead[R]{\small EMSI 2025-2026}
+\fancyfoot[C]{\thepage}
+
+\hypersetup{colorlinks=true, linkcolor=bleu, urlcolor=bleu}
+
+\begin{document}
+
+% ══════════════════════════════════════════════════════════════
+%  PAGE DE GARDE
+% ══════════════════════════════════════════════════════════════
+\begin{titlepage}
+\centering
+\vspace*{1cm}
+\includegraphics[width=0.5\textwidth]{emsilogo.png}\\[2cm]
+
+\rule{\linewidth}{0.4pt}\\[0.4cm]
+{\Large\textbf{Cahier des Charges}}\\[0.3cm]
+{\Huge\bfseries\color{bleu} NEXORA}\\[0.3cm]
+{\large\textit{Plateforme d'Intelligence Organisationnelle}}\\[0.3cm]
+\rule{\linewidth}{0.4pt}
+
+\vspace{2cm}
+
+\begin{tabular}{cc}
+    \multicolumn{2}{c}{\large\textbf{Réalisé par :}} \\[0.3cm]
+    Soubaibi Omar & Yassine Baizi \\[1cm]
+    \multicolumn{2}{c}{\large\textbf{Encadré par :}} \\[0.3cm]
+    \multicolumn{2}{c}{Mme. OUNACER SOUMAYA} \\
+\end{tabular}
+
+\vfill
+
+\textbf{Filière :} 4IADM G5-A \\[0.2cm]
+\textbf{Année Universitaire :} 2025--2026
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════
+\section{Présentation du Projet}
+% ══════════════════════════════════════════════════════════════
+
+Nexora est une plateforme d'intelligence organisationnelle propulsée par l'Intelligence Artificielle. Elle vise à cartographier les compétences, découvrir les experts internes, prédire les besoins en talents, et accélérer le partage des connaissances grâce à des analyses basées sur des graphes.
+
+% ══════════════════════════════════════════════════════════════
+\section{Contexte et Problématique}
+% ══════════════════════════════════════════════════════════════
+
+Les grandes organisations souffrent souvent de silos d'information et d'une mauvaise visibilité sur les compétences internes. Il est difficile de constituer des équipes optimales, d'identifier les déficits de compétences à venir, et de trouver le bon expert pour un problème donné. Nexora résout ce problème en centralisant les données RH, les projets, et les publications dans un graphe de connaissances dynamique.
+
+% ══════════════════════════════════════════════════════════════
+\section{Objectifs}
+% ══════════════════════════════════════════════════════════════
+
+\begin{itemize}[leftmargin=*]
+    \item Cartographier visuellement les compétences et les relations au sein de l'organisation (Graphe 3D).
+    \item Identifier les experts internes via un algorithme de ranking avancé (PageRank).
+    \item Prédire les déficits de compétences futurs et détecter les compétences technologiques émergentes.
+    \item Suggérer des collaborations inter-départementales pertinentes pour briser les silos.
+    \item Traiter des données à grande échelle (Big Data) via des analyses par lot (Apache Spark) et du streaming (Kafka).
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Périmètre Fonctionnel}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Sécurité et Accès}
+\begin{itemize}[leftmargin=*]
+    \item Authentification sécurisée par token JWT et hachage bcrypt.
+    \item Page de connexion et d'inscription obligatoire pour accéder à la plateforme.
+    \item Contrôle d'accès basé sur les rôles (RBAC) : Admin, Manager, User.
+\end{itemize}
+
+\subsection{Fonctionnalités Utilisateur (Standard)}
+\begin{itemize}[leftmargin=*]
+    \item Navigation dans l'explorateur de graphe interactif en 3D.
+    \item Recherche intelligente d'experts par compétences, localisation ou département.
+    \item Tableau de bord \textit{Skill Evolution} (Tendances, Prévisions, Collaborations).
+    \item Recommandations personnalisées (parcours d'apprentissage, experts similaires).
+    \item Interaction en langage naturel avec l'assistant IA (Veda).
+    \item Espaces de travail d'équipe (Workspaces) avec chat en temps réel.
+\end{itemize}
+
+\subsection{Fonctionnalités Administrateur}
+\begin{itemize}[leftmargin=*]
+    \item Toutes les fonctionnalités utilisateur.
+    \item Gestion des utilisateurs : modification des rôles et supervision globale.
+    \item Accès aux métriques Big Data : statut du pipeline d'ingestion (simulateur Kafka) et rapports Spark.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Architecture et Choix Techniques}
+% ══════════════════════════════════════════════════════════════
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Frontend :} React 18, TypeScript, Material UI (MUI), Vite, react-force-graph-3d.
+    \item \textbf{Backend :} FastAPI (Python 3.11), Uvicorn, Pydantic.
+    \item \textbf{Base de données :} Neo4j (Graph Database) version 5 avec le plugin APOC.
+    \item \textbf{Intelligence Artificielle :} Scikit-learn (TF-IDF, Filtrage Collaboratif, PageRank), Modèles LLM (OpenAI API).
+    \item \textbf{Big Data :} PySpark (Analyses en lot), Simulateur de pipeline de type Apache Kafka.
+    \item \textbf{Déploiement :} Docker, Docker Compose, serveur proxy Nginx.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Modèle de Données (Neo4j)}
+% ══════════════════════════════════════════════════════════════
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Nœuds principaux :} Expert, Skill, Document, Project, Topic.
+    \item \textbf{Relations :} HAS\_SKILL, WORKS\_ON, AUTHORED, KNOWS, REQUIRES\_SKILL, COVERS\_TOPIC.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Livrables}
+% ══════════════════════════════════════════════════════════════
+
+\begin{itemize}[leftmargin=*]
+    \item Code source complet de l'application (Frontend, Backend, Pipelines data).
+    \item Scripts de génération de données de test configurables (échelle petite, moyenne, grande, jusqu'à 2000+ experts).
+    \item Fichiers de configuration pour conteneurisation (Dockerfiles, docker-compose.yml).
+    \item Démonstrateur fonctionnel (Preuve de Concept avancée).
+    \item Documentation technique (README complet, schémas d'architecture Mermaid).
+\end{itemize}
+
+\end{document}

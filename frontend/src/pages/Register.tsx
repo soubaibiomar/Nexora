@@ -10,7 +10,6 @@ import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
 import WorkIcon from '@mui/icons-material/Work';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 const Register: React.FC = () => {
     const navigate = useNavigate();

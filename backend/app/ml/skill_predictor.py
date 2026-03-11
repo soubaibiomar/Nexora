@@ -301,12 +301,193 @@ class SkillPredictor:
             "department_breakdown": dept_breakdown,
         }
 
+    # ------------------------------------------------------------------
+    # Emerging & Future Skills
+    # ------------------------------------------------------------------
+
+    def get_emerging_skills(self) -> Dict[str, Any]:
+        """Identify skills with the highest adoption growth rate.
+
+        Uses hire-date cohorts: compares skill adoption in employees hired
+        in the last 2 years vs those hired 2-5 years ago to detect trends.
+        """
+        if not self._is_trained:
+            self.train()
+        if not self._is_trained:
+            return {"emerging_skills": []}
+
+        from datetime import datetime, timedelta
+        import random as _rng
+
+        now = datetime.now()
+        cutoff_recent = (now - timedelta(days=730)).strftime("%Y-%m-%d")   # 2 yrs
+        cutoff_older  = (now - timedelta(days=1825)).strftime("%Y-%m-%d")  # 5 yrs
+
+        recent_skills: Counter = Counter()
+        older_skills: Counter = Counter()
+        recent_count = 0
+        older_count = 0
+
+        for emp in self._employees:
+            hire = emp.get("hire_date", "2020-01-01")
+            for s in emp.get("skills", []):
+                name = s.get("name", s) if isinstance(s, dict) else s
+                if hire >= cutoff_recent:
+                    recent_skills[name] += 1
+                elif hire >= cutoff_older:
+                    older_skills[name] += 1
+
+            if hire >= cutoff_recent:
+                recent_count += 1
+            elif hire >= cutoff_older:
+                older_count += 1
+
+        emerging = []
+        all_names = set(recent_skills.keys()) | set(older_skills.keys())
+        for name in all_names:
+            r = recent_skills.get(name, 0) / max(recent_count, 1)
+            o = older_skills.get(name, 0) / max(older_count, 1)
+            growth = (r - o) / max(o, 0.01)
+            emerging.append({
+                "skill": name,
+                "recent_adoption_rate": round(r, 4),
+                "older_adoption_rate": round(o, 4),
+                "growth_rate": round(growth, 4),
+                "status": "rising" if growth > 0.2 else "stable" if growth > -0.1 else "declining",
+            })
+
+        emerging.sort(key=lambda x: x["growth_rate"], reverse=True)
+        return {
+            "recent_cohort_size": recent_count,
+            "older_cohort_size": older_count,
+            "emerging_skills": emerging[:15],
+            "declining_skills": [s for s in emerging if s["status"] == "declining"][:10],
+        }
+
+    def predict_future_skills(self, months: int = 12) -> Dict[str, Any]:
+        """Predict which skills will be most in-demand in N months.
+
+        Combines project-skill demand with emerging-skill growth rates
+        to forecast future skill needs.
+        """
+        if not self._is_trained:
+            self.train()
+        if not self._is_trained:
+            return {"predictions": []}
+
+        import random as _rng
+
+        projects = self._load_jsonl("projects.jsonl")
+        emerging = self.get_emerging_skills()
+        growth_map = {s["skill"]: s["growth_rate"]
+                      for s in emerging.get("emerging_skills", [])}
+
+        # Count current project demand
+        project_demand: Counter = Counter()
+        for proj in projects:
+            for sk in proj.get("required_skills", proj.get("technologies", [])):
+                name = sk if isinstance(sk, str) else sk.get("name", "")
+                if name:
+                    project_demand[name] += 1
+
+        # Current supply
+        supply: Counter = Counter()
+        for emp in self._employees:
+            for s in emp.get("skills", []):
+                name = s.get("name", s) if isinstance(s, dict) else s
+                supply[name] += 1
+
+        # Forecast
+        predictions = []
+        for name in set(list(project_demand.keys()) + list(supply.keys())):
+            demand_now = project_demand.get(name, 0)
+            supply_now = supply.get(name, 0)
+            growth = growth_map.get(name, 0)
+
+            # Project demand grows based on growth rate
+            factor = 1 + max(growth, 0) * (months / 12)
+            demand_future = int(demand_now * factor) + max(0, int(growth * 3))
+            gap = max(0, demand_future - supply_now)
+
+            predictions.append({
+                "skill": name,
+                "current_supply": supply_now,
+                "current_project_demand": demand_now,
+                "predicted_demand": demand_future,
+                "predicted_gap": gap,
+                "growth_rate": round(growth, 4),
+                "urgency": "critical" if gap > 10 else "high" if gap > 5 else "medium" if gap > 0 else "low",
+            })
+
+        predictions.sort(key=lambda x: x["predicted_gap"], reverse=True)
+        return {
+            "forecast_horizon_months": months,
+            "total_skills_analyzed": len(predictions),
+            "critical_gaps": len([p for p in predictions if p["urgency"] == "critical"]),
+            "predictions": predictions[:20],
+        }
+
+    def get_cross_department_suggestions(self) -> Dict[str, Any]:
+        """Find departments with complementary skill profiles for collaboration."""
+        if not self._is_trained:
+            self.train()
+        if not self._is_trained:
+            return {"suggestions": []}
+
+        dept_skills: Dict[str, Counter] = defaultdict(Counter)
+        for emp in self._employees:
+            dept = emp.get("department", "Unknown")
+            for s in emp.get("skills", []):
+                name = s.get("name", s) if isinstance(s, dict) else s
+                dept_skills[dept][name] += 1
+
+        departments = list(dept_skills.keys())
+        suggestions = []
+
+        for i, d1 in enumerate(departments):
+            for d2 in departments[i + 1:]:
+                s1 = set(dept_skills[d1].keys())
+                s2 = set(dept_skills[d2].keys())
+                shared = s1 & s2
+                unique_d1 = s1 - s2
+                unique_d2 = s2 - s1
+                complementarity = len(unique_d1) + len(unique_d2)
+                overlap = len(shared)
+
+                if complementarity > 3 and overlap > 0:
+                    suggestions.append({
+                        "department_1": d1,
+                        "department_2": d2,
+                        "shared_skills": sorted(shared)[:5],
+                        "unique_to_dept_1": sorted(unique_d1)[:5],
+                        "unique_to_dept_2": sorted(unique_d2)[:5],
+                        "complementarity_score": complementarity,
+                        "overlap_score": overlap,
+                        "collaboration_potential": round(
+                            complementarity / max(len(s1 | s2), 1) * 100, 1
+                        ),
+                        "rationale": f"{d1} can contribute {', '.join(sorted(unique_d1)[:3])} while {d2} brings {', '.join(sorted(unique_d2)[:3])}",
+                    })
+
+        suggestions.sort(key=lambda x: x["collaboration_potential"], reverse=True)
+        return {
+            "total_departments": len(departments),
+            "suggestions": suggestions[:15],
+        }
+
     def get_model_info(self) -> Dict[str, Any]:
         return {
             "is_trained": self._is_trained,
             "model": "Collaborative Filtering (User-Skill Matrix + Cosine Similarity)",
             "num_employees": len(self._employees),
             "num_skills": len(self._skill_names),
+            "capabilities": [
+                "skill_gap_prediction",
+                "skill_trends",
+                "emerging_skills",
+                "future_skill_prediction",
+                "cross_department_collaboration",
+            ],
         }
 
 

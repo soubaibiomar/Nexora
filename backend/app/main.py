@@ -14,6 +14,8 @@ from .routers import feed, network, messaging, jobs, notifications
 from .routers import learning_resources
 from .routers import gamification
 from .routers import skillmap
+from .routers import workspaces
+from .routers import kafka_simulator
 
 settings = get_settings()
 
@@ -65,6 +67,8 @@ app.include_router(notifications.router)
 app.include_router(learning_resources.router)
 app.include_router(gamification.router)
 app.include_router(skillmap.router)
+app.include_router(workspaces.router)
+app.include_router(kafka_simulator.router)
 
 # Mount uploads directory for serving uploaded media
 UPLOAD_DIR = Path(__file__).parent.parent / "uploads"

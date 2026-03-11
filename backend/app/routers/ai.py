@@ -95,7 +95,74 @@ async def get_skill_trends():
     return skill_predictor.get_skill_trends()
 
 
-# ── Veda: Intelligent AI Chatbot ───────────────────────────────────
+# ── Emerging & Predictive Skills ───────────────────────────────────
+
+from ..ml.pagerank import expert_pagerank
+
+
+@router.get("/emerging-skills")
+async def get_emerging_skills():
+    """
+    Identify skills with the highest adoption growth rate.
+    Compares skill adoption between recent hires vs older cohorts.
+    """
+    return skill_predictor.get_emerging_skills()
+
+
+@router.get("/future-skills")
+async def get_future_skills(
+    months: int = Query(12, ge=3, le=24),
+):
+    """
+    Predict which skills will be most in-demand in N months.
+    Combines project demand trends with emerging-skill growth rates.
+    """
+    return skill_predictor.predict_future_skills(months)
+
+
+@router.get("/expert-rank")
+async def get_expert_rankings(
+    q: Optional[str] = Query(None, description="Skill or role query to boost relevance"),
+    department: Optional[str] = Query(None, description="Filter by department"),
+    top_k: int = Query(20, ge=1, le=100),
+):
+    """
+    PageRank-based expert influence scoring.
+    Ranks experts by skill diversity, depth, project participation,
+    document contributions, and graph connectivity.
+    """
+    return expert_pagerank.rank_experts(query=q, department=department, top_k=top_k)
+
+
+@router.get("/cross-department-suggestions")
+async def get_cross_department_suggestions():
+    """
+    Find departments with complementary skill profiles for collaboration.
+    Identifies potential cross-team projects and mentoring opportunities.
+    """
+    return skill_predictor.get_cross_department_suggestions()
+
+
+@router.get("/personalized-recommendations/{user_id}")
+async def get_personalized_recommendations(
+    user_id: str,
+    top_k: int = Query(8, ge=1, le=20),
+):
+    """
+    Personalized skill recommendations for a specific user.
+    Factors in role, department affinity, and current skill level.
+    """
+    gaps = skill_predictor.predict_skill_gaps(user_id, top_k)
+    trends = skill_predictor.get_skill_trends()
+
+    # Cross-reference with trending skills
+    trending_names = {s["skill"] for s in trends.get("top_skills", [])[:10]}
+    for rec in gaps.get("recommended_skills", []):
+        rec["is_trending"] = rec["skill"] in trending_names
+
+    return gaps
+
+
 
 from ..ml.graph_rag import graph_rag
 import json as _json

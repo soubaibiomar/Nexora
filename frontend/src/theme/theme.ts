@@ -4,54 +4,58 @@ import type { Theme } from '@mui/material/styles';
 const darkPalette = {
     mode: 'dark' as const,
     primary: {
-        main: '#f97316',
-        light: '#fb923c',
-        dark: '#ea580c',
+        main: '#6C63FF',
+        light: '#8B83FF',
+        dark: '#5A52D5',
         contrastText: '#fff',
     },
     secondary: {
-        main: '#f59e0b',
-        light: '#fbbf24',
-        dark: '#d97706',
+        main: '#00CEC9',
+        light: '#55EFC4',
+        dark: '#00B5B0',
     },
     error: {
-        main: '#ef4444',
+        main: '#FF6B6B',
     },
     warning: {
-        main: '#f59e0b',
+        main: '#FDCB6E',
     },
     info: {
-        main: '#06b6d4',
+        main: '#74B9FF',
     },
     success: {
-        main: '#10b981',
+        main: '#00B894',
     },
     background: {
-        default: '#0f0f0f',
-        paper: '#1a1a1a',
+        default: '#0A0A1A',
+        paper: '#141428',
     },
     text: {
-        primary: '#f5f5f5',
-        secondary: '#a3a3a3',
+        primary: '#E8E8F0',
+        secondary: '#8E8EA0',
     },
 };
 
 const lightPalette = {
     mode: 'light' as const,
     primary: {
-        main: '#f97316',
-        light: '#fb923c',
-        dark: '#ea580c',
+        main: '#6C63FF',
+        light: '#8B83FF',
+        dark: '#5A52D5',
         contrastText: '#fff',
     },
     secondary: {
-        main: '#f59e0b',
-        light: '#fbbf24',
-        dark: '#d97706',
+        main: '#00CEC9',
+        light: '#55EFC4',
+        dark: '#00B5B0',
     },
     background: {
-        default: '#fafaf9',
-        paper: '#ffffff',
+        default: '#F5F5FA',
+        paper: '#FFFFFF',
+    },
+    text: {
+        primary: '#1A1A2E',
+        secondary: '#6B6B80',
     },
 };
 

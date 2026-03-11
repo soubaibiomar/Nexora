@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {
-  Box, Typography, IconButton, Avatar, Badge, InputBase, Menu, MenuItem,
-  Divider, ListItemIcon, ListItemText, Tooltip, Button, Popover,
+  Box, Typography, Avatar, Badge, InputBase, Menu, MenuItem,
+  Divider, ListItemIcon, ListItemText, Button, Popover,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import HomeIcon from '@mui/icons-material/Home';
@@ -14,6 +14,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import TimelineIcon from '@mui/icons-material/Timeline';
 import MapIcon from '@mui/icons-material/Map';
 import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import GroupWorkIcon from '@mui/icons-material/GroupWork';
@@ -24,6 +25,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import AppsIcon from '@mui/icons-material/Apps';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { createAppTheme } from './theme/theme';
 
 // Pages
@@ -41,7 +43,10 @@ import Dashboard from './pages/Dashboard';
 import AIInsights from './pages/AIInsights';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import TeamWorkspace from './pages/TeamWorkspace';
+import SkillEvolution from './pages/SkillEvolution';
 import AIChatbot from './components/AIChatbot';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // ── Theme Mode Context ─────────────────────────────────────────────
 type ThemeMode = 'dark' | 'light';
@@ -52,23 +57,13 @@ const ThemeModeContext = createContext<{
 
 export const useThemeMode = () => useContext(ThemeModeContext);
 
-// Auth helper
-const authService = {
-  isAuthenticated: () => !!localStorage.getItem('token'),
-  logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('fullName');
-    localStorage.removeItem('email');
-  },
-  getUsername: () => localStorage.getItem('username') || 'User',
-  getFullName: () => localStorage.getItem('fullName') || 'Current User',
-};
+// Auth helper — now provided by AuthContext (see contexts/AuthContext.tsx)
 
-const NAVBAR_HEIGHT = 52;
+const NAVBAR_HEIGHT = 56;
 
 // ── Top Navigation Bar ─────────────────────────────────────────────
 function TopNavBar() {
+  const { isAuthenticated, username, fullName, logout } = useAuth();
   const location = useLocation();
   const { mode, toggleMode } = useThemeMode();
   const [profileMenu, setProfileMenu] = useState<null | HTMLElement>(null);
@@ -115,65 +110,80 @@ function TopNavBar() {
     { label: 'Graph Explorer', icon: <BubbleChartIcon />, path: '/graph' },
     { label: 'Learning Paths', icon: <SchoolIcon />, path: '/learning' },
     { label: 'AI Insights', icon: <AutoAwesomeIcon />, path: '/ai-insights' },
+    { label: 'Skill Evolution', icon: <TimelineIcon />, path: '/skill-evolution' },
+    { label: 'Workspaces', icon: <GroupWorkIcon />, path: '/workspaces' },
     { label: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
   ];
+
+  const isMoreActive = moreItems.some((item) => location.pathname === item.path);
 
   const NavIcon = ({ item }: { item: { label: string; icon: React.ReactElement; path: string; badgeKey?: string } }) => {
     const isActive = location.pathname === item.path;
     const badgeCount = item.badgeKey ? badges[item.badgeKey as keyof typeof badges] : 0;
 
     return (
-      <Tooltip title={item.label} arrow>
-        <Box
-          component={Link}
-          to={item.path}
+      <Box
+        component={Link}
+        to={item.path}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textDecoration: 'none',
+          px: { xs: 1, md: 2 },
+          height: NAVBAR_HEIGHT,
+          position: 'relative',
+          color: isActive ? 'primary.main' : 'text.secondary',
+          transition: 'color 0.2s',
+          '&:hover': {
+            color: isActive ? 'primary.main' : 'text.primary',
+          },
+          '&::after': isActive ? {
+            content: '""',
+            position: 'absolute',
+            bottom: 0,
+            left: '15%',
+            right: '15%',
+            height: 2,
+            borderRadius: '2px 2px 0 0',
+            background: 'linear-gradient(90deg, #6C63FF, #8B83FF)',
+          } : {},
+        }}
+      >
+        <Badge
+          badgeContent={badgeCount}
+          color="error"
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textDecoration: 'none',
-            px: 1.5,
-            py: 0.5,
-            minWidth: 60,
-            color: isActive ? 'text.primary' : 'text.secondary',
-            borderBottom: isActive ? '2px solid' : '2px solid transparent',
-            borderColor: isActive ? 'text.primary' : 'transparent',
-            transition: 'all 0.15s',
-            '&:hover': {
-              color: 'text.primary',
+            '& .MuiBadge-badge': {
+              fontSize: '0.55rem',
+              minWidth: 15,
+              height: 15,
+              top: 2,
+              right: -2,
+              background: '#FF4757',
+              border: '2px solid',
+              borderColor: mode === 'dark' ? '#141428' : '#fff',
             },
           }}
         >
-          <Badge
-            badgeContent={badgeCount}
-            color="error"
-            sx={{
-              '& .MuiBadge-badge': {
-                fontSize: '0.6rem',
-                minWidth: 16,
-                height: 16,
-                background: 'linear-gradient(135deg, #FF6B6B, #EE5A5A)',
-              },
-            }}
-          >
-            {React.cloneElement(item.icon as React.ReactElement<any>, {
-              sx: { fontSize: 22 },
-            })}
-          </Badge>
-          <Typography
-            variant="caption"
-            sx={{
-              fontSize: '0.62rem',
-              fontWeight: isActive ? 600 : 400,
-              mt: 0.2,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {item.label}
-          </Typography>
-        </Box>
-      </Tooltip>
+          {React.cloneElement(item.icon as React.ReactElement<any>, {
+            sx: { fontSize: 21 },
+          })}
+        </Badge>
+        <Typography
+          variant="caption"
+          sx={{
+            fontSize: '0.58rem',
+            fontWeight: isActive ? 600 : 400,
+            mt: 0.3,
+            whiteSpace: 'nowrap',
+            letterSpacing: '0.01em',
+          }}
+        >
+          {item.label}
+        </Typography>
+      </Box>
     );
   };
 
@@ -189,13 +199,16 @@ function TopNavBar() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        px: 2,
+        px: { xs: 1.5, md: 3 },
         background: mode === 'dark'
-          ? 'rgba(26,26,26,0.95)'
-          : 'rgba(255,255,255,0.95)',
-        backdropFilter: 'blur(12px)',
+          ? 'linear-gradient(180deg, rgba(20,20,40,0.97) 0%, rgba(20,20,40,0.92) 100%)'
+          : 'linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.92) 100%)',
+        backdropFilter: 'blur(20px)',
         borderBottom: '1px solid',
-        borderColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+        borderColor: mode === 'dark' ? 'rgba(108,99,255,0.08)' : 'rgba(0,0,0,0.06)',
+        boxShadow: mode === 'dark'
+          ? '0 4px 30px rgba(0,0,0,0.3)'
+          : '0 1px 8px rgba(0,0,0,0.06)',
       }}
     >
       <Box
@@ -203,29 +216,55 @@ function TopNavBar() {
           display: 'flex',
           alignItems: 'center',
           width: '100%',
-          maxWidth: 1128,
-          gap: 1,
+          maxWidth: 1200,
         }}
       >
-        {/* Logo + Search */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mr: 'auto' }}>
-          {/* LinkedIn-style "in" logo */}
+        {/* ── Logo + Search ── */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mr: 'auto' }}>
           <Box
             component={Link}
             to="/"
             sx={{
-              width: 34,
-              height: 34,
-              borderRadius: 1,
-              background: '#0A66C2',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
+              gap: 1,
               textDecoration: 'none',
               flexShrink: 0,
             }}
           >
-            <Typography sx={{ color: '#fff', fontWeight: 800, fontSize: '1.2rem', lineHeight: 1 }}>in</Typography>
+            <Box
+              sx={{
+                width: 36,
+                height: 36,
+                borderRadius: 2,
+                background: 'linear-gradient(135deg, #6C63FF 0%, #A78BFA 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 14px rgba(108,99,255,0.35)',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                  boxShadow: '0 6px 20px rgba(108,99,255,0.45)',
+                },
+              }}
+            >
+              <Typography sx={{ color: '#fff', fontWeight: 800, fontSize: '1.15rem', lineHeight: 1 }}>N</Typography>
+            </Box>
+            <Typography
+              sx={{
+                color: 'text.primary',
+                fontWeight: 700,
+                fontSize: '1.15rem',
+                display: { xs: 'none', md: 'block' },
+                letterSpacing: '-0.03em',
+                background: 'linear-gradient(135deg, #E8E8F0, #A78BFA)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              Nexora
+            </Typography>
           </Box>
 
           {/* Search */}
@@ -233,33 +272,42 @@ function TopNavBar() {
             sx={{
               display: { xs: 'none', sm: 'flex' },
               alignItems: 'center',
-              borderRadius: 1,
-              bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+              borderRadius: 2,
+              bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+              border: '1px solid',
+              borderColor: mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)',
               px: 1.5,
-              py: 0.5,
-              minWidth: 200,
+              py: 0.6,
+              minWidth: 220,
+              transition: 'all 0.2s',
+              '&:focus-within': {
+                borderColor: 'primary.main',
+                bgcolor: mode === 'dark' ? 'rgba(108,99,255,0.06)' : 'rgba(108,99,255,0.04)',
+                boxShadow: '0 0 0 3px rgba(108,99,255,0.1)',
+              },
             }}
           >
             <SearchIcon sx={{ fontSize: 18, color: 'text.secondary', mr: 1 }} />
             <InputBase
-              placeholder="Search"
+              placeholder="Search..."
               sx={{
                 fontSize: '0.82rem',
                 color: 'text.primary',
                 flex: 1,
-                '& input::placeholder': { color: 'text.secondary', opacity: 1 },
+                '& input::placeholder': { color: 'text.secondary', opacity: 0.8 },
               }}
             />
           </Box>
         </Box>
 
-        {/* Nav Icons */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+        {/* ── Nav Icons ── */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {navItems.map((item) => (
             <NavIcon key={item.path} item={item} />
           ))}
 
           {/* More dropdown */}
+          <Divider orientation="vertical" flexItem sx={{ mx: 0.5, my: 1.5, opacity: 0.3 }} />
           <Box
             onClick={(e: React.MouseEvent<HTMLElement>) => setMoreMenu(e.currentTarget)}
             sx={{
@@ -267,18 +315,27 @@ function TopNavBar() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              px: 1.5,
-              py: 0.5,
-              minWidth: 60,
+              px: { xs: 1, md: 1.5 },
+              height: NAVBAR_HEIGHT,
               cursor: 'pointer',
-              color: moreMenu ? 'text.primary' : 'text.secondary',
-              borderBottom: '2px solid transparent',
-              transition: 'all 0.15s',
-              '&:hover': { color: 'text.primary' },
+              color: isMoreActive ? 'primary.main' : 'text.secondary',
+              position: 'relative',
+              transition: 'color 0.2s',
+              '&:hover': { color: isMoreActive ? 'primary.main' : 'text.primary' },
+              '&::after': isMoreActive ? {
+                content: '""',
+                position: 'absolute',
+                bottom: 0,
+                left: '15%',
+                right: '15%',
+                height: 2,
+                borderRadius: '2px 2px 0 0',
+                background: 'linear-gradient(90deg, #6C63FF, #8B83FF)',
+              } : {},
             }}
           >
-            <AppsIcon sx={{ fontSize: 22 }} />
-            <Typography variant="caption" sx={{ fontSize: '0.62rem', mt: 0.2 }}>
+            <AppsIcon sx={{ fontSize: 21 }} />
+            <Typography variant="caption" sx={{ fontSize: '0.58rem', mt: 0.3 }}>
               More
             </Typography>
           </Box>
@@ -291,45 +348,60 @@ function TopNavBar() {
             slotProps={{
               paper: {
                 sx: {
-                  mt: 0.5,
-                  borderRadius: 2,
-                  minWidth: 200,
-                  bgcolor: 'background.paper',
+                  mt: 1,
+                  borderRadius: 3,
+                  minWidth: 220,
+                  bgcolor: mode === 'dark' ? '#1C1C36' : '#fff',
                   border: '1px solid',
-                  borderColor: 'divider',
+                  borderColor: mode === 'dark' ? 'rgba(108,99,255,0.12)' : 'rgba(0,0,0,0.08)',
+                  boxShadow: mode === 'dark'
+                    ? '0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(108,99,255,0.08)'
+                    : '0 8px 30px rgba(0,0,0,0.1)',
+                  overflow: 'hidden',
                 },
               },
             }}
           >
-            {moreItems.map((item) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <MenuItem
-                  key={item.path}
-                  component={Link}
-                  to={item.path}
-                  onClick={() => setMoreMenu(null)}
-                  sx={{
-                    gap: 1.5,
-                    py: 1.2,
-                    color: isActive ? 'primary.main' : 'text.primary',
-                    fontWeight: isActive ? 600 : 400,
-                  }}
-                >
-                  <ListItemIcon sx={{ minWidth: 'unset', color: isActive ? 'primary.main' : 'text.secondary' }}>
-                    {React.cloneElement(item.icon as React.ReactElement<any>, { sx: { fontSize: 20 } })}
-                  </ListItemIcon>
-                  <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>
-                    {item.label}
-                  </ListItemText>
-                </MenuItem>
-              );
-            })}
+            <Box sx={{ p: 1 }}>
+              <Typography variant="caption" sx={{ px: 1.5, py: 0.5, display: 'block', color: 'text.secondary', fontWeight: 600, fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Explore
+              </Typography>
+              {moreItems.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <MenuItem
+                    key={item.path}
+                    component={Link}
+                    to={item.path}
+                    onClick={() => setMoreMenu(null)}
+                    sx={{
+                      gap: 1.5,
+                      py: 1,
+                      px: 1.5,
+                      borderRadius: 2,
+                      mb: 0.3,
+                      color: isActive ? 'primary.main' : 'text.primary',
+                      bgcolor: isActive
+                        ? (mode === 'dark' ? 'rgba(108,99,255,0.1)' : 'rgba(108,99,255,0.06)')
+                        : 'transparent',
+                      '&:hover': {
+                        bgcolor: mode === 'dark' ? 'rgba(108,99,255,0.08)' : 'rgba(108,99,255,0.04)',
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ minWidth: 'unset', color: isActive ? 'primary.main' : 'text.secondary' }}>
+                      {React.cloneElement(item.icon as React.ReactElement<any>, { sx: { fontSize: 20 } })}
+                    </ListItemIcon>
+                    <ListItemText primaryTypographyProps={{ fontSize: '0.85rem', fontWeight: isActive ? 600 : 400 }}>
+                      {item.label}
+                    </ListItemText>
+                  </MenuItem>
+                );
+              })}
+            </Box>
           </Popover>
 
-          <Divider orientation="vertical" flexItem sx={{ mx: 0.5, my: 1 }} />
-
-          {/* Me (profile avatar) */}
+          {/* ── Me (profile) ── */}
           <Box
             onClick={(e: React.MouseEvent<HTMLElement>) => setProfileMenu(e.currentTarget)}
             sx={{
@@ -337,30 +409,35 @@ function TopNavBar() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              px: 1.5,
-              py: 0.5,
-              minWidth: 60,
+              px: { xs: 1, md: 1.5 },
+              height: NAVBAR_HEIGHT,
               cursor: 'pointer',
               color: profileMenu ? 'text.primary' : 'text.secondary',
-              borderBottom: '2px solid transparent',
-              transition: 'all 0.15s',
+              transition: 'color 0.2s',
               '&:hover': { color: 'text.primary' },
             }}
           >
             <Avatar
               sx={{
-                width: 24,
-                height: 24,
-                bgcolor: 'primary.main',
+                width: 26,
+                height: 26,
+                bgcolor: 'transparent',
+                background: 'linear-gradient(135deg, #6C63FF, #A78BFA)',
                 fontSize: 12,
                 fontWeight: 700,
+                border: '2px solid',
+                borderColor: profileMenu ? '#A78BFA' : 'transparent',
+                transition: 'border-color 0.2s',
               }}
             >
-              {authService.getFullName().charAt(0)}
+              {(fullName || 'U').charAt(0)}
             </Avatar>
-            <Typography variant="caption" sx={{ fontSize: '0.62rem', mt: 0.2 }}>
-              Me ▾
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.1 }}>
+              <Typography variant="caption" sx={{ fontSize: '0.58rem' }}>
+                Me
+              </Typography>
+              <ArrowDropDownIcon sx={{ fontSize: 14, ml: -0.3 }} />
+            </Box>
           </Box>
           <Menu
             anchorEl={profileMenu}
@@ -368,21 +445,45 @@ function TopNavBar() {
             onClose={() => setProfileMenu(null)}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            slotProps={{
+              paper: {
+                sx: {
+                  mt: 1,
+                  borderRadius: 3,
+                  minWidth: 260,
+                  bgcolor: mode === 'dark' ? '#1C1C36' : '#fff',
+                  border: '1px solid',
+                  borderColor: mode === 'dark' ? 'rgba(108,99,255,0.12)' : 'rgba(0,0,0,0.08)',
+                  boxShadow: mode === 'dark'
+                    ? '0 12px 40px rgba(0,0,0,0.5)'
+                    : '0 8px 30px rgba(0,0,0,0.1)',
+                  overflow: 'hidden',
+                },
+              },
+            }}
           >
-            <Box sx={{ px: 2, py: 1.5, display: 'flex', gap: 1.5, alignItems: 'center' }}>
-              <Avatar sx={{ width: 48, height: 48, bgcolor: 'primary.main' }}>
-                {authService.getFullName().charAt(0)}
+            <Box sx={{ px: 2.5, py: 2, display: 'flex', gap: 1.5, alignItems: 'center' }}>
+              <Avatar
+                sx={{
+                  width: 48,
+                  height: 48,
+                  background: 'linear-gradient(135deg, #6C63FF, #A78BFA)',
+                  fontSize: 20,
+                  fontWeight: 700,
+                }}
+              >
+                {(fullName || 'U').charAt(0)}
               </Avatar>
               <Box>
                 <Typography variant="body2" fontWeight={600}>
-                  {authService.getFullName()}
+                  {fullName || 'User'}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  @{authService.getUsername()}
+                  @{username || 'user'}
                 </Typography>
               </Box>
             </Box>
-            <Box sx={{ px: 2, pb: 1 }}>
+            <Box sx={{ px: 2, pb: 1.5 }}>
               <Button
                 component={Link}
                 to="/profile"
@@ -390,48 +491,119 @@ function TopNavBar() {
                 variant="outlined"
                 size="small"
                 onClick={() => setProfileMenu(null)}
-                sx={{ borderRadius: 5, fontSize: '0.75rem' }}
+                sx={{
+                  borderRadius: 6,
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  borderColor: 'primary.main',
+                  color: 'primary.main',
+                  py: 0.5,
+                  '&:hover': {
+                    bgcolor: 'rgba(108,99,255,0.08)',
+                    borderColor: '#8B83FF',
+                  },
+                }}
               >
                 View Profile
               </Button>
             </Box>
-            <Divider />
-            <MenuItem onClick={toggleMode}>
-              <ListItemIcon>
-                {mode === 'dark' ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
-              </ListItemIcon>
-              <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>
-                {mode === 'dark' ? 'Light Mode' : 'Dark Mode'}
-              </ListItemText>
-            </MenuItem>
-            <MenuItem component={Link} to="/profile" onClick={() => setProfileMenu(null)}>
-              <ListItemIcon><PersonIcon fontSize="small" /></ListItemIcon>
-              <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>My Profile</ListItemText>
-            </MenuItem>
-            <MenuItem component={Link} to="/dashboard" onClick={() => setProfileMenu(null)}>
-              <ListItemIcon><DashboardIcon fontSize="small" /></ListItemIcon>
-              <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Analytics</ListItemText>
-            </MenuItem>
-            <Divider />
-            {authService.isAuthenticated() ? (
-              <MenuItem onClick={() => { authService.logout(); window.location.reload(); }}>
-                <ListItemIcon><LogoutIcon fontSize="small" sx={{ color: '#FF6B6B' }} /></ListItemIcon>
-                <ListItemText primaryTypographyProps={{ fontSize: '0.85rem', color: '#FF6B6B' }}>
-                  Sign Out
+            <Divider sx={{ opacity: 0.15 }} />
+            <Box sx={{ p: 1 }}>
+              <MenuItem onClick={() => { toggleMode(); setProfileMenu(null); }}
+                sx={{ borderRadius: 2, gap: 1.5, py: 1 }}>
+                <ListItemIcon sx={{ minWidth: 'unset' }}>
+                  {mode === 'dark' ? <LightModeIcon fontSize="small" sx={{ color: '#FDCB6E' }} /> : <DarkModeIcon fontSize="small" />}
+                </ListItemIcon>
+                <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>
+                  {mode === 'dark' ? 'Light Mode' : 'Dark Mode'}
                 </ListItemText>
               </MenuItem>
-            ) : (
-              <MenuItem component={Link} to="/login" onClick={() => setProfileMenu(null)}>
-                <ListItemIcon><LoginIcon fontSize="small" /></ListItemIcon>
-                <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Sign In</ListItemText>
+              <MenuItem component={Link} to="/profile" onClick={() => setProfileMenu(null)}
+                sx={{ borderRadius: 2, gap: 1.5, py: 1 }}>
+                <ListItemIcon sx={{ minWidth: 'unset' }}><PersonIcon fontSize="small" /></ListItemIcon>
+                <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>My Profile</ListItemText>
               </MenuItem>
-            )}
+              <MenuItem component={Link} to="/dashboard" onClick={() => setProfileMenu(null)}
+                sx={{ borderRadius: 2, gap: 1.5, py: 1 }}>
+                <ListItemIcon sx={{ minWidth: 'unset' }}><DashboardIcon fontSize="small" /></ListItemIcon>
+                <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Analytics</ListItemText>
+              </MenuItem>
+            </Box>
+            <Divider sx={{ opacity: 0.15 }} />
+            <Box sx={{ p: 1 }}>
+              {isAuthenticated ? (
+                <MenuItem onClick={() => { logout(); window.location.reload(); }}
+                  sx={{ borderRadius: 2, gap: 1.5, py: 1 }}>
+                  <ListItemIcon sx={{ minWidth: 'unset' }}><LogoutIcon fontSize="small" sx={{ color: '#FF4757' }} /></ListItemIcon>
+                  <ListItemText primaryTypographyProps={{ fontSize: '0.85rem', color: '#FF4757' }}>
+                    Sign Out
+                  </ListItemText>
+                </MenuItem>
+              ) : (
+                <MenuItem component={Link} to="/login" onClick={() => setProfileMenu(null)}
+                  sx={{ borderRadius: 2, gap: 1.5, py: 1 }}>
+                  <ListItemIcon sx={{ minWidth: 'unset' }}><LoginIcon fontSize="small" /></ListItemIcon>
+                  <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Sign In</ListItemText>
+                </MenuItem>
+              )}
+            </Box>
           </Menu>
         </Box>
       </Box>
     </Box>
   );
 }
+
+// ── App Content (needs AuthContext) ────────────────────────────────
+const AppContent: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+
+  return (
+    <BrowserRouter>
+      {isAuthenticated ? (
+        <Box sx={{ minHeight: '100vh' }}>
+          <TopNavBar />
+          <Box
+            component="main"
+            sx={{
+              mt: `${NAVBAR_HEIGHT}px`,
+              minHeight: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
+              bgcolor: 'background.default',
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<Feed />} />
+              <Route path="/network" element={<MyNetwork />} />
+              <Route path="/jobs" element={<Jobs />} />
+              <Route path="/messaging" element={<Messaging />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/skill-map" element={<SkillMap />} />
+              <Route path="/team-builder" element={<TeamBuilder />} />
+              <Route path="/graph" element={<GraphVisualization />} />
+              <Route path="/learning" element={<LearningPath />} />
+              <Route path="/ai-insights" element={<AIInsights />} />
+              <Route path="/skill-evolution" element={<SkillEvolution />} />
+              <Route path="/workspaces" element={<TeamWorkspace />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/login" element={<Navigate to="/" replace />} />
+              <Route path="/register" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Box>
+          <AIChatbot />
+        </Box>
+      ) : (
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      )}
+    </BrowserRouter>
+  );
+};
 
 // ── App Component ──────────────────────────────────────────────────
 const App: React.FC = () => {
@@ -449,55 +621,17 @@ const App: React.FC = () => {
     });
   };
 
-  const isAuthenticated = authService.isAuthenticated();
-
   return (
-    <ThemeModeContext.Provider value={{ mode: themeMode, toggleMode }}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
-          {isAuthenticated ? (
-            <Box sx={{ minHeight: '100vh' }}>
-              <TopNavBar />
-              <Box
-                component="main"
-                sx={{
-                  mt: `${NAVBAR_HEIGHT}px`,
-                  minHeight: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
-                  bgcolor: 'background.default',
-                }}
-              >
-                <Routes>
-                  <Route path="/" element={<Feed />} />
-                  <Route path="/network" element={<MyNetwork />} />
-                  <Route path="/jobs" element={<Jobs />} />
-                  <Route path="/messaging" element={<Messaging />} />
-                  <Route path="/notifications" element={<Notifications />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/skill-map" element={<SkillMap />} />
-                  <Route path="/team-builder" element={<TeamBuilder />} />
-                  <Route path="/graph" element={<GraphVisualization />} />
-                  <Route path="/learning" element={<LearningPath />} />
-                  <Route path="/ai-insights" element={<AIInsights />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/login" element={<Navigate to="/" replace />} />
-                  <Route path="/register" element={<Navigate to="/" replace />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </Box>
-              <AIChatbot />
-            </Box>
-          ) : (
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-          )}
-        </BrowserRouter>
-      </ThemeProvider>
-    </ThemeModeContext.Provider>
+    <AuthProvider>
+      <ThemeModeContext.Provider value={{ mode: themeMode, toggleMode }}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <AppContent />
+        </ThemeProvider>
+      </ThemeModeContext.Provider>
+    </AuthProvider>
   );
 };
 
 export default App;
+

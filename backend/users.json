@@ -1,0 +1,62 @@
+{
+  "admin": {
+    "id": "6a45a9bc-23e6-4a1e-ad57-80b9c7878ea0",
+    "username": "admin",
+    "email": "admin@expertlink.io",
+    "full_name": "Admin User",
+    "headline": "Platform Administrator",
+    "hashed_password": "$2b$12$Fz7o7AlQGpS0vEcezrKbc.tsXwREMxTRiPQwEM58aRWVomHOQvvHG",
+    "created_at": "2026-03-08T14:38:26.945210",
+    "is_active": true
+  },
+  "demo": {
+    "id": "f86e5f57-7294-4dc1-9a21-c5bbdb610eb4",
+    "username": "demo",
+    "email": "demo@expertlink.io",
+    "full_name": "Demo User",
+    "headline": "Software Engineer at ExpertLink",
+    "hashed_password": "$2b$12$qmXKHI8GXvUOIs3f.fg6Ye3JA9o0vcK8.0aai/pXMlHsftut7at6e",
+    "created_at": "2026-03-08T14:38:27.215292",
+    "is_active": true
+  },
+  "testuser_39efc11a": {
+    "id": "39d6f3a2-a76c-48a0-88b3-f613b00ae739",
+    "username": "testuser_39efc11a",
+    "email": "test_39efc11a@example.com",
+    "full_name": "Test User",
+    "headline": "",
+    "hashed_password": "$2b$12$.GIIL8B6LSfVCeMMVu9u5eDQ3mSeOdz3L.EI3Ix00yYQ9WHm45keK",
+    "created_at": "2026-03-08T14:38:27.478434",
+    "is_active": true
+  },
+  "dupuser_2f5b87a7": {
+    "id": "1533fc39-5331-4354-99af-5b76ec5d9fdf",
+    "username": "dupuser_2f5b87a7",
+    "email": "dup_2f5b87a7@example.com",
+    "full_name": "Dup User",
+    "headline": "",
+    "hashed_password": "$2b$12$/hT6a7ITkh/tV9UAyj3lvOjXXe8UlnA4Yg3bstNhN9/Y4AIYi7xQ2",
+    "created_at": "2026-03-08T14:38:27.760743",
+    "is_active": true
+  },
+  "first_b41ad94b": {
+    "id": "657199aa-5e5b-41a6-9c42-b2b65f87b9c2",
+    "username": "first_b41ad94b",
+    "email": "shared_b41ad94b@example.com",
+    "full_name": "First User",
+    "headline": "",
+    "hashed_password": "$2b$12$enukqm237Hdl6WQDllmtau5dW7GWkxOboI/woina5eYYqpX7UrTYi",
+    "created_at": "2026-03-08T14:38:28.051329",
+    "is_active": true
+  },
+  "metest_9b3186c8": {
+    "id": "df2c05b1-4b07-417b-ad21-076f113b5b93",
+    "username": "metest_9b3186c8",
+    "email": "me_9b3186c8@example.com",
+    "full_name": "Me Test User",
+    "headline": "",
+    "hashed_password": "$2b$12$2dr0rGASyM08V8pa0Iz47.rXS5x7FXN2fAl5SY9IHnPTDZDgReM2e",
+    "created_at": "2026-03-08T14:38:29.841201",
+    "is_active": true
+  }
+}

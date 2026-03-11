@@ -1,5 +1,52 @@
 import axios from 'axios';
 
+// ── TypeScript Interfaces ─────────────────────────────────────────
+export interface ExpertPayload {
+  name?: string;
+  email?: string;
+  department?: string;
+  role?: string;
+  location?: string;
+  experience_years?: number;
+  expertise_level?: number;
+}
+
+export interface ExpertCreatePayload {
+  name: string;
+  email: string;
+  department: string;
+  role: string;
+  location: string;
+  experience_years: number;
+  expertise_level: number;
+}
+
+export interface DocumentPayload {
+  title?: string;
+  type?: string;
+  topic?: string;
+  author?: string;
+  date?: string | null;
+  views?: number;
+  rating?: number;
+  content?: string | null;
+}
+
+export interface DocumentCreatePayload {
+  title: string;
+  type: string;
+  topic: string;
+  author: string;
+  date?: string | null;
+  views: number;
+  rating: number;
+  content?: string | null;
+}
+
+// Generic params record used by the serializer
+type ParamsRecord = Record<string, string | number | boolean | string[] | undefined | null>;
+
+// ── Axios Setup ───────────────────────────────────────────────────
 const API_BASE_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
@@ -8,7 +55,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   paramsSerializer: {
-    serialize: (params: Record<string, any>) => {
+    serialize: (params: ParamsRecord) => {
       const searchParams = new URLSearchParams();
 
       Object.entries(params).forEach(([key, value]) => {
@@ -84,9 +131,9 @@ export const expertService = {
   getNetwork: (id: string, hops?: number) =>
     api.get(`/experts/${id}/network`, { params: { hops } }),
 
-  update: (id: string, data: any) => api.put(`/experts/${id}`, data),
+  update: (id: string, data: ExpertPayload) => api.put(`/experts/${id}`, data),
 
-  create: (data: any) => api.post('/experts', data),
+  create: (data: ExpertCreatePayload) => api.post('/experts', data),
 
   delete: (id: string) => api.delete(`/experts/${id}`),
 
@@ -114,30 +161,9 @@ export const documentService = {
 
   getExperts: (id: string) => api.get(`/documents/experts/${id}`),
 
-  create: (payload: {
-    title: string;
-    type: string;
-    topic: string;
-    author: string;
-    date?: string | null;
-    views: number;
-    rating: number;
-    content?: string | null;
-  }) => api.post('/documents', payload),
+  create: (payload: DocumentCreatePayload) => api.post('/documents', payload),
 
-  update: (
-    id: string,
-    payload: Partial<{
-      title: string;
-      type: string;
-      topic: string;
-      author: string;
-      date: string | null;
-      views: number;
-      rating: number;
-      content: string | null;
-    }>
-  ) => api.put(`/documents/${id}`, payload),
+  update: (id: string, payload: DocumentPayload) => api.put(`/documents/${id}`, payload),
 
   delete: (id: string) => api.delete(`/documents/${id}`),
 };
@@ -237,6 +263,20 @@ export const aiService = {
   getModelStats: () => api.get('/ai/model-stats'),
 
   trainAll: () => api.post('/ai/train-all'),
+
+  // Advanced AI endpoints
+  getEmergingSkills: () => api.get('/ai/emerging-skills'),
+
+  getFutureSkills: (months: number = 12) =>
+    api.get('/ai/future-skills', { params: { months } }),
+
+  getExpertRank: (q?: string, department?: string, topK: number = 20) =>
+    api.get('/ai/expert-rank', { params: { q, department, top_k: topK } }),
+
+  getCrossDepartmentSuggestions: () => api.get('/ai/cross-department-suggestions'),
+
+  getPersonalizedRecommendations: (userId: string, topK: number = 8) =>
+    api.get(`/ai/personalized-recommendations/${userId}`, { params: { top_k: topK } }),
 };
 
 // Big Data / Spark endpoints
@@ -246,6 +286,14 @@ export const bigdataService = {
   getExpertRankings: (limit: number = 20) =>
     api.get('/bigdata/expert-rankings', { params: { limit } }),
   getPipelineStatus: () => api.get('/bigdata/pipeline-status'),
+};
+
+// Pipeline / Kafka simulation endpoints
+export const pipelineService = {
+  getStatus: () => api.get('/pipeline/status'),
+  getMetrics: () => api.get('/pipeline/metrics'),
+  simulate: (count: number = 50) =>
+    api.post('/pipeline/simulate', null, { params: { count } }),
 };
 
 // Feed endpoints
@@ -332,6 +380,26 @@ export const gamificationService = {
   endorseSkill: (targetExpertId: string, skillName: string) =>
     api.post('/gamification/endorse', { target_expert_id: targetExpertId, skill_name: skillName }),
   getLeaderboard: () => api.get('/gamification/leaderboard'),
+};
+
+// Workspace endpoints
+export const workspaceService = {
+  getAll: () => api.get('/workspaces'),
+  create: (data: { name: string; description?: string; member_ids?: string[] }) =>
+    api.post('/workspaces', data),
+  getById: (id: string) => api.get(`/workspaces/${id}`),
+  sendMessage: (id: string, content: string, senderName: string = 'You') =>
+    api.post(`/workspaces/${id}/messages`, { content, sender_name: senderName }),
+  getProgress: (id: string) => api.get(`/workspaces/${id}/progress`),
+  postProgress: (id: string, data: { title: string; description?: string; status?: string }) =>
+    api.post(`/workspaces/${id}/progress`, data),
+  // Call management
+  startCall: (id: string, callType: string = 'voice') =>
+    api.post(`/workspaces/${id}/call/start`, { call_type: callType }),
+  joinCall: (id: string) => api.post(`/workspaces/${id}/call/join`),
+  endCall: (id: string) => api.post(`/workspaces/${id}/call/end`),
+  getCallStatus: (id: string) => api.get(`/workspaces/${id}/call`),
+  simulateJoin: (id: string) => api.post(`/workspaces/${id}/call/simulate-join`),
 };
 
 export default api;
