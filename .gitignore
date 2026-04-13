@@ -1,10 +1,12 @@
 
 # Dependencies
 node_modules/
-venv/
+venv*/
 .venv/
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
 
 # Environment variables
 .env
@@ -20,10 +22,29 @@ build/
 # System
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Large/Auto-generated data
 dbms-*/
 *.log
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# LaTeX build artifacts
+*.aux
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.bbl
+*.blg
+*.nav
+*.snm
+*.vrb
 
 # Temp scripts
 verify_*.py
