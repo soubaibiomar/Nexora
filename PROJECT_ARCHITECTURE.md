@@ -14,7 +14,7 @@
 
 ## 📋 Table des Matières
 
-1. [Vue d'Ensemble](#-vue-densemble)
+1. [Vue d&#39;Ensemble](#-vue-densemble)
 2. [Architecture 3-Tiers](#-architecture-3-tiers)
 3. [Connexions entre Composants](#-connexions-entre-composants)
 4. [Description Détaillée des Fichiers Backend](#-description-détaillée-des-fichiers-backend)
@@ -31,13 +31,13 @@
 
 **ExpertLink** est une plateforme de gestion des connaissances organisationnelles qui permet de :
 
-| Fonctionnalité | Description |
-|----------------|-------------|
-| 🔍 **Recherche d'Experts** | Trouver des spécialistes par compétences, localisation, département |
-| 📄 **Recherche de Documents** | Recherche plein texte avec filtres par type et catégorie |
-| 🕸️ **Visualisation 3D** | Graphe interactif des relations entre experts, skills, projets |
-| 📚 **Parcours d'Apprentissage** | Génération de chemins de formation personnalisés |
-| 📊 **Tableau de Bord** | Statistiques et analyses sur les compétences |
+| Fonctionnalité                      | Description                                                            |
+| ------------------------------------ | ---------------------------------------------------------------------- |
+| 🔍**Recherche d'Experts**      | Trouver des spécialistes par compétences, localisation, département |
+| 📄**Recherche de Documents**   | Recherche plein texte avec filtres par type et catégorie              |
+| 🕸️**Visualisation 3D**       | Graphe interactif des relations entre experts, skills, projets         |
+| 📚**Parcours d'Apprentissage** | Génération de chemins de formation personnalisés                    |
+| 📊**Tableau de Bord**          | Statistiques et analyses sur les compétences                          |
 
 ### Pourquoi Neo4j ?
 
@@ -180,6 +180,8 @@ def get_db():
 
 ---
 
+
+
 ## 📁 Description Détaillée des Fichiers Backend
 
 ### Structure du dossier `backend/`
@@ -212,12 +214,12 @@ backend/
 
 **Utilité:** Configure et démarre l'application FastAPI.
 
-| Responsabilité | Description |
-|----------------|-------------|
-| **Création de l'app** | Initialise FastAPI avec titre, description, version |
-| **CORS** | Configure les origines autorisées (localhost:5173) |
-| **Routers** | Enregistre tous les endpoints (/api/experts, /api/documents, etc.) |
-| **Lifespan** | Gère le démarrage/arrêt (fermeture du driver Neo4j) |
+| Responsabilité              | Description                                                        |
+| ---------------------------- | ------------------------------------------------------------------ |
+| **Création de l'app** | Initialise FastAPI avec titre, description, version                |
+| **CORS**               | Configure les origines autorisées (localhost:5173)                |
+| **Routers**            | Enregistre tous les endpoints (/api/experts, /api/documents, etc.) |
+| **Lifespan**           | Gère le démarrage/arrêt (fermeture du driver Neo4j)             |
 
 ```python
 app = FastAPI(
@@ -241,14 +243,14 @@ app.include_router(auth.router)      # /api/auth/*
 
 **Utilité:** Gère la connexion à la base de données Neo4j.
 
-| Fonction/Classe | Utilité |
-|-----------------|---------|
-| `Neo4jDriver` | Singleton qui maintient une connexion unique au driver |
-| `get_driver()` | Retourne le driver Neo4j (le crée si nécessaire) |
-| `close()` | Ferme proprement la connexion |
-| `is_neo4j_available()` | Vérifie si Neo4j est accessible |
-| `get_db()` | Fournit une session aux endpoints (dependency injection) |
-| `FallbackSession` | Session mock quand Neo4j est indisponible |
+| Fonction/Classe          | Utilité                                                 |
+| ------------------------ | -------------------------------------------------------- |
+| `Neo4jDriver`          | Singleton qui maintient une connexion unique au driver   |
+| `get_driver()`         | Retourne le driver Neo4j (le crée si nécessaire)       |
+| `close()`              | Ferme proprement la connexion                            |
+| `is_neo4j_available()` | Vérifie si Neo4j est accessible                         |
+| `get_db()`             | Fournit une session aux endpoints (dependency injection) |
+| `FallbackSession`      | Session mock quand Neo4j est indisponible                |
 
 ```python
 # Vérification de disponibilité
@@ -274,22 +276,22 @@ async def search(db=Depends(get_db)):  # 'db' reçoit la session
 
 **Utilité:** Centralise toutes les variables de configuration.
 
-| Variable | Valeur par défaut | Description |
-|----------|-------------------|-------------|
-| `neo4j_uri` | `bolt://localhost:7687` | URI de connexion Neo4j |
-| `neo4j_user` | `neo4j` | Nom d'utilisateur |
-| `neo4j_password` | `expertlink123` | Mot de passe |
-| `secret_key` | (généré) | Clé secrète pour signer les JWT |
-| `algorithm` | `HS256` | Algorithme de signature JWT |
-| `access_token_expire_minutes` | `30` | Durée de validité du token |
-| `debug` | `False` | Mode debug |
+| Variable                        | Valeur par défaut        | Description                       |
+| ------------------------------- | ------------------------- | --------------------------------- |
+| `neo4j_uri`                   | `bolt://localhost:7687` | URI de connexion Neo4j            |
+| `neo4j_user`                  | `neo4j`                 | Nom d'utilisateur                 |
+| `neo4j_password`              | `expertlink123`         | Mot de passe                      |
+| `secret_key`                  | (généré)               | Clé secrète pour signer les JWT |
+| `algorithm`                   | `HS256`                 | Algorithme de signature JWT       |
+| `access_token_expire_minutes` | `30`                    | Durée de validité du token      |
+| `debug`                       | `False`                 | Mode debug                        |
 
 ```python
 class Settings(BaseSettings):
     neo4j_uri: str = Field("bolt://localhost:7687")
     neo4j_user: str = Field("neo4j")
     secret_key: str = Field("your-super-secret-key")
-    
+  
     model_config = SettingsConfigDict(
         env_file=".env",  # Charge depuis fichier .env
         case_sensitive=False
@@ -302,10 +304,10 @@ class Settings(BaseSettings):
 
 **Utilité:** Gère la création et validation des tokens JWT.
 
-| Fonction | Utilité |
-|----------|---------|
-| `create_access_token()` | Génère un token JWT avec expiration |
-| `get_current_user()` | Vérifie le token et retourne l'utilisateur |
+| Fonction                  | Utilité                                    |
+| ------------------------- | ------------------------------------------- |
+| `create_access_token()` | Génère un token JWT avec expiration       |
+| `get_current_user()`    | Vérifie le token et retourne l'utilisateur |
 
 ```python
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -328,17 +330,17 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 **Utilité:** Fournit des données depuis des fichiers JSONL quand Neo4j est indisponible.
 
-| Fonction | Description |
-|----------|-------------|
-| `load_jsonl(filename)` | Charge et cache un fichier JSONL |
-| `get_employees()` | Retourne tous les employés |
-| `get_documents()` | Retourne tous les documents |
-| `get_skills()` | Retourne tous les skills |
-| `get_projects()` | Retourne tous les projets |
-| `search_experts(...)` | Recherche avec filtres (en mémoire) |
-| `search_documents(...)` | Recherche documents avec filtres |
-| `get_dashboard_stats()` | Calcule les statistiques |
-| `get_graph_data()` | Génère les données pour la visualisation |
+| Fonction                  | Description                                 |
+| ------------------------- | ------------------------------------------- |
+| `load_jsonl(filename)`  | Charge et cache un fichier JSONL            |
+| `get_employees()`       | Retourne tous les employés                 |
+| `get_documents()`       | Retourne tous les documents                 |
+| `get_skills()`          | Retourne tous les skills                    |
+| `get_projects()`        | Retourne tous les projets                   |
+| `search_experts(...)`   | Recherche avec filtres (en mémoire)        |
+| `search_documents(...)` | Recherche documents avec filtres            |
+| `get_dashboard_stats()` | Calcule les statistiques                    |
+| `get_graph_data()`      | Génère les données pour la visualisation |
 
 ```python
 # Exemple d'utilisation dans un router
@@ -347,7 +349,7 @@ async def search_experts(db=Depends(get_db)):
     if not is_neo4j_available():
         # Neo4j indisponible → utiliser les données locales
         return fallback_data.search_experts(q=q, limit=limit)
-    
+  
     # Neo4j disponible → requête Cypher normale
     result = db.run("MATCH (p:Person) RETURN p")
     ...
@@ -359,76 +361,76 @@ async def search_experts(db=Depends(get_db)):
 
 #### 📄 `experts.py` - Gestion des Experts
 
-| Endpoint | Méthode | Description | Type Requête |
-|----------|---------|-------------|--------------|
-| `/api/experts/search` | GET | Recherche avec filtres multiples | **RF** (Filter) |
-| `/api/experts/{id}` | GET | Profil complet d'un expert | **RS** (Simple) |
-| `/api/experts/{id}/network` | GET | Réseau de connexions | **RC** (Chemin) |
-| `/api/experts` | POST | Créer un expert | **RM** (Modification) |
-| `/api/experts/{id}` | PUT | Modifier un expert | **RM** (Modification) |
-| `/api/experts/{id}` | DELETE | Supprimer un expert | **RM** (Modification) |
-| `/api/experts/locations/list` | GET | Liste des localisations | **RS** (Simple) |
-| `/api/experts/departments/list` | GET | Liste des départements | **RS** (Simple) |
+| Endpoint                          | Méthode | Description                      | Type Requête               |
+| --------------------------------- | -------- | -------------------------------- | --------------------------- |
+| `/api/experts/search`           | GET      | Recherche avec filtres multiples | **RF** (Filter)       |
+| `/api/experts/{id}`             | GET      | Profil complet d'un expert       | **RS** (Simple)       |
+| `/api/experts/{id}/network`     | GET      | Réseau de connexions            | **RC** (Chemin)       |
+| `/api/experts`                  | POST     | Créer un expert                 | **RM** (Modification) |
+| `/api/experts/{id}`             | PUT      | Modifier un expert               | **RM** (Modification) |
+| `/api/experts/{id}`             | DELETE   | Supprimer un expert              | **RM** (Modification) |
+| `/api/experts/locations/list`   | GET      | Liste des localisations          | **RS** (Simple)       |
+| `/api/experts/departments/list` | GET      | Liste des départements          | **RS** (Simple)       |
 
 ---
 
 #### 📄 `documents.py` - Gestion des Documents
 
-| Endpoint | Méthode | Description | Type Requête |
-|----------|---------|-------------|--------------|
-| `/api/documents/search` | GET | Recherche full-text | **RF** (Filter) |
-| `/api/documents/{id}` | GET | Détails d'un document | **RS** (Simple) |
-| `/api/documents/similar/{id}` | GET | Documents similaires | **RC** (Chemin) |
-| `/api/documents/experts/{id}` | GET | Experts liés au document | **RC** (Chemin) |
-| `/api/documents/types/list` | GET | Types de documents | **RS** (Simple) |
-| `/api/documents` | POST | Créer un document | **RM** (Modification) |
-| `/api/documents/{id}` | PUT | Modifier un document | **RM** (Modification) |
-| `/api/documents/{id}` | DELETE | Supprimer un document | **RM** (Modification) |
+| Endpoint                        | Méthode | Description               | Type Requête               |
+| ------------------------------- | -------- | ------------------------- | --------------------------- |
+| `/api/documents/search`       | GET      | Recherche full-text       | **RF** (Filter)       |
+| `/api/documents/{id}`         | GET      | Détails d'un document    | **RS** (Simple)       |
+| `/api/documents/similar/{id}` | GET      | Documents similaires      | **RC** (Chemin)       |
+| `/api/documents/experts/{id}` | GET      | Experts liés au document | **RC** (Chemin)       |
+| `/api/documents/types/list`   | GET      | Types de documents        | **RS** (Simple)       |
+| `/api/documents`              | POST     | Créer un document        | **RM** (Modification) |
+| `/api/documents/{id}`         | PUT      | Modifier un document      | **RM** (Modification) |
+| `/api/documents/{id}`         | DELETE   | Supprimer un document     | **RM** (Modification) |
 
 ---
 
 #### 📄 `graph.py` - Visualisation du Graphe
 
-| Endpoint | Méthode | Description | Type Requête |
-|----------|---------|-------------|--------------|
-| `/api/graph/nodes` | GET | Récupérer les nœuds | **RS** (Simple) |
-| `/api/graph/expand/{id}` | GET | Étendre un nœud (voisins) | **RC** (Chemin) |
-| `/api/graph/path` | GET | Chemin le plus court | **RC** (Chemin) |
-| `/api/graph/stats` | GET | Statistiques du graphe | **RA** (Agrégation) |
+| Endpoint                   | Méthode | Description                 | Type Requête              |
+| -------------------------- | -------- | --------------------------- | -------------------------- |
+| `/api/graph/nodes`       | GET      | Récupérer les nœuds      | **RS** (Simple)      |
+| `/api/graph/expand/{id}` | GET      | Étendre un nœud (voisins) | **RC** (Chemin)      |
+| `/api/graph/path`        | GET      | Chemin le plus court        | **RC** (Chemin)      |
+| `/api/graph/stats`       | GET      | Statistiques du graphe      | **RA** (Agrégation) |
 
 ---
 
 #### 📄 `dashboard.py` - Tableau de Bord
 
-| Endpoint | Méthode | Description | Type Requête |
-|----------|---------|-------------|--------------|
-| `/api/dashboard/stats` | GET | Statistiques globales | **RA** (Agrégation) |
-| `/api/dashboard/top-skills` | GET | Top compétences | **RA** (Agrégation) |
-| `/api/dashboard/skill-gaps` | GET | Lacunes de compétences | **RA** + **RF** |
-| `/api/dashboard/departments` | GET | Stats par département | **RA** (Agrégation) |
-| `/api/dashboard/skill-distribution` | GET | Distribution des skills | **RA** (Agrégation) |
-| `/api/dashboard/project-status` | GET | Status des projets | **RA** (Agrégation) |
-| `/api/dashboard/collaboration-rate` | GET | Taux de collaboration | **RC** (Chemin) |
-| `/api/dashboard/knowledge-silos` | GET | Silos de connaissances | **RA** + **RF** |
+| Endpoint                              | Méthode | Description             | Type Requête               |
+| ------------------------------------- | -------- | ----------------------- | --------------------------- |
+| `/api/dashboard/stats`              | GET      | Statistiques globales   | **RA** (Agrégation)  |
+| `/api/dashboard/top-skills`         | GET      | Top compétences        | **RA** (Agrégation)  |
+| `/api/dashboard/skill-gaps`         | GET      | Lacunes de compétences | **RA** + **RF** |
+| `/api/dashboard/departments`        | GET      | Stats par département  | **RA** (Agrégation)  |
+| `/api/dashboard/skill-distribution` | GET      | Distribution des skills | **RA** (Agrégation)  |
+| `/api/dashboard/project-status`     | GET      | Status des projets      | **RA** (Agrégation)  |
+| `/api/dashboard/collaboration-rate` | GET      | Taux de collaboration   | **RC** (Chemin)       |
+| `/api/dashboard/knowledge-silos`    | GET      | Silos de connaissances  | **RA** + **RF** |
 
 ---
 
 #### 📄 `learning.py` - Parcours d'Apprentissage
 
-| Endpoint | Méthode | Description | Type Requête |
-|----------|---------|-------------|--------------|
-| `/api/learning/path` | POST | Générer un parcours | **RC** (Chemin) |
-| `/api/learning/mentors/{skill}` | GET | Mentors pour un skill | **RF** + **RA** |
-| `/api/learning/skills/recommended` | GET | Skills recommandés | **RC** + **RA** |
-| `/api/learning/skills/list` | GET | Liste de tous les skills | **RS** (Simple) |
+| Endpoint                             | Méthode | Description              | Type Requête               |
+| ------------------------------------ | -------- | ------------------------ | --------------------------- |
+| `/api/learning/path`               | POST     | Générer un parcours    | **RC** (Chemin)       |
+| `/api/learning/mentors/{skill}`    | GET      | Mentors pour un skill    | **RF** + **RA** |
+| `/api/learning/skills/recommended` | GET      | Skills recommandés      | **RC** + **RA** |
+| `/api/learning/skills/list`        | GET      | Liste de tous les skills | **RS** (Simple)       |
 
 ---
 
 #### 📄 `auth.py` - Authentification
 
-| Endpoint | Méthode | Description |
-|----------|---------|-------------|
-| `/api/auth/login` | POST | Connexion (retourne JWT) |
+| Endpoint            | Méthode | Description              |
+| ------------------- | -------- | ------------------------ |
+| `/api/auth/login` | POST     | Connexion (retourne JWT) |
 
 ---
 
@@ -479,12 +481,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 **Utilité:** Gère le routing et la structure globale de l'application.
 
-| Responsabilité | Description |
-|----------------|-------------|
-| **Routing** | Définit les routes (/login, /experts, /documents, etc.) |
-| **Layout** | Barre de navigation, menu latéral |
-| **Auth Guard** | Redirige vers /login si non authentifié |
-| **Theme** | Applique le thème Material-UI |
+| Responsabilité      | Description                                              |
+| -------------------- | -------------------------------------------------------- |
+| **Routing**    | Définit les routes (/login, /experts, /documents, etc.) |
+| **Layout**     | Barre de navigation, menu latéral                       |
+| **Auth Guard** | Redirige vers /login si non authentifié                 |
+| **Theme**      | Applique le thème Material-UI                           |
 
 ```typescript
 <Routes>
@@ -503,14 +505,14 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 **Utilité:** Centralise toutes les communications avec le backend.
 
-| Service | Méthodes | Description |
-|---------|----------|-------------|
-| `authService` | `login()`, `logout()`, `isAuthenticated()` | Authentification |
-| `expertService` | `search()`, `getById()`, `update()`, `delete()` | Gestion experts |
-| `documentService` | `search()`, `getById()`, `getSimilar()` | Gestion documents |
-| `graphService` | `getNodes()`, `expand()`, `findPath()` | Visualisation graphe |
-| `learningService` | `generatePath()`, `getMentors()` | Parcours apprentissage |
-| `dashboardService` | `getStats()`, `getTopSkills()` | Statistiques |
+| Service              | Méthodes                                               | Description            |
+| -------------------- | ------------------------------------------------------- | ---------------------- |
+| `authService`      | `login()`, `logout()`, `isAuthenticated()`        | Authentification       |
+| `expertService`    | `search()`, `getById()`, `update()`, `delete()` | Gestion experts        |
+| `documentService`  | `search()`, `getById()`, `getSimilar()`           | Gestion documents      |
+| `graphService`     | `getNodes()`, `expand()`, `findPath()`            | Visualisation graphe   |
+| `learningService`  | `generatePath()`, `getMentors()`                    | Parcours apprentissage |
+| `dashboardService` | `getStats()`, `getTopSkills()`                      | Statistiques           |
 
 ---
 
@@ -531,12 +533,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 **Utilité:** Affiche les statistiques et métriques globales.
 
-| Widget | Source API | Description |
-|--------|------------|-------------|
-| Cartes de stats | `getStats()` | Nombre d'experts, skills, documents |
-| Top Skills | `getTopSkills()` | Graphique des compétences demandées |
-| Skill Distribution | `getSkillDistribution()` | PieChart par catégorie |
-| Departments | `getDepartments()` | Stats par département |
+| Widget             | Source API                 | Description                           |
+| ------------------ | -------------------------- | ------------------------------------- |
+| Cartes de stats    | `getStats()`             | Nombre d'experts, skills, documents   |
+| Top Skills         | `getTopSkills()`         | Graphique des compétences demandées |
+| Skill Distribution | `getSkillDistribution()` | PieChart par catégorie               |
+| Departments        | `getDepartments()`       | Stats par département                |
 
 ---
 
@@ -544,13 +546,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 **Utilité:** Interface de recherche avancée des experts.
 
-| Fonctionnalité | Description |
-|----------------|-------------|
-| **Barre de recherche** | Recherche par nom, rôle |
-| **Filtres avancés** | Skill, niveau, département, localisation |
-| **Tableau de résultats** | Affichage paginé des résultats |
-| **Détails expert** | Modal avec profil complet |
-| **Actions** | Voir, Modifier, Supprimer |
+| Fonctionnalité                 | Description                               |
+| ------------------------------- | ----------------------------------------- |
+| **Barre de recherche**    | Recherche par nom, rôle                  |
+| **Filtres avancés**      | Skill, niveau, département, localisation |
+| **Tableau de résultats** | Affichage paginé des résultats          |
+| **Détails expert**       | Modal avec profil complet                 |
+| **Actions**               | Voir, Modifier, Supprimer                 |
 
 ---
 
@@ -558,11 +560,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 **Utilité:** Recherche full-text dans les documents.
 
-| Fonctionnalité | Description |
-|----------------|-------------|
-| **Recherche texte** | Dans titre, contenu, topic |
-| **Filtres** | Type de document, note minimum |
-| **Résultats** | Cards avec aperçu |
+| Fonctionnalité                | Description                      |
+| ------------------------------ | -------------------------------- |
+| **Recherche texte**      | Dans titre, contenu, topic       |
+| **Filtres**              | Type de document, note minimum   |
+| **Résultats**           | Cards avec aperçu               |
 | **Documents similaires** | Suggestions basées sur le topic |
 
 ---
@@ -571,13 +573,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 **Utilité:** Visualisation 3D interactive du graphe de connaissances.
 
-| Fonctionnalité | Description |
-|----------------|-------------|
-| **Rendu 3D** | Utilise react-force-graph-3d |
-| **Nœuds colorés** | Par type (Person=bleu, Skill=vert, etc.) |
-| **Expansion** | Click pour voir les connexions |
-| **Recherche de chemin** | Trouver le lien entre 2 nœuds |
-| **Navigation** | Zoom, rotation, pan |
+| Fonctionnalité               | Description                              |
+| ----------------------------- | ---------------------------------------- |
+| **Rendu 3D**            | Utilise react-force-graph-3d             |
+| **Nœuds colorés**     | Par type (Person=bleu, Skill=vert, etc.) |
+| **Expansion**           | Click pour voir les connexions           |
+| **Recherche de chemin** | Trouver le lien entre 2 nœuds           |
+| **Navigation**          | Zoom, rotation, pan                      |
 
 ---
 
@@ -585,13 +587,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 **Utilité:** Génération de parcours d'apprentissage personnalisés.
 
-| Fonctionnalité | Description |
-|----------------|-------------|
+| Fonctionnalité                     | Description                           |
+| ----------------------------------- | ------------------------------------- |
 | **Sélection skills actuels** | Choisir les compétences maîtrisées |
-| **Skill cible** | Compétence à acquérir |
-| **Génération du parcours** | Étapes avec durée estimée |
-| **Ressources** | Documents recommandés par étape |
-| **Mentors** | Experts disponibles pour chaque skill |
+| **Skill cible**               | Compétence à acquérir              |
+| **Génération du parcours**  | Étapes avec durée estimée          |
+| **Ressources**                | Documents recommandés par étape     |
+| **Mentors**                   | Experts disponibles pour chaque skill |
 
 ---
 
@@ -599,13 +601,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 ### Tableau Récapitulatif
 
-| Code | Nom | Description | Exemple Cypher | Fichiers |
-|:----:|-----|-------------|----------------|----------|
-| **RS** | Requête Simple | Récupérer des nœuds sans filtre | `MATCH (p:Person) RETURN p` | `graph.py`, `experts.py` |
-| **RC** | Requête Chemin | Navigation via relations | `shortestPath((a)-[*]-(b))` | `graph.py`, `learning.py` |
-| **RF** | Requête Filtre | Conditions WHERE | `WHERE p.level >= 4` | `experts.py`, `documents.py` |
-| **RA** | Requête Agrégation | Statistiques avec count, avg | `count(p) as total` | `dashboard.py` |
-| **RM** | Requête Modification | CREATE, SET, DELETE | `SET p.name = $name` | `experts.py`, `documents.py` |
+|     Code     | Nom                   | Description                        | Exemple Cypher                | Fichiers                         |
+| :----------: | --------------------- | ---------------------------------- | ----------------------------- | -------------------------------- |
+| **RS** | Requête Simple       | Récupérer des nœuds sans filtre | `MATCH (p:Person) RETURN p` | `graph.py`, `experts.py`     |
+| **RC** | Requête Chemin       | Navigation via relations           | `shortestPath((a)-[*]-(b))` | `graph.py`, `learning.py`    |
+| **RF** | Requête Filtre       | Conditions WHERE                   | `WHERE p.level >= 4`        | `experts.py`, `documents.py` |
+| **RA** | Requête Agrégation  | Statistiques avec count, avg       | `count(p) as total`         | `dashboard.py`                 |
+| **RM** | Requête Modification | CREATE, SET, DELETE                | `SET p.name = $name`        | `experts.py`, `documents.py` |
 
 ---
 
@@ -857,17 +859,17 @@ npm run dev
 
 ### 4. Accès
 
-| Service | URL |
-|---------|-----|
-| Frontend | http://localhost:5173 |
-| API Docs | http://localhost:8000/docs |
-| Neo4j Browser | http://localhost:7474 |
+| Service       | URL                        |
+| ------------- | -------------------------- |
+| Frontend      | http://localhost:5173      |
+| API Docs      | http://localhost:8000/docs |
+| Neo4j Browser | http://localhost:7474      |
 
 ### 5. Identifiants par défaut
 
-| Utilisateur | Mot de passe | Rôle |
-|-------------|--------------|------|
-| admin | password | Administrateur |
+| Utilisateur | Mot de passe | Rôle          |
+| ----------- | ------------ | -------------- |
+| admin       | password     | Administrateur |
 
 ---
 
