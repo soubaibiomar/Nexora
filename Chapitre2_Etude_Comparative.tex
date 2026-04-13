@@ -1,0 +1,325 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{amssymb}
+\geometry{margin=2.5cm}
+\setlength{\headheight}{15pt}
+
+\definecolor{bleu}{HTML}{2B6CB0}
+\definecolor{vertclair}{HTML}{48BB78}
+\definecolor{orangeclair}{HTML}{ED8936}
+\definecolor{rougeclair}{HTML}{FC8181}
+\definecolor{grisclair}{HTML}{F7FAFC}
+
+\titleformat{\section}
+  {\Large\bfseries\color{bleu}}{\thesection.}{0.4em}{}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{bleu}}{\thesubsection}{0.4em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{bleu}}{\thesubsubsection}{0.4em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Chapitre 2 — Étude Comparative}
+\fancyhead[R]{\small Nexora — EMSI 2025-2026}
+\fancyfoot[C]{\thepage}
+
+\hypersetup{colorlinks=true, linkcolor=bleu, urlcolor=bleu}
+
+\begin{document}
+
+% ══════════════════════════════════════════════════════════════
+\begin{titlepage}
+\centering
+\vspace*{1cm}
+\includegraphics[width=0.5\textwidth]{emsilogo.jpeg}\\[2cm]
+
+\rule{\linewidth}{0.4pt}\\[0.4cm]
+{\Large\textbf{Chapitre 2}}\\[0.3cm]
+{\Huge\bfseries\color{bleu} Étude Comparative}\\[0.3cm]
+{\large\textit{Analyse des Solutions Existantes de Gestion des Compétences}}\\[0.3cm]
+\rule{\linewidth}{0.4pt}
+
+\vspace{2cm}
+
+\begin{tabular}{cc}
+    \multicolumn{2}{c}{\large\textbf{Réalisé par :}} \\[0.3cm]
+    Soubaibi Omar & Yassine Baizi \\[1cm]
+    \multicolumn{2}{c}{\large\textbf{Encadré par :}} \\[0.3cm]
+    \multicolumn{2}{c}{Mme. OUNACER SOUMAYA} \\
+\end{tabular}
+
+\vfill
+\textbf{Filière :} 4IADM G5-A \\[0.2cm]
+\textbf{Année Universitaire :} 2025--2026
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════
+\section{Introduction}
+% ══════════════════════════════════════════════════════════════
+
+Avant de concevoir la plateforme Nexora, il est essentiel de réaliser une analyse approfondie des solutions existantes sur le marché de la gestion des compétences et de l'intelligence organisationnelle. Cette étude comparative permet d'identifier les forces et les faiblesses des outils actuels, de comprendre les tendances technologiques du domaine, et de positionner Nexora de manière unique par rapport à la concurrence.
+
+Le marché des solutions de \textit{Skills Management} et de \textit{Talent Intelligence} connaît une croissance significative, porté par la transformation digitale des entreprises et l'importance croissante du capital humain. Plusieurs catégories d'outils coexistent : les SIRH traditionnels, les plateformes spécialisées, et les solutions émergentes alimentées par l'IA.
+
+% ══════════════════════════════════════════════════════════════
+\section{Panorama des Solutions Existantes}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{365Talents}
+
+\textbf{365Talents} est une plateforme française d'\textit{AI-Powered Talent Experience} fondée en 2015 à Lyon. Elle propose une cartographie dynamique des compétences basée sur l'intelligence artificielle.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Points forts :}
+    \begin{itemize}[leftmargin=*, label=--]
+        \item Détection automatique des compétences à partir des données existantes (CV, profils, projets).
+        \item Moteur de recommandation de mobilité interne.
+        \item Conformité RGPD native (solution européenne).
+        \item Intégration avec les principaux SIRH (SAP SuccessFactors, Workday).
+    \end{itemize}
+    \item \textbf{Limites :}
+    \begin{itemize}[leftmargin=*, label=--]
+        \item Pas de visualisation en graphe des relations entre compétences et experts.
+        \item Absence de composante Big Data (pas de traitement Spark/Kafka).
+        \item Solution propriétaire fermée (pas de personnalisation algorithmique).
+        \item Pas de chatbot conversationnel intelligent intégré.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Workday Skills Cloud}
+
+\textbf{Workday Skills Cloud} est le module de gestion des compétences intégré à la suite HCM de Workday, leader mondial des solutions de gestion du capital humain.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Points forts :}
+    \begin{itemize}[leftmargin=*, label=--]
+        \item Ontologie de compétences massive (plus de 55 000 compétences référencées).
+        \item Machine Learning pour le matching de compétences et la prédiction de lacunes.
+        \item Suite complète intégrée (paie, recrutement, formation, performance).
+        \item Écosystème d'intégration très riche.
+    \end{itemize}
+    \item \textbf{Limites :}
+    \begin{itemize}[leftmargin=*, label=--]
+        \item Coût prohibitif pour les PME/ETI (licence enterprise uniquement).
+        \item Modèle de données relationnel classique (pas de base de données orientée graphe).
+        \item Pas de visualisation réseau 3D interactive.
+        \item Algorithmes propriétaires et opaques (boîte noire).
+        \item Pas d'analyse de centralité d'experts (PageRank).
+    \end{itemize}
+\end{itemize}
+
+\subsection{Cornerstone OnDemand (Cornerstone TalentLink)}
+
+\textbf{Cornerstone OnDemand} est une plateforme américaine de gestion des talents, acquise par Clearlake Capital en 2021, qui offre des modules de formation (LMS), de gestion de la performance et de planification des effectifs.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Points forts :}
+    \begin{itemize}[leftmargin=*, label=--]
+        \item LMS (Learning Management System) très complet.
+        \item Parcours de formation personnalisés et adaptatifs.
+        \item Module de gestion de la performance et des objectifs (OKR).
+        \item Large base de clients internationaux.
+    \end{itemize}
+    \item \textbf{Limites :}
+    \begin{itemize}[leftmargin=*, label=--]
+        \item Focus sur la formation plutôt que sur la découverte d'experts.
+        \item Interface utilisateur vieillissante et peu intuitive.
+        \item Pas de modélisation en graphe de connaissances.
+        \item Absence de recommandations de collaboration inter-département.
+        \item Pas de composante Big Data ni de traitement temps réel.
+    \end{itemize}
+\end{itemize}
+
+\subsection{LinkedIn Talent Insights}
+
+\textbf{LinkedIn Talent Insights} est l'outil d'analyse de talents de LinkedIn, exploitant les données du plus grand réseau professionnel mondial (plus de 900 millions de membres).
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Points forts :}
+    \begin{itemize}[leftmargin=*, label=--]
+        \item Base de données massive de profils professionnels.
+        \item Analyse des tendances du marché de l'emploi en temps réel.
+        \item Benchmarking des compétences par secteur et géographie.
+        \item Intelligence artificielle avancée (Graph Neural Networks de LinkedIn).
+    \end{itemize}
+    \item \textbf{Limites :}
+    \begin{itemize}[leftmargin=*, label=--]
+        \item Orienté recrutement externe, pas gestion interne des compétences.
+        \item Données limitées aux profils LinkedIn (biais de déclaration).
+        \item Pas d'intégration avec les données internes de l'entreprise.
+        \item Pas de fonctionnalités de collaboration ni de chat interne.
+        \item Coût élevé (abonnement LinkedIn Recruiter).
+    \end{itemize}
+\end{itemize}
+
+\subsection{Skills Base}
+
+\textbf{Skills Base} est une solution australienne légère et spécialisée dans la cartographie visuelle des compétences, ciblant les PME et les équipes techniques.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Points forts :}
+    \begin{itemize}[leftmargin=*, label=--]
+        \item Interface simple et intuitive pour la saisie des compétences.
+        \item Matrices de compétences visuelles (heatmaps) par département.
+        \item Tarification accessible pour les petites structures.
+        \item Export des données et rapports PDF.
+    \end{itemize}
+    \item \textbf{Limites :}
+    \begin{itemize}[leftmargin=*, label=--]
+        \item Cartographie purement déclarative (pas d'IA).
+        \item Pas de découverte automatique d'experts.
+        \item Pas de recommandation ni de prédiction.
+        \item Scalabilité limitée pour les grandes organisations.
+        \item Pas de visualisation en graphe ni de modélisation relationnelle.
+    \end{itemize}
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Tableau Comparatif Synthétique}
+% ══════════════════════════════════════════════════════════════
+
+Le tableau suivant compare les solutions existantes avec Nexora sur des critères fonctionnels et techniques clés :
+
+\begin{small}
+\begin{longtable}{|p{3.2cm}|p{1.6cm}|p{1.6cm}|p{1.6cm}|p{1.6cm}|p{1.6cm}|p{1.6cm}|}
+\hline
+\rowcolor{bleu!15}
+\textbf{Critère} & \textbf{365 Talents} & \textbf{Workday} & \textbf{Corner- stone} & \textbf{LinkedIn} & \textbf{Skills Base} & \textbf{Nexora} \\
+\hline
+Cartographie des compétences & \checkmark & \checkmark & \checkmark & $\sim$ & \checkmark & \checkmark \\
+\hline
+Détection auto. par IA & \checkmark & \checkmark & $\times$ & \checkmark & $\times$ & \checkmark \\
+\hline
+Base de données graphe & $\times$ & $\times$ & $\times$ & \checkmark & $\times$ & \checkmark \\
+\hline
+Visualisation 3D interactive & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & \checkmark \\
+\hline
+PageRank d'experts & $\times$ & $\times$ & $\times$ & $\sim$ & $\times$ & \checkmark \\
+\hline
+Recommandation d'experts & $\sim$ & \checkmark & $\times$ & \checkmark & $\times$ & \checkmark \\
+\hline
+Prédiction de lacunes & $\sim$ & \checkmark & $\times$ & $\times$ & $\times$ & \checkmark \\
+\hline
+Compétences émergentes & $\times$ & $\sim$ & $\times$ & \checkmark & $\times$ & \checkmark \\
+\hline
+Chatbot IA (LLM) & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & \checkmark \\
+\hline
+Pipeline Big Data & $\times$ & $\times$ & $\times$ & \checkmark & $\times$ & \checkmark \\
+\hline
+Collaboration / Chat & $\times$ & $\times$ & $\sim$ & \checkmark & $\times$ & \checkmark \\
+\hline
+Open Source / Extensible & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & \checkmark \\
+\hline
+RBAC multi-rôles & \checkmark & \checkmark & \checkmark & $\sim$ & $\sim$ & \checkmark \\
+\hline
+Déploiement Docker & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & \checkmark \\
+\hline
+\end{longtable}
+\end{small}
+
+\textbf{Légende :} \checkmark\, = Supporté ~~|~~ $\sim$ = Partiel ~~|~~ $\times$ = Non supporté
+
+% ══════════════════════════════════════════════════════════════
+\section{Analyse des Lacunes du Marché}
+% ══════════════════════════════════════════════════════════════
+
+L'étude comparative met en évidence plusieurs lacunes récurrentes dans les solutions actuelles :
+
+\subsection{Absence de Modélisation en Graphe}
+
+La quasi-totalité des solutions existantes repose sur des bases de données relationnelles classiques (SQL). Or, les relations entre experts, compétences, projets et documents forment naturellement un \textbf{réseau complexe} que les modèles relationnels peinent à représenter efficacement. Les jointures multiples nécessaires pour traverser ces relations entraînent des temps de réponse élevés et une complexité de requêtage importante.
+
+Nexora résout ce problème en adoptant \textbf{Neo4j}, une base de données native orientée graphe, permettant :
+\begin{itemize}[leftmargin=*]
+    \item Des traversées de graphe en temps constant (index-free adjacency).
+    \item Des requêtes Cypher déclaratives et naturelles.
+    \item L'application directe d'algorithmes de graphe (PageRank, centralité, détection de communautés).
+\end{itemize}
+
+\subsection{Manque de Visualisation Interactive Avancée}
+
+Aucune solution étudiée ne propose une \textbf{visualisation 3D interactive} du réseau organisationnel. Les interfaces actuelles se limitent à des tableaux, des listes filtrables ou, au mieux, des graphiques en barres et des heatmaps statiques.
+
+Nexora intègre \textbf{react-force-graph-3d} (basé sur WebGL/Three.js) pour offrir une exploration immersive du graphe de connaissances, avec rotation, zoom, filtrage dynamique et coloration par attribut.
+
+\subsection{Intelligence Artificielle Limitée}
+
+Si certaines solutions (365Talents, Workday) intègrent du Machine Learning, celui-ci reste opaque et limité au matching de compétences basique. Aucune solution n'offre simultanément :
+\begin{itemize}[leftmargin=*]
+    \item Un \textbf{scoring d'influence par PageRank} adapté au contexte organisationnel.
+    \item Un \textbf{filtrage collaboratif} pour la prédiction de compétences manquantes.
+    \item Un \textbf{classificateur de documents} automatique (TF-IDF + Logistic Regression).
+    \item Un \textbf{chatbot conversationnel} alimenté par un LLM (Large Language Model).
+\end{itemize}
+
+\subsection{Absence de Composante Big Data}
+
+Les solutions étudiées n'intègrent pas de pipeline de traitement de données massif. Nexora se distingue par l'intégration de :
+\begin{itemize}[leftmargin=*]
+    \item Un \textbf{simulateur de pipeline Kafka} pour l'ingestion d'événements en temps réel.
+    \item Des \textbf{analyses Spark en lot} (PySpark) pour le traitement analytique sur l'ensemble des données.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Positionnement de Nexora}
+% ══════════════════════════════════════════════════════════════
+
+Au regard de cette analyse comparative, Nexora se positionne comme une solution \textbf{innovante et différenciante} qui combine les meilleures pratiques du marché tout en comblant les lacunes identifiées :
+
+\begin{longtable}{|p{5cm}|p{8.5cm}|}
+\hline
+\rowcolor{bleu!15}
+\textbf{Axe de différenciation} & \textbf{Avantage Nexora} \\
+\hline
+Modélisation des données & Base de données orientée graphe (Neo4j) permettant une représentation native des relations complexes. \\
+\hline
+Visualisation & Exploration 3D immersive du réseau organisationnel (WebGL/Three.js, react-force-graph-3d). \\
+\hline
+Intelligence Artificielle & Pipeline ML complet : PageRank, TF-IDF, filtrage collaboratif, classification, chatbot LLM (Veda). \\
+\hline
+Architecture Big Data & Simulateur Kafka + PySpark pour le traitement batch et streaming. \\
+\hline
+Collaboration & Espaces de travail d'équipe (Workspaces) avec chat temps réel (WebSocket). \\
+\hline
+Déploiement & Conteneurisation complète (Docker Compose) pour un déploiement reproductible et scalable. \\
+\hline
+Extensibilité & Architecture API-First (FastAPI/OpenAPI), code ouvert, personnalisable. \\
+\hline
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════
+\section{Conclusion}
+% ══════════════════════════════════════════════════════════════
+
+Cette étude comparative démontre que le marché des solutions de gestion des compétences, bien que riche, souffre de limitations significatives en matière de modélisation relationnelle, de visualisation avancée, et d'intelligence artificielle intégrée. Les solutions existantes se concentrent soit sur la formation (Cornerstone), soit sur le recrutement externe (LinkedIn), soit sur la cartographie déclarative (Skills Base), sans offrir une vision unifiée et intelligente du capital humain interne.
+
+Nexora se positionne de manière unique en combinant :
+\begin{enumerate}
+    \item Une \textbf{base de données graphe} native pour la modélisation des connaissances.
+    \item Une \textbf{visualisation 3D immersive} pour l'exploration intuitive.
+    \item Un \textbf{pipeline ML multi-algorithmes} pour l'intelligence prédictive.
+    \item Une \textbf{architecture Big Data} pour le traitement à grande échelle.
+    \item Des \textbf{outils de collaboration} intégrés pour catalyser les synergies.
+\end{enumerate}
+
+Cette combinaison fait de Nexora une solution véritablement innovante dans le paysage des outils d'intelligence organisationnelle.
+
+\end{document}

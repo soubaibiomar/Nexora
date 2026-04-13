@@ -1,0 +1,568 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\geometry{margin=2.5cm}
+
+\definecolor{bleu}{HTML}{2B6CB0}
+
+\titleformat{\section}
+  {\Large\bfseries\color{bleu}}{\thesection.}{0.4em}{}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{bleu}}{\thesubsection}{0.4em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{bleu}}{\thesubsubsection}{0.4em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Conception — Nexora}
+\fancyhead[R]{\small EMSI 2025-2026}
+\fancyfoot[C]{\thepage}
+
+\hypersetup{colorlinks=true, linkcolor=bleu, urlcolor=bleu}
+
+\begin{document}
+
+% ══════════════════════════════════════════════════════════════
+\begin{titlepage}
+\centering
+\vspace*{1cm}
+\includegraphics[width=0.5\textwidth]{emsilogo.png}\\[2cm]
+
+\rule{\linewidth}{0.4pt}\\[0.4cm]
+{\Large\textbf{Rapport de Conception}}\\[0.3cm]
+{\Huge\bfseries\color{bleu} NEXORA}\\[0.3cm]
+{\large\textit{Plateforme d'Intelligence Organisationnelle}}\\[0.3cm]
+\rule{\linewidth}{0.4pt}
+
+\vspace{2cm}
+
+\begin{tabular}{cc}
+    \multicolumn{2}{c}{\large\textbf{Réalisé par :}} \\[0.3cm]
+    Soubaibi Omar & Yassine Baizi \\[1cm]
+    \multicolumn{2}{c}{\large\textbf{Encadré par :}} \\[0.3cm]
+    \multicolumn{2}{c}{Mme. OUNACER SOUMAYA} \\
+\end{tabular}
+
+\vfill
+\textbf{Filière :} 4IADM G5-A \\[0.2cm]
+\textbf{Année Universitaire :} 2025--2026
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════
+\section{Introduction}
+% ══════════════════════════════════════════════════════════════
+
+Ce document présente la conception détaillée de la plateforme \textbf{Nexora}. Il décrit l'architecture logicielle, les diagrammes UML (cas d'utilisation, classes, séquences), le modèle de données en graphe, ainsi que les algorithmes d'IA/ML utilisés. L'objectif est de fournir une vue technique claire du fonctionnement interne du système.
+
+% ══════════════════════════════════════════════════════════════
+\section{Architecture Générale}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Architecture 3-Tiers}
+
+L'application Nexora suit une architecture \textbf{3-tiers} classique, séparant la présentation, la logique métier et les données :
+
+\begin{verbatim}
+  ┌───────────────────────────────────────────────────┐
+  │            Couche Présentation (Frontend)          │
+  │   React 18 + TypeScript + Material UI + Vite       │
+  │   react-force-graph-3d (WebGL/Three.js)            │
+  └──────────────────────┬────────────────────────────┘
+                         │ HTTP REST / WebSocket
+  ┌──────────────────────▼────────────────────────────┐
+  │              Couche Métier (Backend)                │
+  │   FastAPI + Uvicorn (API REST)                     │
+  │   ┌──────────────┐  ┌────────────────────┐        │
+  │   │  Moteur ML   │  │  Auth + RBAC (JWT) │        │
+  │   │  PageRank    │  └────────────────────┘        │
+  │   │  TF-IDF      │  ┌────────────────────┐        │
+  │   │  Collab.Filt.│  │  Kafka Simulator   │        │
+  │   │  Classifier  │  │  Spark Batch       │        │
+  │   └──────────────┘  └────────────────────┘        │
+  └──────────────────────┬────────────────────────────┘
+                         │ Bolt (Cypher) / File I/O
+  ┌──────────────────────▼────────────────────────────┐
+  │              Couche Données                        │
+  │   Neo4j 5 (Graph DB)  +  Fichiers JSONL            │
+  └───────────────────────────────────────────────────┘
+\end{verbatim}
+
+\subsection{Explication des Couches}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Couche Présentation :} Application SPA (Single Page Application) React servie par Nginx. Communique avec le backend via des requêtes REST (axios). Le graphe 3D utilise WebGL via Three.js pour le rendu temps réel.
+    \item \textbf{Couche Métier :} API REST FastAPI qui contient toute la logique métier : authentification, RBAC, moteur de recommandation ML, pipelines Big Data. Le serveur ASGI Uvicorn gère les connexions HTTP et WebSocket (chat).
+    \item \textbf{Couche Données :} Neo4j stocke les entités (Expert, Skill, Project, Document) et leurs relations dans un graphe. Les fichiers JSONL servent de source de données pour les modèles ML et les analyses Spark.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Diagramme de Cas d'Utilisation}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Description des Acteurs}
+
+\begin{longtable}{|p{3cm}|p{10.5cm}|}
+\hline
+\textbf{Acteur} & \textbf{Description} \\
+\hline
+Utilisateur & Employé standard. Peut explorer le graphe, rechercher des experts, voir ses recommandations, communiquer. \\
+\hline
+Manager & Hérite de Utilisateur. Accède en plus aux prévisions de compétences, aux rapports analytiques et aux suggestions de collaboration. \\
+\hline
+Administrateur & Hérite de Manager. Peut en plus gérer les utilisateurs, modifier les rôles et accéder aux métriques Big Data (Kafka/Spark). \\
+\hline
+\end{longtable}
+
+\subsection{Cas d'Utilisation par Acteur}
+
+\subsubsection{Utilisateur (Standard)}
+
+\begin{longtable}{|p{1cm}|p{4.5cm}|p{8cm}|}
+\hline
+\textbf{ID} & \textbf{Cas d'utilisation} & \textbf{Description} \\
+\hline
+UC01 & S'inscrire & Créer un compte avec username, email et mot de passe. \\
+\hline
+UC02 & Se connecter & S'authentifier pour obtenir un token JWT. \\
+\hline
+UC03 & Explorer le graphe 3D & Naviguer dans la visualisation 3D du réseau organisationnel. \\
+\hline
+UC04 & Rechercher un expert & Trouver un expert par compétence, département ou requête libre. \\
+\hline
+UC05 & Voir recommandations & Consulter les experts recommandés par le moteur IA. \\
+\hline
+UC06 & Poser une question à Veda & Interagir en langage naturel avec le chatbot IA. \\
+\hline
+UC07 & Voir parcours d'apprentissage & Consulter les compétences suggérées et les lacunes identifiées. \\
+\hline
+UC08 & Composer une équipe & Utiliser le Team Builder pour former une équipe optimale. \\
+\hline
+UC09 & Communiquer (Chat) & Échanger dans les workspaces d'équipe via WebSocket. \\
+\hline
+UC10 & Publier dans le fil & Partager des publications dans le feed. \\
+\hline
+\end{longtable}
+
+\subsubsection{Manager (en plus des UC01--UC10)}
+
+\begin{longtable}{|p{1cm}|p{4.5cm}|p{8cm}|}
+\hline
+UC11 & Voir compétences émergentes & Consulter les compétences en hausse et en déclin. \\
+\hline
+UC12 & Voir prévisions de demande & Consulter les projections à 6--24 mois. \\
+\hline
+UC13 & Voir suggestions collaboration & Voir les paires de départements complémentaires. \\
+\hline
+UC14 & Consulter le dashboard & Voir les statistiques globales de l'organisation. \\
+\hline
+\end{longtable}
+
+\subsubsection{Administrateur (en plus des UC01--UC14)}
+
+\begin{longtable}{|p{1cm}|p{4.5cm}|p{8cm}|}
+\hline
+UC15 & Gérer les utilisateurs & Lister, rechercher et superviser les comptes. \\
+\hline
+UC16 & Modifier les rôles & Changer le rôle d'un utilisateur (user/manager/admin). \\
+\hline
+UC17 & Accéder métriques Big Data & Voir le statut du pipeline Kafka et les rapports Spark. \\
+\hline
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════
+\section{Diagramme de Classes}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Classes Principales}
+
+\subsubsection{Classe Expert}
+\begin{verbatim}
+  ┌─────────────────────────────────┐
+  │            Expert               │
+  ├─────────────────────────────────┤
+  │ - id: String                    │
+  │ - name: String                  │
+  │ - email: String                 │
+  │ - department: String            │
+  │ - role: String                  │
+  │ - location: String              │
+  │ - experience_years: Integer     │
+  │ - expertise_level: String       │
+  │ - hire_date: Date               │
+  │ - skills: List<String>          │
+  ├─────────────────────────────────┤
+  │ + getSkills(): List<Skill>      │
+  │ + getProjects(): List<Project>  │
+  │ + getDocuments(): List<Document>│
+  └─────────────────────────────────┘
+\end{verbatim}
+
+\subsubsection{Classe Skill}
+\begin{verbatim}
+  ┌─────────────────────────────────┐
+  │             Skill               │
+  ├─────────────────────────────────┤
+  │ - id: String                    │
+  │ - name: String                  │
+  │ - category: String              │
+  │ - level: String                 │
+  │ - demand: Integer               │
+  ├─────────────────────────────────┤
+  │ + getExperts(): List<Expert>    │
+  │ + getProjects(): List<Project>  │
+  └─────────────────────────────────┘
+\end{verbatim}
+
+\subsubsection{Classe Project}
+\begin{verbatim}
+  ┌─────────────────────────────────┐
+  │            Project              │
+  ├─────────────────────────────────┤
+  │ - id: String                    │
+  │ - name: String                  │
+  │ - domain: String                │
+  │ - status: String                │
+  │ - priority: String              │
+  │ - budget: Float                 │
+  │ - tech_stack: List<String>      │
+  │ - required_skills: List<String> │
+  ├─────────────────────────────────┤
+  │ + getTeam(): List<Expert>       │
+  │ + getRequiredSkills(): List     │
+  └─────────────────────────────────┘
+\end{verbatim}
+
+\subsubsection{Classe Document}
+\begin{verbatim}
+  ┌─────────────────────────────────┐
+  │           Document              │
+  ├─────────────────────────────────┤
+  │ - id: String                    │
+  │ - title: String                 │
+  │ - type: String                  │
+  │ - topic: String                 │
+  │ - content: String               │
+  │ - author: String                │
+  │ - date: Date                    │
+  │ - views: Integer                │
+  │ - rating: Float                 │
+  ├─────────────────────────────────┤
+  │ + getAuthor(): Expert           │
+  │ + classify(): String            │
+  └─────────────────────────────────┘
+\end{verbatim}
+
+\subsubsection{Classe User (Authentification)}
+\begin{verbatim}
+  ┌─────────────────────────────────┐
+  │             User                │
+  ├─────────────────────────────────┤
+  │ - username: String              │
+  │ - email: String                 │
+  │ - hashed_password: String       │
+  │ - role: Enum(admin,manager,user)│
+  ├─────────────────────────────────┤
+  │ + verifyPassword(): Boolean     │
+  │ + generateToken(): String       │
+  └─────────────────────────────────┘
+\end{verbatim}
+
+\subsection{Relations entre Classes}
+
+\begin{verbatim}
+  Expert ──HAS_SKILL──* Skill         (N:M)
+  Expert ──WORKS_ON──* Project        (N:M)
+  Expert ──AUTHORED──* Document       (1:N)
+  Expert ──KNOWS──* Expert            (N:M)
+  Project ──REQUIRES_SKILL──* Skill   (N:M)
+  Document ──COVERS_TOPIC──* Topic    (N:M)
+\end{verbatim}
+
+\textbf{Explication :} Les relations sont stockées nativement dans Neo4j sous forme d'arêtes orientées entre les nœuds, ce qui permet des parcours de graphe rapides (temps constant par relation, contrairement aux jointures SQL).
+
+% ══════════════════════════════════════════════════════════════
+\section{Diagrammes de Séquence}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Séquence : Authentification (Login)}
+
+\begin{verbatim}
+  Client         Nginx         FastAPI        bcrypt         JWT
+    │               │              │              │             │
+    │ POST /login   │              │              │             │
+    │ (user, pass)  │              │              │             │
+    │──────────────>│              │              │             │
+    │               │──forwards──>│              │             │
+    │               │              │──verify()──>│             │
+    │               │              │<──true──────│             │
+    │               │              │──encode()───────────────>│
+    │               │              │<──token──────────────────│
+    │               │<──{token}───│              │             │
+    │<──{token}─────│              │              │             │
+    │               │              │              │             │
+    │ GET /experts  │              │              │             │
+    │ (Bearer token)│              │              │             │
+    │──────────────>│              │              │             │
+    │               │──forwards──>│              │             │
+    │               │              │──decode()───────────────>│
+    │               │              │<──{sub,role}─────────────│
+    │               │              │──check role──│             │
+    │               │<──data──────│              │             │
+    │<──data────────│              │              │             │
+\end{verbatim}
+
+\textbf{Explication :}
+\begin{enumerate}[leftmargin=*]
+    \item Le client envoie les identifiants via POST.
+    \item Nginx redirige la requête vers FastAPI (proxy inverse).
+    \item FastAPI vérifie le mot de passe avec bcrypt (hachage + comparaison).
+    \item Si valide, FastAPI génère un JWT contenant le username et le rôle.
+    \item Pour les requêtes suivantes, le client envoie le token dans le header \texttt{Authorization}.
+    \item FastAPI décode le token et vérifie le rôle avant de répondre.
+\end{enumerate}
+
+\subsection{Séquence : Recommandation d'Expert}
+
+\begin{verbatim}
+  Client         FastAPI       Recommender     Embeddings     JSONL
+    │               │              │              │             │
+    │ POST /ai/     │              │              │             │
+    │ recommend     │              │              │             │
+    │ (query)       │              │              │             │
+    │──────────────>│              │              │             │
+    │               │──recommend()>│              │             │
+    │               │              │──if not trained──────────>│
+    │               │              │<──load profiles───────────│
+    │               │              │──fit_tfidf()─>│             │
+    │               │              │<──vectors─────│             │
+    │               │              │──transform()─>│             │
+    │               │              │<──query_vec───│             │
+    │               │              │──cosine_sim()─│             │
+    │               │              │──sort top K───│             │
+    │               │<──results────│              │             │
+    │<──[experts]───│              │              │             │
+\end{verbatim}
+
+\textbf{Explication :}
+\begin{enumerate}[leftmargin=*]
+    \item Le client envoie une requête textuelle décrivant le besoin.
+    \item Le Recommender charge les profils experts depuis les fichiers JSONL (si pas déjà en mémoire).
+    \item Les profils sont vectorisés via TF-IDF (Term Frequency--Inverse Document Frequency).
+    \item La requête est transformée dans le même espace vectoriel.
+    \item La similarité cosinus est calculée entre la requête et chaque profil.
+    \item Les K experts les plus similaires sont retournés avec leurs scores.
+\end{enumerate}
+
+\subsection{Séquence : PageRank des Experts}
+
+\begin{verbatim}
+  Client         FastAPI       PageRank        JSONL Files
+    │               │              │              │
+    │ GET /ai/      │              │              │
+    │ expert-rank   │              │              │
+    │──────────────>│              │              │
+    │               │──rank()─────>│              │
+    │               │              │──load()─────>│
+    │               │              │<──data───────│
+    │               │              │──build graph──│
+    │               │              │  (Expert<->Skill<->Project)
+    │               │              │──iterate x20──│
+    │               │              │  (d=0.85)     │
+    │               │              │──blend scores─│
+    │               │              │  (60% graph   │
+    │               │              │   40% features)│
+    │               │<──rankings───│              │
+    │<──[ranked     │              │              │
+    │   experts]    │              │              │
+\end{verbatim}
+
+\textbf{Explication :}
+\begin{enumerate}[leftmargin=*]
+    \item Un graphe biparti est construit à partir des données (Expert $\leftrightarrow$ Skill $\leftrightarrow$ Project).
+    \item L'algorithme PageRank itère 20 fois avec un facteur d'amortissement $d = 0.85$.
+    \item Le score final combine le rang PageRank (60\%) avec des caractéristiques individuelles (40\%) : diversité des compétences, nombre de projets, documents publiés, et années d'expérience.
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════
+\section{Modèle de Données (Graphe Neo4j)}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Schéma du Graphe}
+
+\begin{verbatim}
+                    ┌──────────┐
+                    │  Topic   │
+                    └────▲─────┘
+                         │ COVERS_TOPIC
+                    ┌────┴─────┐
+                    │ Document │
+                    └────▲─────┘
+                         │ AUTHORED
+  ┌───────┐  HAS_SKILL  ┌┴────────┐  WORKS_ON   ┌─────────┐
+  │ Skill │◄────────────│  Expert  │────────────>│ Project │
+  └───┬───┘              └────┬────┘              └────┬────┘
+      │                       │                        │
+      │    REQUIRES_SKILL     │      KNOWS             │
+      └◄──────────────────────┼────────────────────────┘
+                              │
+                         ┌────▼────┐
+                         │ Expert  │
+                         └─────────┘
+\end{verbatim}
+
+\subsection{Propriétés des Nœuds}
+
+\begin{longtable}{|p{2.5cm}|p{11cm}|}
+\hline
+\textbf{Nœud} & \textbf{Propriétés} \\
+\hline
+Expert & id, name, email, department, role, location, experience\_years, expertise\_level, hire\_date, skills[] \\
+\hline
+Skill & id, name, category, level, demand \\
+\hline
+Project & id, name, domain, status, priority, budget, tech\_stack[], required\_skills[], team\_members[] \\
+\hline
+Document & id, title, type, topic, content, author, date, views, rating \\
+\hline
+Topic & id, name \\
+\hline
+\end{longtable}
+
+\subsection{Pourquoi Neo4j ?}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Parcours de graphe efficaces :} trouver les experts liés à une compétence en temps constant (pas de jointures SQL coûteuses).
+    \item \textbf{Langage Cypher :} requêtes déclaratives naturelles pour les patterns de graphe (\texttt{MATCH (e:Expert)-[:HAS\_SKILL]->(s:Skill)}).
+    \item \textbf{PageRank natif :} la structure de graphe est directement exploitable par les algorithmes de centralité.
+    \item \textbf{Flexibilité du schéma :} pas de schéma rigide, facile d'ajouter de nouvelles relations.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Conception des Algorithmes d'IA/ML}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Pipeline ML Général}
+
+\begin{verbatim}
+  Données JSONL ──> Prétraitement ──> Entraînement ──> Modèle
+       │                                                 │
+       │                                                 ▼
+       │                                          ┌──────────────┐
+       └────────────────────────────────────────> │  Prédiction  │
+                                                  └──────────────┘
+\end{verbatim}
+
+\subsection{Algorithmes Implémentés}
+
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{7cm}|}
+\hline
+\textbf{Algorithme} & \textbf{Technique} & \textbf{Utilisation} \\
+\hline
+Recommandation d'experts & TF-IDF + cosinus & Vectorise les profils et la requête, trie par similarité. \\
+\hline
+Scoring d'influence & PageRank itératif & Classe les experts par leur centralité dans le graphe. \\
+\hline
+Prédiction de lacunes & Filtrage collaboratif & Matrice user-skill, cosinus, recommande les skills manquants. \\
+\hline
+Compétences émergentes & Analyse de cohortes & Compare les taux d'adoption entre recrues récentes et anciennes. \\
+\hline
+Prévision de demande & Projection linéaire & Croise la demande projet × taux de croissance sur N mois. \\
+\hline
+Classification de docs & TF-IDF + Logistic Reg. & Classifie automatiquement les documents par catégorie. \\
+\hline
+Collaboration inter-dept. & Analyse ensembliste & Mesure la complémentarité des profils de skills entre départements. \\
+\hline
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════
+\section{Conception du Déploiement}
+% ══════════════════════════════════════════════════════════════
+
+\begin{verbatim}
+  docker-compose.yml
+  │
+  ├── neo4j (port 7474, 7687)
+  │   └── Volume : neo4j_data (persistant)
+  │   └── Healthcheck : cypher-shell
+  │
+  ├── backend (port 8000)
+  │   ├── FastAPI + Uvicorn
+  │   ├── Monte : ./data -> /app/data
+  │   └── Dépend de : neo4j (healthy)
+  │
+  └── frontend (port 3000 -> 80)
+      ├── Build : Node 20 (build) -> Nginx Alpine (serve)
+      ├── Routing SPA : fallback index.html
+      ├── Proxy : /api/* -> backend:8000
+      └── Dépend de : backend
+\end{verbatim}
+
+\textbf{Explication :}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Neo4j} démarre en premier avec un healthcheck pour s'assurer qu'il est prêt avant le backend.
+    \item \textbf{Le backend} ne démarre que quand Neo4j est \textit{healthy}. Il monte le dossier \texttt{data/} pour accéder aux fichiers JSONL.
+    \item \textbf{Le frontend} est compilé en production (Vite build), puis servi par Nginx qui gère aussi le proxy API vers le backend.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Conception de la Sécurité}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Flux d'Authentification}
+
+\begin{longtable}{|p{1cm}|p{13cm}|}
+\hline
+\textbf{1} & L'utilisateur saisit son username et mot de passe sur la page de login. \\
+\hline
+\textbf{2} & Le frontend envoie POST \texttt{/api/auth/login} avec les identifiants. \\
+\hline
+\textbf{3} & Le backend vérifie le rate limiting (max 5 tentatives / 5 min). \\
+\hline
+\textbf{4} & Le mot de passe est comparé au hash bcrypt stocké. \\
+\hline
+\textbf{5} & Si valide : un token JWT est signé avec le username et le rôle. \\
+\hline
+\textbf{6} & Le token est stocké côté client (localStorage) et envoyé dans les headers suivants. \\
+\hline
+\end{longtable}
+
+\subsection{Contrôle d'Accès (RBAC)}
+
+\begin{longtable}{|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+\textbf{Fonctionnalité} & \textbf{User} & \textbf{Manager} & \textbf{Admin} \\
+\hline
+Explorer le graphe & \checkmark & \checkmark & \checkmark \\
+\hline
+Rechercher des experts & \checkmark & \checkmark & \checkmark \\
+\hline
+Chatbot Veda & \checkmark & \checkmark & \checkmark \\
+\hline
+Prévisions compétences & & \checkmark & \checkmark \\
+\hline
+Dashboard analytique & & \checkmark & \checkmark \\
+\hline
+Gérer les utilisateurs & & & \checkmark \\
+\hline
+Modifier les rôles & & & \checkmark \\
+\hline
+Métriques Big Data & & & \checkmark \\
+\hline
+\end{longtable}
+
+\end{document}

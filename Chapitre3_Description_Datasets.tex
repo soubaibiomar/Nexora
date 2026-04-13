@@ -1,0 +1,515 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{amssymb}
+\geometry{margin=2.5cm}
+\setlength{\headheight}{15pt}
+
+\definecolor{bleu}{HTML}{2B6CB0}
+\definecolor{vertclair}{HTML}{48BB78}
+\definecolor{orangeclair}{HTML}{ED8936}
+\definecolor{grisclair}{HTML}{F7FAFC}
+\definecolor{codecolor}{HTML}{2D3748}
+
+\titleformat{\section}
+  {\Large\bfseries\color{bleu}}{\thesection.}{0.4em}{}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{bleu}}{\thesubsection}{0.4em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{bleu}}{\thesubsubsection}{0.4em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Chapitre 3 — Description des Datasets}
+\fancyhead[R]{\small Nexora — EMSI 2025-2026}
+\fancyfoot[C]{\thepage}
+
+\hypersetup{colorlinks=true, linkcolor=bleu, urlcolor=bleu}
+
+\lstset{
+    basicstyle=\small\ttfamily\color{codecolor},
+    backgroundcolor=\color{grisclair},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    keywordstyle=\bfseries\color{bleu},
+    commentstyle=\itshape\color{gray},
+    numbers=left,
+    numbersep=8pt,
+    numberstyle=\tiny\color{gray},
+    tabsize=2
+}
+
+\begin{document}
+
+% ══════════════════════════════════════════════════════════════
+\begin{titlepage}
+\centering
+\vspace*{1cm}
+\includegraphics[width=0.5\textwidth]{emsilogo.jpeg}\\[2cm]
+
+\rule{\linewidth}{0.4pt}\\[0.4cm]
+{\Large\textbf{Chapitre 3}}\\[0.3cm]
+{\Huge\bfseries\color{bleu} Description des Datasets}\\[0.3cm]
+{\large\textit{Structure, Contenu et Génération des Jeux de Données Nexora}}\\[0.3cm]
+\rule{\linewidth}{0.4pt}
+
+\vspace{2cm}
+
+\begin{tabular}{cc}
+    \multicolumn{2}{c}{\large\textbf{Réalisé par :}} \\[0.3cm]
+    Soubaibi Omar & Yassine Baizi \\[1cm]
+    \multicolumn{2}{c}{\large\textbf{Encadré par :}} \\[0.3cm]
+    \multicolumn{2}{c}{Mme. OUNACER SOUMAYA} \\
+\end{tabular}
+
+\vfill
+\textbf{Filière :} 4IADM G5-A \\[0.2cm]
+\textbf{Année Universitaire :} 2025--2026
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════
+\section{Introduction}
+% ══════════════════════════════════════════════════════════════
+
+Ce chapitre décrit en détail les jeux de données (\textit{datasets}) utilisés par la plateforme Nexora. Ces données sont générées de manière synthétique mais réaliste, reproduisant fidèlement la structure d'une grande organisation technologique. Elles alimentent à la fois la base de données Neo4j (graphe de connaissances), les algorithmes de Machine Learning (recommandation, scoring, classification) et les pipelines Big Data (Spark, Kafka).
+
+L'ensemble des données est stocké au format \textbf{JSONL} (JSON Lines) — un enregistrement JSON par ligne — qui offre les avantages suivants :
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Simplicité :} Chaque ligne est un objet JSON autonome et lisible.
+    \item \textbf{Streaming :} Le fichier peut être traité ligne par ligne sans charger l'intégralité en mémoire.
+    \item \textbf{Compatibilité :} Format natif pour PySpark, Pandas, et les pipelines d'ingestion de données.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Vue d'Ensemble des Fichiers de Données}
+% ══════════════════════════════════════════════════════════════
+
+La plateforme Nexora s'appuie sur \textbf{5 fichiers JSONL} principaux, chacun représentant une entité métier distincte :
+
+\begin{longtable}{|p{3.5cm}|p{2cm}|p{2cm}|p{6cm}|}
+\hline
+\rowcolor{bleu!15}
+\textbf{Fichier} & \textbf{Taille} & \textbf{Records} & \textbf{Description} \\
+\hline
+\texttt{employees.jsonl} & $\sim$1 Mo & 500 & Profils des experts/employés avec leurs compétences. \\
+\hline
+\texttt{skills.jsonl} & $\sim$8 Ko & 82 & Référentiel des compétences techniques. \\
+\hline
+\texttt{projects.jsonl} & $\sim$122 Ko & 120 & Projets de l'organisation avec équipes et technologies. \\
+\hline
+\texttt{documents.jsonl} & $\sim$850 Ko & 500 & Base documentaire : guides, articles, whitepapers. \\
+\hline
+\texttt{technologies.jsonl} & $\sim$3 Mo & Variable & Données technologiques complémentaires. \\
+\hline
+\end{longtable}
+
+\textbf{Note :} Ces volumes correspondent à l'échelle \texttt{medium} (par défaut). Le générateur supporte trois échelles : \texttt{small} (100 employés), \texttt{medium} (500) et \texttt{large} (2000+).
+
+% ══════════════════════════════════════════════════════════════
+\section{Dataset 1 : Employés (\texttt{employees.jsonl})}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Objectif}
+
+Ce fichier constitue le cœur du système. Chaque enregistrement représente un \textbf{expert/employé} de l'organisation, avec ses attributs professionnels et ses compétences acquises. Il alimente directement :
+\begin{itemize}[leftmargin=*]
+    \item Les nœuds \texttt{Expert} dans le graphe Neo4j.
+    \item Le moteur de recommandation (profils vectorisés par TF-IDF).
+    \item L'algorithme PageRank (construction du graphe Expert $\leftrightarrow$ Skill).
+    \item Le filtrage collaboratif (matrice User-Skill).
+\end{itemize}
+
+\subsection{Structure d'un Enregistrement}
+
+\begin{longtable}{|p{3.5cm}|p{2.5cm}|p{7.5cm}|}
+\hline
+\rowcolor{bleu!15}
+\textbf{Champ} & \textbf{Type} & \textbf{Description} \\
+\hline
+\texttt{id} & String & Identifiant unique (format : \texttt{emp\_\{n\}}). \\
+\hline
+\texttt{name} & String & Nom complet de l'employé (prénom + nom). \\
+\hline
+\texttt{email} & String & Adresse email unique (\texttt{prenom.nom@nexora.io}). \\
+\hline
+\texttt{department} & String & Département d'affectation (17 départements). \\
+\hline
+\texttt{role} & String & Rôle professionnel (24 rôles distincts). \\
+\hline
+\texttt{location} & String & Localisation géographique (28 villes, 15 pays). \\
+\hline
+\texttt{hire\_date} & Date (ISO) & Date d'embauche (format \texttt{YYYY-MM-DD}). \\
+\hline
+\texttt{experience\_years} & Integer & Années d'expérience professionnelle (1 à 20). \\
+\hline
+\texttt{expertise\_level} & Integer & Niveau d'expertise global (1 à 5). \\
+\hline
+\texttt{skills} & Array & Liste des compétences avec niveau individuel. \\
+\hline
+\end{longtable}
+
+\subsection{Exemple d'Enregistrement}
+
+\begin{lstlisting}[language={}]
+{
+  "id": "emp_1",
+  "name": "Sophia Garcia",
+  "email": "sophia.garcia@nexora.io",
+  "department": "Engineering",
+  "role": "ML Engineer",
+  "location": "Dubai, UAE",
+  "hire_date": "2023-08-08",
+  "experience_years": 9,
+  "expertise_level": 2,
+  "skills": [
+    {"name": "C++", "level": 2},
+    {"name": "Grafana", "level": 2},
+    {"name": "Rust", "level": 2},
+    {"name": "Datadog", "level": 4},
+    {"name": "Google Cloud", "level": 2},
+    {"name": "Azure", "level": 4}
+  ]
+}
+\end{lstlisting}
+
+\subsection{Distributions et Statistiques}
+
+\subsubsection{Départements (17 catégories)}
+
+Les employés sont répartis uniformément parmi les départements suivants : Engineering, Data Science, DevOps, Security, Cloud Infrastructure, AI Research, Web Development, Mobile Development, Quality Assurance, Platform Engineering, Machine Learning, Architecture, Product Development, Backend Engineering, Frontend Engineering, Infrastructure et SRE.
+
+\subsubsection{Rôles (24 rôles)}
+
+Les rôles couvrent un spectre complet allant de \texttt{Junior Developer} à \texttt{Principal Engineer}, en passant par des postes spécialisés (\texttt{Security Engineer}, \texttt{Data Scientist}, \texttt{Cloud Architect}, \texttt{SRE}).
+
+\subsubsection{Localisation (28 villes)}
+
+La répartition géographique couvre l'Europe (Paris, Lyon, Londres, Berlin, Amsterdam...), l'Amérique du Nord (New York, San Francisco, Toronto), l'Asie (Tokyo, Singapore) et d'autres régions (Dubaï, São Paulo, Sydney).
+
+\subsubsection{Attribution des Compétences}
+
+Les compétences sont attribuées de manière réaliste grâce à un système d'\textbf{affinité département-compétence}. Par exemple :
+\begin{itemize}[leftmargin=*, label=--]
+    \item Un employé du département \texttt{Data Science} reçoit prioritairement des compétences des catégories « Data \& AI » et « Programming Languages ».
+    \item Un employé \texttt{DevOps} reçoit des compétences « DevOps \& Tools » et « Cloud Platforms ».
+    \item Le nombre de compétences et leur niveau augmentent avec l'expérience.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Dataset 2 : Compétences (\texttt{skills.jsonl})}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Objectif}
+
+Ce fichier constitue le \textbf{référentiel des compétences} de l'organisation. Il définit les 82 compétences techniques reconnues, organisées en 6 catégories. Il sert de base pour :
+\begin{itemize}[leftmargin=*]
+    \item Les nœuds \texttt{Skill} dans le graphe Neo4j.
+    \item L'ontologie de compétences utilisée par les algorithmes ML.
+    \item L'analyse des compétences émergentes et des tendances.
+\end{itemize}
+
+\subsection{Structure d'un Enregistrement}
+
+\begin{longtable}{|p{3.5cm}|p{2.5cm}|p{7.5cm}|}
+\hline
+\rowcolor{bleu!15}
+\textbf{Champ} & \textbf{Type} & \textbf{Description} \\
+\hline
+\texttt{id} & String & Identifiant unique (\texttt{skill\_\{n\}}). \\
+\hline
+\texttt{name} & String & Nom de la compétence technique. \\
+\hline
+\texttt{category} & String & Catégorie de la compétence (6 catégories). \\
+\hline
+\texttt{level} & String & Niveau typique (Beginner / Intermediate / Advanced). \\
+\hline
+\texttt{demand} & Integer & Score de demande sur le marché (0--100). \\
+\hline
+\end{longtable}
+
+\subsection{Catégories et Ventilation}
+
+\begin{longtable}{|p{4cm}|p{1.5cm}|p{8cm}|}
+\hline
+\rowcolor{bleu!15}
+\textbf{Catégorie} & \textbf{Nb} & \textbf{Exemples} \\
+\hline
+Programming Languages & 14 & Python (95), JavaScript (92), TypeScript (88), Java (85), Go (75), Rust (65), C++ (60) \\
+\hline
+Frameworks & 14 & React (90), Node.js (88), Next.js (82), FastAPI (80), Angular (65), Vue.js (70) \\
+\hline
+Cloud Platforms & 10 & Docker (95), AWS (92), Kubernetes (88), Azure (85), Terraform (82), GCP (78) \\
+\hline
+Data \& AI & 18 & Pandas (90), NumPy (88), PostgreSQL (85), PyTorch (82), TensorFlow (80), Redis (80) \\
+\hline
+DevOps \& Tools & 11 & Git (98), GitHub Actions (85), GitLab CI (80), Jenkins (75), Grafana (72), Prometheus (70) \\
+\hline
+Security & 8 & Encryption (80), IAM (75), OWASP (70), Network Security (65), Penetration Testing (55) \\
+\hline
+\end{longtable}
+
+\textit{Les chiffres entre parenthèses représentent le score de demande sur le marché (0--100).}
+
+\subsection{Exemple d'Enregistrement}
+
+\begin{lstlisting}[language={}]
+{
+  "id": "skill_1",
+  "name": "Python",
+  "category": "Programming Languages",
+  "level": "Advanced",
+  "demand": 95
+}
+\end{lstlisting}
+
+% ══════════════════════════════════════════════════════════════
+\section{Dataset 3 : Projets (\texttt{projects.jsonl})}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Objectif}
+
+Ce fichier décrit les \textbf{projets techniques} de l'organisation, avec leurs équipes, technologies et statuts. Il alimente :
+\begin{itemize}[leftmargin=*]
+    \item Les nœuds \texttt{Project} et les relations \texttt{WORKS\_ON} et \texttt{REQUIRES\_SKILL} dans Neo4j.
+    \item L'algorithme PageRank (liens Expert $\leftrightarrow$ Project dans le graphe biparti).
+    \item Les analyses Big Data (statistiques par domaine, budget, statut).
+\end{itemize}
+
+\subsection{Structure d'un Enregistrement}
+
+\begin{longtable}{|p{3.5cm}|p{2.5cm}|p{7.5cm}|}
+\hline
+\rowcolor{bleu!15}
+\textbf{Champ} & \textbf{Type} & \textbf{Description} \\
+\hline
+\texttt{id} & String & Identifiant unique (\texttt{proj\_\{n\}}). \\
+\hline
+\texttt{name} & String & Nom du projet (domaine + phase). \\
+\hline
+\texttt{domain} & String & Domaine métier (20 domaines). \\
+\hline
+\texttt{tech\_stack} & String & Technologies utilisées (chaîne séparée par virgules). \\
+\hline
+\texttt{required\_skills} & Array & Compétences requises pour le projet. \\
+\hline
+\texttt{date} & Date (ISO) & Date de début du projet. \\
+\hline
+\texttt{status} & String & Statut (Active, Completed, Planning, On Hold). \\
+\hline
+\texttt{budget} & Integer & Budget alloué en euros (50K -- 5M). \\
+\hline
+\texttt{priority} & String & Priorité (Critical, High, Medium, Low). \\
+\hline
+\texttt{team\_members} & Array & IDs des employés affectés au projet. \\
+\hline
+\texttt{team\_size} & Integer & Taille de l'équipe (3 à 12 membres). \\
+\hline
+\end{longtable}
+
+\subsection{Domaines de Projets (20 domaines)}
+
+Les projets couvrent une variété de secteurs industriels : E-Commerce, Healthcare, Financial Services, Education, IoT, Logistics, Media Streaming, Social Network, CRM, Supply Chain, HR Management, Analytics Dashboard, Real-time Collaboration, Marketplace, Insurance, Gaming Backend, Smart City, Autonomous Vehicles, Digital Banking et Telemedicine.
+
+\subsection{Exemple d'Enregistrement}
+
+\begin{lstlisting}[language={}]
+{
+  "id": "proj_1",
+  "name": "Smart City Platform - Phase 1",
+  "domain": "Smart City Platform",
+  "tech_stack": "React, Go, Cassandra, AWS",
+  "required_skills": ["React", "Go", "Cassandra", "AWS"],
+  "date": "2024-09-24",
+  "status": "Completed",
+  "budget": 4079676,
+  "priority": "Critical",
+  "team_members": ["emp_947", "emp_867", "emp_1060"],
+  "team_size": 5
+}
+\end{lstlisting}
+
+% ══════════════════════════════════════════════════════════════
+\section{Dataset 4 : Documents (\texttt{documents.jsonl})}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Objectif}
+
+Ce fichier représente la \textbf{base documentaire interne} de l'organisation : guides techniques, tutoriels, études de cas, whitepapers, et articles. Il sert pour :
+\begin{itemize}[leftmargin=*]
+    \item Les nœuds \texttt{Document} et les relations \texttt{AUTHORED} et \texttt{COVERS\_TOPIC} dans Neo4j.
+    \item Le classificateur de documents (TF-IDF + Logistic Regression).
+    \item Le moteur de recherche textuelle et les analyses Big Data (Spark).
+\end{itemize}
+
+\subsection{Structure d'un Enregistrement}
+
+\begin{longtable}{|p{3.5cm}|p{2.5cm}|p{7.5cm}|}
+\hline
+\rowcolor{bleu!15}
+\textbf{Champ} & \textbf{Type} & \textbf{Description} \\
+\hline
+\texttt{id} & String & Identifiant unique (\texttt{doc\_\{n\}}). \\
+\hline
+\texttt{title} & String & Titre du document avec type et numéro. \\
+\hline
+\texttt{type} & String & Type de document (9 types). \\
+\hline
+\texttt{topic} & String & Thématique principale (6 domaines). \\
+\hline
+\texttt{content} & String & Contenu textuel complet du document. \\
+\hline
+\texttt{abstract} & String & Résumé du document en une phrase. \\
+\hline
+\texttt{author} & String & ID de l'employé auteur (\texttt{emp\_\{n\}}). \\
+\hline
+\texttt{date} & Date (ISO) & Date de publication. \\
+\hline
+\texttt{views} & Integer & Nombre de vues (50 -- 15 000). \\
+\hline
+\texttt{rating} & Float & Note moyenne (3.0 -- 5.0). \\
+\hline
+\end{longtable}
+
+\subsection{Types de Documents et Thématiques}
+
+\begin{longtable}{|p{6.5cm}|p{7cm}|}
+\hline
+\rowcolor{bleu!15}
+\textbf{Types (9)} & \textbf{Thématiques (6)} \\
+\hline
+Guide, Tutorial, Case Study, Documentation, Report, Article, Whitepaper, Best Practice, Reference & DevOps, Machine Learning, Cloud, Security, Web Development, AI \\
+\hline
+\end{longtable}
+
+\subsection{Exemple d'Enregistrement}
+
+\begin{lstlisting}[language={}]
+{
+  "id": "doc_1",
+  "title": "Neural Network Optimization - Whitepaper #1",
+  "type": "Whitepaper",
+  "topic": "Machine Learning",
+  "content": "Overview\n--------\n...",
+  "abstract": "Comprehensive whitepaper covering ML...",
+  "author": "emp_1458",
+  "date": "2023-03-10",
+  "views": 8064,
+  "rating": 4.1
+}
+\end{lstlisting}
+
+% ══════════════════════════════════════════════════════════════
+\section{Générateur de Données}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Script de Génération}
+
+Les données sont générées par le script Python \texttt{generate\_data.py} situé dans le dossier \texttt{data/}. Ce script utilise des algorithmes déterministes (seed fixe) pour produire des données reproductibles et réalistes.
+
+\subsection{Présets d'Échelle}
+
+Le générateur supporte trois niveaux d'échelle via l'argument \texttt{--scale} :
+
+\begin{longtable}{|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+\rowcolor{bleu!15}
+\textbf{Paramètre} & \textbf{Small} & \textbf{Medium} & \textbf{Large} \\
+\hline
+Employés & 100 & 500 & 2 000 \\
+\hline
+Documents & 200 & 500 & 1 000 \\
+\hline
+Projets & 50 & 120 & 300 \\
+\hline
+Compétences & 82 (fixe) & 82 (fixe) & 82 (fixe) \\
+\hline
+Seed aléatoire & 42 & 42 & 42 \\
+\hline
+\end{longtable}
+
+\subsection{Commandes d'Utilisation}
+
+\begin{lstlisting}[language=bash]
+# Generation par defaut (medium - 500 employes)
+python generate_data.py
+
+# Petite echelle (prototypage rapide)
+python generate_data.py --scale small
+
+# Grande echelle (tests de performance)
+python generate_data.py --scale large
+\end{lstlisting}
+
+\subsection{Mécanismes de Réalisme}
+
+Le générateur emploie plusieurs stratégies pour produire des données réalistes :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Affinité département-compétence :} Une table de correspondance lie chaque département à ses catégories de compétences probables (ex: le département « Security » obtient prioritairement des compétences des catégories « Security » et « DevOps \& Tools »).
+    \item \textbf{Corrélation expérience-compétences :} Le nombre de compétences et leur niveau augmentent proportionnellement avec les années d'expérience de l'employé.
+    \item \textbf{Diversité des noms :} Le pool comporte 96 prénoms et 64 noms de famille de nationalités variées (français, anglo-saxons, arabes, asiatiques, slaves, nordiques).
+    \item \textbf{Unicité des emails :} Un mécanisme de suffixe numérique garantit l'unicité des adresses email en cas d'homonymie.
+    \item \textbf{Reproductibilité :} L'utilisation d'un seed fixe (\texttt{random.seed(42)}) assure que chaque exécution produit exactement les mêmes données.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Relations entre Datasets}
+% ══════════════════════════════════════════════════════════════
+
+Les datasets ne sont pas indépendants : ils forment un réseau de relations exploité par le graphe Neo4j et les algorithmes ML :
+
+\begin{verbatim}
+  employees.jsonl                            skills.jsonl
+       |                                          |
+       | emp.skills[].name ---- skill.name -------+
+       |
+       +--- emp.id ---- project.team_members[] --- projects.jsonl
+       |
+       +--- emp.id ---- document.author ---------- documents.jsonl
+\end{verbatim}
+
+\begin{longtable}{|p{4cm}|p{3cm}|p{6.5cm}|}
+\hline
+\rowcolor{bleu!15}
+\textbf{Relation} & \textbf{Type Neo4j} & \textbf{Description} \\
+\hline
+Employé $\rightarrow$ Compétence & HAS\_SKILL & Un employé possède une compétence à un certain niveau. \\
+\hline
+Employé $\rightarrow$ Projet & WORKS\_ON & Un employé est membre d'une équipe projet. \\
+\hline
+Employé $\rightarrow$ Document & AUTHORED & Un employé est l'auteur d'un document. \\
+\hline
+Projet $\rightarrow$ Compétence & REQUIRES\_SKILL & Un projet nécessite certaines compétences. \\
+\hline
+Employé $\rightarrow$ Employé & KNOWS & Relation de collaboration entre experts. \\
+\hline
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════
+\section{Conclusion}
+% ══════════════════════════════════════════════════════════════
+
+Les datasets Nexora constituent une base solide et réaliste pour alimenter l'ensemble des composants de la plateforme. Ils reproduisent fidèlement la complexité d'une organisation technologique multi-département, multi-site et multi-compétences. Le générateur de données configurable permet d'adapter l'échelle aux différents besoins (prototypage, tests fonctionnels, tests de performance), tout en garantissant la reproductibilité grâce au seed déterministe.
+
+Ces données interconnectées forment le substrat à partir duquel le graphe de connaissances Neo4j est construit, les modèles ML sont entraînés, et les analyses Big Data (Spark) sont exécutées — constituant ainsi le cœur informationnel de la plateforme Nexora.
+
+\end{document}
