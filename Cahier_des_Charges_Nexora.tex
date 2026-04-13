@@ -9,14 +9,16 @@
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 \usepackage{hyperref}
+\usepackage{pgfgantt}
 \geometry{margin=2.5cm}
+\setlength{\headheight}{15pt}
 
 % ── Couleur unique : bleu des titres ──────────────────────────
 \definecolor{bleu}{HTML}{2B6CB0}
 
 % ── Style des sections (bleu comme dans le Word) ─────────────
 \titleformat{\section}
-  {\Large\bfseries\color{bleu}}{}{0em}{\thesection. }
+  {\Large\bfseries\color{bleu}}{\thesection.}{0.4em}{}
 
 \titleformat{\subsection}
   {\large\bfseries\color{bleu}}{\thesubsection\ }{0em}{}
@@ -41,12 +43,12 @@
 \begin{titlepage}
 \centering
 \vspace*{1cm}
-\includegraphics[width=0.5\textwidth]{emsilogo.png}\\[2cm]
+\includegraphics[width=0.5\textwidth]{emsilogo.jpeg}\\[2cm]
 
 \rule{\linewidth}{0.4pt}\\[0.4cm]
 {\Large\textbf{Cahier des Charges}}\\[0.3cm]
 {\Huge\bfseries\color{bleu} NEXORA}\\[0.3cm]
-{\large\textit{Plateforme d'Intelligence Organisationnelle}}\\[0.3cm]
+{\large\textit{Plateforme d'Intelligence Opérationnelle pour la Gestion et la Valorisation des Compétences Internes}}\\[0.3cm]
 \rule{\linewidth}{0.4pt}
 
 \vspace{2cm}
@@ -71,13 +73,39 @@
 \section{Présentation du Projet}
 % ══════════════════════════════════════════════════════════════
 
-Nexora est une plateforme d'intelligence organisationnelle propulsée par l'Intelligence Artificielle. Elle vise à cartographier les compétences, découvrir les experts internes, prédire les besoins en talents, et accélérer le partage des connaissances grâce à des analyses basées sur des graphes.
+Nexora est une plateforme d'intelligence opérationnelle pour la gestion et la valorisation des compétences internes, propulsée par l'Intelligence Artificielle. Elle vise à cartographier les compétences, découvrir les experts internes, prédire les besoins en talents, et accélérer le partage des connaissances grâce à des analyses basées sur des graphes.
 
 % ══════════════════════════════════════════════════════════════
-\section{Contexte et Problématique}
+\section{Contexte}
 % ══════════════════════════════════════════════════════════════
 
-Les grandes organisations souffrent souvent de silos d'information et d'une mauvaise visibilité sur les compétences internes. Il est difficile de constituer des équipes optimales, d'identifier les déficits de compétences à venir, et de trouver le bon expert pour un problème donné. Nexora résout ce problème en centralisant les données RH, les projets, et les publications dans un graphe de connaissances dynamique.
+Dans un environnement macro-économique globalisé et hautement compétitif, l'agilité organisationnelle et l'innovation rapide sont devenues des impératifs de survie pour les grandes entreprises. Au cœur de cette agilité se trouve le capital humain : les connaissances, les savoir-faire et les compétences techniques que possèdent les collaborateurs. Or, avec l'adoption massive des outils numériques, les organisations accumulent un volume exponentiel de données liées à leurs employés (certifications, historique de projets, évaluations annuelles, publications internes, messages sur les réseaux sociaux d'entreprise, etc.).
+
+Cependant, ces données s'avèrent de plus en plus fragmentées et cloisonnées au sein de systèmes d'information fonctionnant en silos (SIRH traditionnels, plateformes d'e-learning, intranets, outils de gestion de tickets ou de code source). Cette fragmentation empêche de dégager une vue unifiée et dynamique des vraies forces de l'entreprise. Bien souvent, la cartographie des compétences s'arrête à un référentiel statique, mis à jour épisodiquement par les RH, qui ne reflète absolument pas la réalité du terrain et l'évolution temporelle des expertises. 
+
+Conséquence directe de cette défaillance, les entreprises sous-exploitent leurs talents internes, préférant parfois se tourner vers le recrutement externe ou la sous-traitance à des coûts élevés, faute d'avoir pu identifier la bonne ressource déjà présente en interne. C’est face à cette difficulté croissante de valorisation du capital intellectuel que s'inscrit le projet \textbf{Nexora}. En tant que plateforme d'intelligence opérationnelle pour la gestion et la valorisation des compétences internes, Nexora ambitionne de briser ces silos de données pour construire un écosystème intelligent, dynamique et prédictif de l'organisation.
+
+% ══════════════════════════════════════════════════════════════
+\section{Problématique}
+% ══════════════════════════════════════════════════════════════
+
+Face à la fragmentation des systèmes d'information RH et opérationnels, l’entreprise perd de sa réactivité et de sa capacité d'innovation. L'identification des talents et l'optimisation de la collaboration se heurtent à plusieurs défis majeurs :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Cartographie obsolète et visibilité réduite :} Les référentiels de compétences traditionnels sont déclaratifs et rapidement périmés. L'organisation manque d'outils capables de déduire automatiquement, à partir des activités réelles (commits de code, rédaction documentaire, participations à des réunions clés), quelles sont les compétences émergentes de ses employés.
+    \item \textbf{Difficulté chronique dans la recherche d'experts :} Lorsqu'un projet critique nécessite une expertise pointue (par exemple, un incident de production rare, une technologie de niche, ou un savoir métier spécifique), les managers perdent un temps précieux à interroger leurs réseaux informels ou à lancer des requêtes dans des systèmes RH incomplets. Il n'existe pas de « moteur de recherche intelligent » capable de classer les experts selon la pertinence et la fraîcheur de leur expérience.
+    \item \textbf{Réseautage interne insuffisant et déficit de synergies :} Dans une organisation comptant des milliers de collaborateurs répartis sur plusieurs départements ou sites géographiques, de nombreux employés travaillent sur des sujets similaires sans le savoir. Comment le système d'information peut-il suggérer et encourager proactivement la collaboration entre ces profils pour mutualiser les efforts et catalyser des synergies inattendues ?
+    \item \textbf{Manque d'aide à la décision stratégique :} Du côté de la direction, la difficulté à anticiper les déficits futurs de compétences limite la capacité à orienter efficacement le plan de recrutement ou le plan de formation.
+\end{itemize}
+
+Face à ces enjeux majeurs, la question centrale est la suivante : \textit{Comment concevoir et déployer une solution informatique capable de consolider les connaissances fragmentées de l'entreprise en un réseau cognitif dynamique, afin d'automatiser l'identification des experts et de suggérer pro-activement des collaborations pertinentes ?}
+
+Pour résoudre cette problématique, Nexora s'appuie sur une combinaison de technologies avancées s'articulant autour de trois piliers fondateurs :
+\begin{enumerate}
+    \item \textbf{La modélisation par Graphes de Connaissances :} La construction de graphes d'entreprise permet de capturer non seulement les entités (collaborateurs, projets, compétences, documents), mais surtout la sémantique de leurs relations (« a travaillé sur », « maîtrise au niveau avancé », « a co-écrit avec »).
+    \item \textbf{L'identification intelligente d'experts :} En utilisant des algorithmes d'analyse topologique des réseaux (comme PageRank ou la centralité de degré), le système est capable d'identifier automatiquement les véritables « hubs » de savoir-faire dans l'entreprise.
+    \item \textbf{Les recommandations de collaborations :} La plateforme agit comme un système de recommandation intelligent utilisant des techniques de filtrage algorithmique et d'apprentissage automatique pour proposer aux employés des collègues avec qui ils partagent un fort potentiel de collaboration fructueuse.
+\end{enumerate}
 
 % ══════════════════════════════════════════════════════════════
 \section{Objectifs}
@@ -92,32 +120,75 @@ Les grandes organisations souffrent souvent de silos d'information et d'une mauv
 \end{itemize}
 
 % ══════════════════════════════════════════════════════════════
-\section{Périmètre Fonctionnel}
+\section{Besoins Fonctionnels}
 % ══════════════════════════════════════════════════════════════
 
-\subsection{Sécurité et Accès}
+Les besoins fonctionnels formalisent de manière détaillée les services, les comportements et les outils opérationnels que la plateforme Nexora mettra à disposition de ses différents groupes d'utilisateurs.
+
+\subsection{Gestion de l'Identité, Sécurité et Accès}
 \begin{itemize}[leftmargin=*]
-    \item Authentification sécurisée par token JWT et hachage bcrypt.
-    \item Page de connexion et d'inscription obligatoire pour accéder à la plateforme.
-    \item Contrôle d'accès basé sur les rôles (RBAC) : Admin, Manager, User.
+    \item \textbf{Authentification robuste :} Connexion sécurisée des utilisateurs par token JWT. Gestion de l'inscription et de la récupération de mot de passe incluant le hachage cryptographique (bcrypt). Envisager l'intégration ultérieure avec un annuaire d'entreprise (LDAP/Active Directory).
+    \item \textbf{Contrôle d'accès basé sur les rôles (RBAC) :} La plateforme distinguera au minimum trois rôles aux privilèges croissants : l'Employé (User), le Manager de département, et l'Administrateur technique.
+    \item \textbf{Gestion des consentements et de la visibilité :} Les utilisateurs pourront paramétrer le degré de visibilité de certaines informations de leur profil public, en conformité avec les directives RH internes.
 \end{itemize}
 
-\subsection{Fonctionnalités Utilisateur (Standard)}
+\subsection{Fonctionnalités Utilisateur et Manager}
 \begin{itemize}[leftmargin=*]
-    \item Navigation dans l'explorateur de graphe interactif en 3D.
-    \item Recherche intelligente d'experts par compétences, localisation ou département.
-    \item Tableau de bord \textit{Skill Evolution} (Tendances, Prévisions, Collaborations).
-    \item Recommandations personnalisées (parcours d'apprentissage, experts similaires).
-    \item Interaction en langage naturel avec l'assistant IA (Veda).
-    \item Espaces de travail d'équipe (Workspaces) avec chat en temps réel.
+    \item \textbf{Explorateur visuel des graphes :} Interface de modélisation visuelle (en 2D et 3D) permettant de naviguer dans le réseau de l'entreprise. L'utilisateur pourra filtrer le réseau par département, zoomer sur différentes tribus/clusters de compétences, et explorer de manière interactive les liens entre les collaborateurs et les projets.
+    \item \textbf{Moteur de recherche multicritères et découverte d'experts :} Une barre de recherche sémantique unifiée permettant de chercher « Expert Python à Paris » ou « Spécialiste en Cybersécurité ayant travaillé sur le Projet Phoenix ». Les résultats devront être triés par un score de pertinence algorithmique évaluant la fraîcheur de la compétence et le niveau d'expertise.
+    \item \textbf{Module de recommandations de collaborations :} Algorithme qui observe le profil du collaborateur connecté pour lui suggérer périodiquement (sur son tableau de bord) des collègues ayant des centres d'intérêt technologiques ou métiers similaires ou complémentaires.
+    \item \textbf{Profil complet et dynamique de l'employé :} Affichage structuré certifiant les compétences acquises. Le profil compile automatiquement l'expérience déduite du réseau et permet à chaque individu d'ajouter des compétences manuelles (déclaratives) validées ou endossées par ses pairs.
+    \item \textbf{Tableaux de bord d'analyse (Skill Evolution) :} Des vues analytiques graphiques permettant d'observer les tendances d'évolution des compétences de l'entreprise (quelles compétences sont émergentes, quelles technologies sont en déclin). Les managers pourront visualiser le niveau de maturité globale de leur propre département.
+    \item \textbf{Assistant conversationnel IA (Veda) :} Un chatbot alimenté par de grands modèles de langage (LLM) permettant à l'utilisateur de poser des questions complexes en langage naturel sur les données du graphe d'entreprise (ex: « Qui peut m'aider à configurer ce pipeline Docker ce matin ? »).
+    \item \textbf{Espaces de travail en synergie (Workspaces) :} Outils favorisant la création fluide d'équipes de projet (groupe de discussion ciblé, mutualisation de documentation contextuelle associable aux nœuds du graphe).
 \end{itemize}
 
-\subsection{Fonctionnalités Administrateur}
+\subsection{Fonctionnalités Administrateur et RH}
 \begin{itemize}[leftmargin=*]
-    \item Toutes les fonctionnalités utilisateur.
-    \item Gestion des utilisateurs : modification des rôles et supervision globale.
-    \item Accès aux métriques Big Data : statut du pipeline d'ingestion (simulateur Kafka) et rapports Spark.
+    \item \textbf{Interface d'Administration Globale :} Tableau de bord pour la supervision générale de la plateforme incluant les statistiques d'adoption et de rétention des utilisateurs, et la gestion granulaire des rôles.
+    \item \textbf{Gestion des taxonomies de compétences :} Un outil d'administration RH permettant la normalisation de l'ontologie des compétences (par exemple, fusionner « React.js » et « ReactJS » dans un seul nœud cible du graphe) afin d'assurer la précision constante du moteur de recherche.
+    \item \textbf{Supervision des Data Pipelines :} Moniteur technique de l'état des systèmes d'ingestion de données (streaming événementiel avec Kafka), de l'exécution des requêtes massives de traitement de graphes (Spark) et visualisation des erreurs ou goulots d'étranglement éventuels.
 \end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Besoins Non Fonctionnels}
+% ══════════════════════════════════════════════════════════════
+
+Les besoins non fonctionnels traduisent les exigences techniques incontournables garantissant que l'application soit performante, soutenable, intégrable et hautement sécurisée dans un contexte d'entreprise de taille conséquente.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Performance, Haute Disponibilité et Scalabilité :}
+    \begin{itemize}[leftmargin=*, label=-]
+        \item La solution doit supporter les architectures « Big Data » et ingérer des données en continu. La base de données orientée graphe (\textit{Neo4j}) doit pouvoir traiter des requêtes de traversée de graphes complexes impliquant potentiellement des millions de nœuds (collaborateurs, documents, traces d'activité) avec un délai de réponse inférieur à 2 secondes pour garantir une navigation fluide.
+        \item Le système applicatif doit pouvoir être déployé de façon élastique (conteneurisation, orchestration) pour s'adapter dynamiquement aux pics d'utilisation sans interruption de service.
+    \end{itemize}
+    
+    \item \textbf{Complexité Algorithmique et Exactitude :}
+    \begin{itemize}[leftmargin=*, label=-]
+        \item Les calculs d'analyse sur grands volumes (comme l'application de PageRank récursif sur Spark) doivent être structurellement optimisés pour réduire les temps d'exécution lors de la réévaluation périodique de l'influence globale des experts dans le réseau.
+        \item Les suggestions de collaborations doivent limiter drastiquement la proportion de « faux positifs » en apprenant continuellement (Machine Learning) des validations ou abandons des utilisateurs (Feedback Loop).
+    \end{itemize}
+
+    \item \textbf{Ergonomie, Accessibilité et Expérience Utilisateur (UX) :}
+    \begin{itemize}[leftmargin=*, label=-]
+        \item L'interface applicative devra respecter les standards modernes du web (Single Page Application via React), avec l’assurance d’une fluidité absolue (visant idéalement les 60 FPS) pour la navigation et la manipulation interactive des graphes orbitaux (3D) au sein d'un navigateur web usuel.
+        \item La conception se devra d'être responsive, assurant une consultation confortable sur différents devices (écran panoramique, ordinateur portable standard ou tablette).
+    \end{itemize}
+
+    \item \textbf{Confidentialité, Éthique et Sécurité de l'Information :}
+    \begin{itemize}[leftmargin=*, label=-]
+        \item Régie par des normes drastiques (RGPD ou équivalents), l'application manipule des données à caractère personnel RH. Le chiffrement symétrique et asymétrique doit être appliqué en transit (TLS 1.3) comme au repos (chiffrement de la base). 
+        \item L'intelligence artificielle déployée inclura des garde-fous de partialité (anti-biais algorithmique), assurant une neutralité totale dans la mise en avant des experts sans distinction d'origine, genre, ou tout autre critère discriminant.
+    \end{itemize}
+    
+    \item \textbf{Extensibilité, Capacité d'Intégration et Maintenabilité :}
+    \begin{itemize}[leftmargin=*, label=-]
+        \item L'architecture fera le focus sur une approche « API-First » (FastAPI/Swagger), permettant l'interopérabilité fluide avec l'écosystème SIRH ou IT déjà présent dans les entreprises tierces (connecteurs pour Jira, GitHub, Slack, SAP, etc.).
+        \item Le code source produit respectera les bonnes pratiques de développement logiciel (Clean Code, Design Patterns solides, couverture de tests unitaires/intégration) et sera livré sous format « Dockerisé » pour fiabiliser la philosophie de CI/CD.
+    \end{itemize}
+\end{itemize}
+
+
 
 % ══════════════════════════════════════════════════════════════
 \section{Architecture et Choix Techniques}
@@ -140,6 +211,54 @@ Les grandes organisations souffrent souvent de silos d'information et d'une mauv
     \item \textbf{Nœuds principaux :} Expert, Skill, Document, Project, Topic.
     \item \textbf{Relations :} HAS\_SKILL, WORKS\_ON, AUTHORED, KNOWS, REQUIRES\_SKILL, COVERS\_TOPIC.
 \end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+\section{Planning Prévisionnel (Diagramme de Gantt)}
+% ══════════════════════════════════════════════════════════════
+
+Le diagramme ci-dessous illustre la planification des grandes phases du projet \textbf{Nexora}, réparties sur une durée estimée de 8 semaines.
+
+\vspace{0.5cm}
+\begin{center}
+\noindent\resizebox{\textwidth}{!}{
+\begin{ganttchart}[
+    vgrid,
+    hgrid,
+    x unit=1.8cm,
+    y unit title=0.6cm,
+    y unit chart=0.6cm,
+    title height=1,
+    bar/.style={fill=bleu, rounded corners=2pt},
+    bar incomplete/.append style={fill=bleu!50},
+    progress label text={},
+    group/.style={draw=black, fill=black, rounded corners=2pt},
+    group incomplete/.append style={fill=black!50}
+  ]{1}{8}
+  \gantttitle{Semaines}{8} \\
+  \gantttitlelist{1,...,8}{1} \\
+  
+  \ganttgroup{1. Analyse \& Conception}{1}{2} \\
+  \ganttbar{Spécifications \& Exigences}{1}{1} \\
+  \ganttbar{Architecture \& Modèles / Maquettes}{2}{2} \\
+  
+  \ganttgroup{2. Développement Backend}{3}{5} \\
+  \ganttbar{API FastAPI \& Base Neo4j}{3}{4} \\
+  \ganttbar{Algorithmes IA \& IA Générative}{4}{5} \\
+  
+  \ganttgroup{3. Développement Frontend}{4}{6} \\
+  \ganttbar{Composants React \& MUI}{4}{5} \\
+  \ganttbar{Graphe 3D Interactif}{5}{6} \\
+  
+  \ganttgroup{4. Intégration \& Tests}{6}{7} \\
+  \ganttbar{Tests (Unitaires, Intégration)}{6}{7} \\
+  
+  \ganttgroup{5. Déploiement \& Livraison}{8}{8} \\
+  \ganttbar{Déploiement Docker}{8}{8} \\
+  \ganttbar{Documentation Globale}{8}{8}
+\end{ganttchart}
+}
+\end{center}
+\vspace{0.5cm}
 
 % ══════════════════════════════════════════════════════════════
 \section{Livrables}
