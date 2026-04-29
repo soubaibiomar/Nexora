@@ -9,11 +9,12 @@ import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 import random
 
 from ..ws_manager import ws_messaging
+from ..auth_guards import require_auth
 
 router = APIRouter(prefix="/api/messaging", tags=["Messaging"])
 
@@ -135,7 +136,7 @@ def _init_messaging():
 
 
 @router.get("/conversations")
-async def get_conversations():
+async def get_conversations(_user: dict = Depends(require_auth)):
     _init_messaging()
     convos = []
     for c in _conversations:
@@ -155,7 +156,7 @@ async def get_conversations():
 
 
 @router.get("/conversations/{conversation_id}")
-async def get_messages(conversation_id: str):
+async def get_messages(conversation_id: str, _user: dict = Depends(require_auth)):
     _init_messaging()
     for c in _conversations:
         if c["id"] == conversation_id:
@@ -172,7 +173,7 @@ async def get_messages(conversation_id: str):
 
 
 @router.post("/send")
-async def send_message(msg: SendMessage):
+async def send_message(msg: SendMessage, _user: dict = Depends(require_auth)):
     _init_messaging()
     # Find or create conversation
     target_conv = None

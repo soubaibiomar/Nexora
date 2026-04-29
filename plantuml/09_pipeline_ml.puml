@@ -1,0 +1,56 @@
+@startuml Pipeline_ML
+' ═══════════════════════════════════════════════════
+'  Pipeline ML Général — Nexora
+' ═══════════════════════════════════════════════════
+
+skinparam backgroundColor #FEFEFE
+
+skinparam activity {
+    BackgroundColor #E8F0FE
+    BorderColor #2B6CB0
+    FontColor #1A365D
+    ArrowColor #2B6CB0
+    DiamondBackgroundColor #EBF4FF
+    DiamondBorderColor #2B6CB0
+}
+
+title Pipeline ML Général — Nexora
+
+start
+
+:Chargement des données JSONL;
+note right
+  experts.jsonl
+  skills.jsonl
+  projects.jsonl
+  documents.jsonl
+end note
+
+:Prétraitement des données;
+note right
+  Nettoyage, normalisation,
+  construction des features
+end note
+
+:Entraînement du modèle;
+note right
+  TF-IDF, PageRank,
+  Filtrage collaboratif,
+  Régression logistique
+end note
+
+:Modèle entraîné\n(mis en cache);
+
+fork
+  :Requête utilisateur;
+fork again
+  :Tâche planifiée\n(Spark Batch);
+end fork
+
+:Prédiction / Scoring;
+
+:Résultats retournés\nau client;
+
+stop
+
+@enduml

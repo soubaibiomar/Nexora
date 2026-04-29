@@ -58,15 +58,12 @@ const GraphVisualization: React.FC = () => {
         setLoading(true);
         try {
             const response = await graphService.getNodes(nodeFilter || undefined, 200, searchQuery || undefined);
-            const nodes = response.data.nodes;
-            const links: GraphLink[] = [];
-            for (let i = 0; i < Math.min(nodes.length * 2, 300); i++) {
-                const sourceIdx = Math.floor(Math.random() * nodes.length);
-                const targetIdx = Math.floor(Math.random() * nodes.length);
-                if (sourceIdx !== targetIdx) {
-                    links.push({ source: nodes[sourceIdx].id, target: nodes[targetIdx].id, type: 'CONNECTED_TO' });
-                }
-            }
+            const nodes = response.data.nodes || [];
+            const links: GraphLink[] = (response.data.links || []).map((l: any) => ({
+                source: l.source,
+                target: l.target,
+                type: l.type || 'CONNECTED_TO',
+            }));
             setGraphData({ nodes, links });
         } catch (error) { console.error('Error loading graph:', error); }
         finally { setLoading(false); }
@@ -322,12 +319,26 @@ const GraphVisualization: React.FC = () => {
                             <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Legend</Typography>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                                 {isAdmin ? (
-                                    ['Person', 'Skill', 'Project', 'Document', 'Technology'].map((type) => (
-                                        <Box key={type} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: getNodeColor({ type } as GraphNode) }} />
-                                            <Typography variant="caption" color="text.secondary">{type}</Typography>
-                                        </Box>
-                                    ))
+                                    <>
+                                        {['Person', 'Skill', 'Project', 'Document', 'Technology'].map((type) => (
+                                            <Box key={type} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: getNodeColor({ type } as GraphNode) }} />
+                                                <Typography variant="caption" color="text.secondary">{type}</Typography>
+                                            </Box>
+                                        ))}
+                                        <Divider sx={{ my: 1 }} />
+                                        <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 0.5, fontSize: '0.75rem' }}>Relationships</Typography>
+                                        {[
+                                            { color: 'rgba(253,203,110,0.8)', label: 'WORKS_ON' },
+                                            { color: 'rgba(0,184,148,0.8)', label: 'HAS_SKILL' },
+                                            { color: 'rgba(116,185,255,0.8)', label: 'REQUIRES' },
+                                        ].map(({ color, label }) => (
+                                            <Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <Box sx={{ width: 16, height: 3, bgcolor: color, borderRadius: 1 }} />
+                                                <Typography variant="caption" color="text.secondary">{label}</Typography>
+                                            </Box>
+                                        ))}
+                                    </>
                                 ) : (
                                     <>
                                         {[
@@ -375,7 +386,15 @@ const GraphVisualization: React.FC = () => {
                                 nodeRelSize={isAdmin ? 6 : 1}
                                 nodeVal={isAdmin ? undefined : (node: any) => getNodeSize(node as GraphNode)}
                                 linkColor={(link: any) => {
-                                    if (isAdmin) return 'rgba(162,155,254,0.15)';
+                                    if (isAdmin) {
+                                        const l = link as GraphLink;
+                                        const colors: Record<string, string> = {
+                                            'WORKS_ON': 'rgba(253,203,110,0.35)',
+                                            'HAS_SKILL': 'rgba(0,184,148,0.3)',
+                                            'REQUIRES': 'rgba(116,185,255,0.3)',
+                                        };
+                                        return colors[l.type] || 'rgba(162,155,254,0.15)';
+                                    }
                                     const l = link as GraphLink;
                                     return l.type === 'KNOWS' ? 'rgba(253,203,110,0.3)' : 'rgba(0,184,148,0.4)';
                                 }}

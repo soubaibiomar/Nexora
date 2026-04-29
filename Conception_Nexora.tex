@@ -5,11 +5,13 @@
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage{enumitem}
+\usepackage{float}
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{xcolor}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
+\usepackage{amssymb}
 \usepackage{hyperref}
 \geometry{margin=2.5cm}
 
@@ -38,7 +40,7 @@
 \begin{titlepage}
 \centering
 \vspace*{1cm}
-\includegraphics[width=0.5\textwidth]{emsilogo.png}\\[2cm]
+\includegraphics[width=0.5\textwidth]{emsilogo.jpeg}\\[2cm]
 
 \rule{\linewidth}{0.4pt}\\[0.4cm]
 {\Large\textbf{Rapport de Conception}}\\[0.3cm]
@@ -77,30 +79,11 @@ Ce document présente la conception détaillée de la plateforme \textbf{Nexora}
 
 L'application Nexora suit une architecture \textbf{3-tiers} classique, séparant la présentation, la logique métier et les données :
 
-\begin{verbatim}
-  ┌───────────────────────────────────────────────────┐
-  │            Couche Présentation (Frontend)          │
-  │   React 18 + TypeScript + Material UI + Vite       │
-  │   react-force-graph-3d (WebGL/Three.js)            │
-  └──────────────────────┬────────────────────────────┘
-                         │ HTTP REST / WebSocket
-  ┌──────────────────────▼────────────────────────────┐
-  │              Couche Métier (Backend)                │
-  │   FastAPI + Uvicorn (API REST)                     │
-  │   ┌──────────────┐  ┌────────────────────┐        │
-  │   │  Moteur ML   │  │  Auth + RBAC (JWT) │        │
-  │   │  PageRank    │  └────────────────────┘        │
-  │   │  TF-IDF      │  ┌────────────────────┐        │
-  │   │  Collab.Filt.│  │  Kafka Simulator   │        │
-  │   │  Classifier  │  │  Spark Batch       │        │
-  │   └──────────────┘  └────────────────────┘        │
-  └──────────────────────┬────────────────────────────┘
-                         │ Bolt (Cypher) / File I/O
-  ┌──────────────────────▼────────────────────────────┐
-  │              Couche Données                        │
-  │   Neo4j 5 (Graph DB)  +  Fichiers JSONL            │
-  └───────────────────────────────────────────────────┘
-\end{verbatim}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{plantuml/output/08_architecture_3tiers.png}
+\caption{Architecture 3-Tiers de Nexora}
+\end{figure}
 
 \subsection{Explication des Couches}
 
@@ -127,6 +110,14 @@ Manager & Hérite de Utilisateur. Accède en plus aux prévisions de compétence
 Administrateur & Hérite de Manager. Peut en plus gérer les utilisateurs, modifier les rôles et accéder aux métriques Big Data (Kafka/Spark). \\
 \hline
 \end{longtable}
+
+\subsection{Diagramme de Cas d'Utilisation}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{plantuml/output/01_use_case.png}
+\caption{Diagramme de cas d'utilisation — Nexora}
+\end{figure}
 
 \subsection{Cas d'Utilisation par Acteur}
 
@@ -188,110 +179,26 @@ UC17 & Accéder métriques Big Data & Voir le statut du pipeline Kafka et les ra
 \section{Diagramme de Classes}
 % ══════════════════════════════════════════════════════════════
 
-\subsection{Classes Principales}
+\subsection{Diagramme de Classes}
 
-\subsubsection{Classe Expert}
-\begin{verbatim}
-  ┌─────────────────────────────────┐
-  │            Expert               │
-  ├─────────────────────────────────┤
-  │ - id: String                    │
-  │ - name: String                  │
-  │ - email: String                 │
-  │ - department: String            │
-  │ - role: String                  │
-  │ - location: String              │
-  │ - experience_years: Integer     │
-  │ - expertise_level: String       │
-  │ - hire_date: Date               │
-  │ - skills: List<String>          │
-  ├─────────────────────────────────┤
-  │ + getSkills(): List<Skill>      │
-  │ + getProjects(): List<Project>  │
-  │ + getDocuments(): List<Document>│
-  └─────────────────────────────────┘
-\end{verbatim}
-
-\subsubsection{Classe Skill}
-\begin{verbatim}
-  ┌─────────────────────────────────┐
-  │             Skill               │
-  ├─────────────────────────────────┤
-  │ - id: String                    │
-  │ - name: String                  │
-  │ - category: String              │
-  │ - level: String                 │
-  │ - demand: Integer               │
-  ├─────────────────────────────────┤
-  │ + getExperts(): List<Expert>    │
-  │ + getProjects(): List<Project>  │
-  └─────────────────────────────────┘
-\end{verbatim}
-
-\subsubsection{Classe Project}
-\begin{verbatim}
-  ┌─────────────────────────────────┐
-  │            Project              │
-  ├─────────────────────────────────┤
-  │ - id: String                    │
-  │ - name: String                  │
-  │ - domain: String                │
-  │ - status: String                │
-  │ - priority: String              │
-  │ - budget: Float                 │
-  │ - tech_stack: List<String>      │
-  │ - required_skills: List<String> │
-  ├─────────────────────────────────┤
-  │ + getTeam(): List<Expert>       │
-  │ + getRequiredSkills(): List     │
-  └─────────────────────────────────┘
-\end{verbatim}
-
-\subsubsection{Classe Document}
-\begin{verbatim}
-  ┌─────────────────────────────────┐
-  │           Document              │
-  ├─────────────────────────────────┤
-  │ - id: String                    │
-  │ - title: String                 │
-  │ - type: String                  │
-  │ - topic: String                 │
-  │ - content: String               │
-  │ - author: String                │
-  │ - date: Date                    │
-  │ - views: Integer                │
-  │ - rating: Float                 │
-  ├─────────────────────────────────┤
-  │ + getAuthor(): Expert           │
-  │ + classify(): String            │
-  └─────────────────────────────────┘
-\end{verbatim}
-
-\subsubsection{Classe User (Authentification)}
-\begin{verbatim}
-  ┌─────────────────────────────────┐
-  │             User                │
-  ├─────────────────────────────────┤
-  │ - username: String              │
-  │ - email: String                 │
-  │ - hashed_password: String       │
-  │ - role: Enum(admin,manager,user)│
-  ├─────────────────────────────────┤
-  │ + verifyPassword(): Boolean     │
-  │ + generateToken(): String       │
-  └─────────────────────────────────┘
-\end{verbatim}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plantuml/output/02_class_diagram.png}
+\caption{Diagramme de classes — Nexora}
+\end{figure}
 
 \subsection{Relations entre Classes}
 
-\begin{verbatim}
-  Expert ──HAS_SKILL──* Skill         (N:M)
-  Expert ──WORKS_ON──* Project        (N:M)
-  Expert ──AUTHORED──* Document       (1:N)
-  Expert ──KNOWS──* Expert            (N:M)
-  Project ──REQUIRES_SKILL──* Skill   (N:M)
-  Document ──COVERS_TOPIC──* Topic    (N:M)
-\end{verbatim}
+Les relations entre les classes sont les suivantes :
+
+\begin{itemize}[leftmargin=*]
+    \item \texttt{Expert --HAS\_SKILL--> Skill} (N:M)
+    \item \texttt{Expert --WORKS\_ON--> Project} (N:M)
+    \item \texttt{Expert --AUTHORED--> Document} (1:N)
+    \item \texttt{Expert --KNOWS--> Expert} (N:M)
+    \item \texttt{Project --REQUIRES\_SKILL--> Skill} (N:M)
+    \item \texttt{Document --COVERS\_TOPIC--> Topic} (N:M)
+\end{itemize}
 
 \textbf{Explication :} Les relations sont stockées nativement dans Neo4j sous forme d'arêtes orientées entre les nœuds, ce qui permet des parcours de graphe rapides (temps constant par relation, contrairement aux jointures SQL).
 
@@ -301,30 +208,11 @@ UC17 & Accéder métriques Big Data & Voir le statut du pipeline Kafka et les ra
 
 \subsection{Séquence : Authentification (Login)}
 
-\begin{verbatim}
-  Client         Nginx         FastAPI        bcrypt         JWT
-    │               │              │              │             │
-    │ POST /login   │              │              │             │
-    │ (user, pass)  │              │              │             │
-    │──────────────>│              │              │             │
-    │               │──forwards──>│              │             │
-    │               │              │──verify()──>│             │
-    │               │              │<──true──────│             │
-    │               │              │──encode()───────────────>│
-    │               │              │<──token──────────────────│
-    │               │<──{token}───│              │             │
-    │<──{token}─────│              │              │             │
-    │               │              │              │             │
-    │ GET /experts  │              │              │             │
-    │ (Bearer token)│              │              │             │
-    │──────────────>│              │              │             │
-    │               │──forwards──>│              │             │
-    │               │              │──decode()───────────────>│
-    │               │              │<──{sub,role}─────────────│
-    │               │              │──check role──│             │
-    │               │<──data──────│              │             │
-    │<──data────────│              │              │             │
-\end{verbatim}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plantuml/output/03_sequence_auth.png}
+\caption{Diagramme de séquence — Authentification}
+\end{figure}
 
 \textbf{Explication :}
 \begin{enumerate}[leftmargin=*]
@@ -338,25 +226,11 @@ UC17 & Accéder métriques Big Data & Voir le statut du pipeline Kafka et les ra
 
 \subsection{Séquence : Recommandation d'Expert}
 
-\begin{verbatim}
-  Client         FastAPI       Recommender     Embeddings     JSONL
-    │               │              │              │             │
-    │ POST /ai/     │              │              │             │
-    │ recommend     │              │              │             │
-    │ (query)       │              │              │             │
-    │──────────────>│              │              │             │
-    │               │──recommend()>│              │             │
-    │               │              │──if not trained──────────>│
-    │               │              │<──load profiles───────────│
-    │               │              │──fit_tfidf()─>│             │
-    │               │              │<──vectors─────│             │
-    │               │              │──transform()─>│             │
-    │               │              │<──query_vec───│             │
-    │               │              │──cosine_sim()─│             │
-    │               │              │──sort top K───│             │
-    │               │<──results────│              │             │
-    │<──[experts]───│              │              │             │
-\end{verbatim}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plantuml/output/04_sequence_recommendation.png}
+\caption{Diagramme de séquence — Recommandation d'expert}
+\end{figure}
 
 \textbf{Explication :}
 \begin{enumerate}[leftmargin=*]
@@ -370,26 +244,11 @@ UC17 & Accéder métriques Big Data & Voir le statut du pipeline Kafka et les ra
 
 \subsection{Séquence : PageRank des Experts}
 
-\begin{verbatim}
-  Client         FastAPI       PageRank        JSONL Files
-    │               │              │              │
-    │ GET /ai/      │              │              │
-    │ expert-rank   │              │              │
-    │──────────────>│              │              │
-    │               │──rank()─────>│              │
-    │               │              │──load()─────>│
-    │               │              │<──data───────│
-    │               │              │──build graph──│
-    │               │              │  (Expert<->Skill<->Project)
-    │               │              │──iterate x20──│
-    │               │              │  (d=0.85)     │
-    │               │              │──blend scores─│
-    │               │              │  (60% graph   │
-    │               │              │   40% features)│
-    │               │<──rankings───│              │
-    │<──[ranked     │              │              │
-    │   experts]    │              │              │
-\end{verbatim}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plantuml/output/05_sequence_pagerank.png}
+\caption{Diagramme de séquence — PageRank des experts}
+\end{figure}
 
 \textbf{Explication :}
 \begin{enumerate}[leftmargin=*]
@@ -404,26 +263,11 @@ UC17 & Accéder métriques Big Data & Voir le statut du pipeline Kafka et les ra
 
 \subsection{Schéma du Graphe}
 
-\begin{verbatim}
-                    ┌──────────┐
-                    │  Topic   │
-                    └────▲─────┘
-                         │ COVERS_TOPIC
-                    ┌────┴─────┐
-                    │ Document │
-                    └────▲─────┘
-                         │ AUTHORED
-  ┌───────┐  HAS_SKILL  ┌┴────────┐  WORKS_ON   ┌─────────┐
-  │ Skill │◄────────────│  Expert  │────────────>│ Project │
-  └───┬───┘              └────┬────┘              └────┬────┘
-      │                       │                        │
-      │    REQUIRES_SKILL     │      KNOWS             │
-      └◄──────────────────────┼────────────────────────┘
-                              │
-                         ┌────▼────┐
-                         │ Expert  │
-                         └─────────┘
-\end{verbatim}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{plantuml/output/07_graph_schema.png}
+\caption{Schéma du graphe — Modèle de données Neo4j}
+\end{figure}
 
 \subsection{Propriétés des Nœuds}
 
@@ -458,14 +302,11 @@ Topic & id, name \\
 
 \subsection{Pipeline ML Général}
 
-\begin{verbatim}
-  Données JSONL ──> Prétraitement ──> Entraînement ──> Modèle
-       │                                                 │
-       │                                                 ▼
-       │                                          ┌──────────────┐
-       └────────────────────────────────────────> │  Prédiction  │
-                                                  └──────────────┘
-\end{verbatim}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{plantuml/output/09_pipeline_ml.png}
+\caption{Pipeline ML général — Nexora}
+\end{figure}
 
 \subsection{Algorithmes Implémentés}
 
@@ -493,24 +334,11 @@ Collaboration inter-dept. & Analyse ensembliste & Mesure la complémentarité de
 \section{Conception du Déploiement}
 % ══════════════════════════════════════════════════════════════
 
-\begin{verbatim}
-  docker-compose.yml
-  │
-  ├── neo4j (port 7474, 7687)
-  │   └── Volume : neo4j_data (persistant)
-  │   └── Healthcheck : cypher-shell
-  │
-  ├── backend (port 8000)
-  │   ├── FastAPI + Uvicorn
-  │   ├── Monte : ./data -> /app/data
-  │   └── Dépend de : neo4j (healthy)
-  │
-  └── frontend (port 3000 -> 80)
-      ├── Build : Node 20 (build) -> Nginx Alpine (serve)
-      ├── Routing SPA : fallback index.html
-      ├── Proxy : /api/* -> backend:8000
-      └── Dépend de : backend
-\end{verbatim}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{plantuml/output/06_deployment.png}
+\caption{Diagramme de déploiement — Docker Compose}
+\end{figure}
 
 \textbf{Explication :}
 \begin{itemize}[leftmargin=*]

@@ -13,6 +13,7 @@ from .network import _init_network, _connections, _load_employees
 import uuid
 import random
 from datetime import datetime, timedelta
+from ..auth_guards import require_auth
 
 router = APIRouter(prefix="/api/graph", tags=["graph"])
 
@@ -29,7 +30,7 @@ class ViewRequest(BaseModel):
 
 # ── My Network Graph ───────────────────────────────────────────────
 @router.get("/my-network")
-async def get_my_network_graph():
+async def get_my_network_graph(_user: dict = Depends(require_auth)):
     """
     Get the graph showing ONLY the current user's direct connections.
     The user is the center node, with edges to each of their connections.
@@ -101,7 +102,7 @@ async def get_my_network_graph():
 
 # ── Request to View Connections of a Connection ────────────────────
 @router.post("/view-request")
-async def request_view_connections(req: ViewRequest):
+async def request_view_connections(req: ViewRequest, _user: dict = Depends(require_auth)):
     """
     Send a request to view the connections of one of your connections.
     The connection must approve it before you can see their network.
@@ -143,7 +144,7 @@ async def request_view_connections(req: ViewRequest):
 
 # ── Get All View Requests ──────────────────────────────────────────
 @router.get("/view-requests")
-async def get_view_requests():
+async def get_view_requests(_user: dict = Depends(require_auth)):
     """Get all view requests and their statuses."""
     _init_network()
     return {
@@ -156,7 +157,7 @@ async def get_view_requests():
 
 # ── Simulate Approval (for demo: auto-approve after request) ──────
 @router.post("/view-request/{request_id}/simulate-response")
-async def simulate_view_response(request_id: str, approve: bool = True):
+async def simulate_view_response(request_id: str, approve: bool = True, _user: dict = Depends(require_auth)):
     """
     Simulate the connection responding to a view request.
     In production, the connection would approve/deny via their own interface.
@@ -205,23 +206,17 @@ async def simulate_view_response(request_id: str, approve: bool = True):
 async def get_graph_nodes(
     node_type: Optional[str] = Query(None, description="Filter by node type"),
     q: Optional[str] = Query(None, description="Search nodes by name/title"),
-    limit: int = Query(100, le=500),
+    limit: int = Query(200, le=500),
     db=Depends(get_db)
 ):
     """
-    Get nodes for 3D graph visualization with filters.
+    Get nodes and links for 3D graph visualization with filters.
     """
     if not is_neo4j_available():
-        graph_data = fallback_data.get_graph_data()
-        nodes = graph_data["nodes"]
-
-        if node_type:
-            nodes = [n for n in nodes if n.get("type") == node_type]
-        if q:
-            q_lower = q.lower()
-            nodes = [n for n in nodes if q_lower in (n.get("name") or "").lower()]
-
-        return {"nodes": nodes[:limit]}
+        graph_data = fallback_data.get_graph_data(
+            node_type=node_type, search=q, limit=limit
+        )
+        return graph_data
 
     conditions = []
     params = {"limit": limit}
@@ -344,7 +339,7 @@ async def find_path(
 
 
 @router.get("/stats")
-async def get_graph_stats(db=Depends(get_db)):
+async def get_graph_stats(db=Depends(get_db), _user: dict = Depends(require_auth)):
     """
     Get graph statistics.
     Uses: Requête Aggregation (count)

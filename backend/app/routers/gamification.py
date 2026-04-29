@@ -8,8 +8,9 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from ..auth_guards import require_auth
 
 router = APIRouter(prefix="/api/gamification", tags=["Gamification"])
 
@@ -129,13 +130,13 @@ def _init_gamification():
 # ── Endpoints ──────────────────────────────────────────────────────
 
 @router.get("/badges")
-async def get_all_badges():
+async def get_all_badges(_user: dict = Depends(require_auth)):
     """Get all available badge definitions."""
     return {"badges": BADGE_DEFINITIONS}
 
 
 @router.get("/badges/{expert_id}")
-async def get_expert_badges(expert_id: str):
+async def get_expert_badges(expert_id: str, _user: dict = Depends(require_auth)):
     """Get badges earned by a specific expert."""
     _init_gamification()
     expert_badges = [b for b in _badges if b["expert_id"] == expert_id]
@@ -143,7 +144,7 @@ async def get_expert_badges(expert_id: str):
 
 
 @router.get("/endorsements/{expert_id}")
-async def get_expert_endorsements(expert_id: str):
+async def get_expert_endorsements(expert_id: str, _user: dict = Depends(require_auth)):
     """Get all endorsements received by a specific expert."""
     _init_gamification()
     expert_endorse = [e for e in _endorsements if e["target_expert_id"] == expert_id]
@@ -166,7 +167,7 @@ async def get_expert_endorsements(expert_id: str):
 
 
 @router.post("/endorse")
-async def endorse_skill(request: EndorseRequest):
+async def endorse_skill(request: EndorseRequest, _user: dict = Depends(require_auth)):
     """Endorse an expert's skill. Creates an endorsement relationship."""
     _init_gamification()
 
@@ -198,7 +199,7 @@ async def endorse_skill(request: EndorseRequest):
 
 
 @router.get("/leaderboard")
-async def get_leaderboard():
+async def get_leaderboard(_user: dict = Depends(require_auth)):
     """Get the top endorsed experts (leaderboard)."""
     _init_gamification()
 

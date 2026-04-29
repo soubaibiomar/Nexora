@@ -8,9 +8,10 @@ import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Optional
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
 import random
+from ..auth_guards import require_auth
 
 router = APIRouter(prefix="/api/jobs", tags=["Jobs"])
 
@@ -258,7 +259,7 @@ async def get_jobs(
 
 
 @router.get("/recommended")
-async def get_recommended_jobs():
+async def get_recommended_jobs(_user: dict = Depends(require_auth)):
     _init_jobs()
     # Return top 5 jobs shuffled
     recommended = random.sample(_jobs, min(5, len(_jobs)))
@@ -266,7 +267,7 @@ async def get_recommended_jobs():
 
 
 @router.get("/{job_id}")
-async def get_job(job_id: str):
+async def get_job(job_id: str, _user: dict = Depends(require_auth)):
     _init_jobs()
     for job in _jobs:
         if job["id"] == job_id:
@@ -275,7 +276,7 @@ async def get_job(job_id: str):
 
 
 @router.post("/{job_id}/apply")
-async def apply_to_job(job_id: str, application: JobApplication):
+async def apply_to_job(job_id: str, application: JobApplication, _user: dict = Depends(require_auth)):
     _init_jobs()
     for job in _jobs:
         if job["id"] == job_id:
@@ -293,7 +294,7 @@ async def apply_to_job(job_id: str, application: JobApplication):
 
 
 @router.get("/companies")
-async def get_job_companies(industry: str = None):
+async def get_job_companies(industry: str = None, _user: dict = Depends(require_auth)):
     """All companies available for job listings."""
     companies_path = DATA_DIR / "companies.jsonl"
     companies = []

@@ -223,18 +223,41 @@ const LearningPathPage: React.FC = () => {
         if (selectedSkill) loadResourcesForSkill(selectedSkill, level);
     };
 
-    const handleSearch = async () => {
-        if (!searchQuery.trim()) return;
+    const handleSearch = async (query?: string) => {
+        const q = (query ?? searchQuery).trim();
+        if (!q) {
+            setSearchResults([]);
+            return;
+        }
         setSearchLoading(true);
         try {
-            const response = await learningResourcesService.search(searchQuery, levelFilter || undefined);
-            setSearchResults(response.data.results);
+            const response = await learningResourcesService.search(q, levelFilter || undefined);
+            setSearchResults(response.data.results || []);
         } catch (error) {
             console.error('Error searching:', error);
+            // Fallback: client-side filter from loaded videos + tutorials
+            const lq = q.toLowerCase();
+            const localResults = [
+                ...videos.filter(v => v.title.toLowerCase().includes(lq) || v.skill.toLowerCase().includes(lq)),
+                ...tutorials.filter(t => t.title.toLowerCase().includes(lq) || t.skill.toLowerCase().includes(lq)),
+            ];
+            setSearchResults(localResults);
         } finally {
             setSearchLoading(false);
         }
     };
+
+    // Debounced auto-search as user types
+    useEffect(() => {
+        if (!searchQuery.trim()) {
+            setSearchResults([]);
+            return;
+        }
+        const timer = setTimeout(() => {
+            handleSearch(searchQuery);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchQuery, levelFilter]);
 
     const loadRecommendations = async () => {
         try {
@@ -339,88 +362,168 @@ const LearningPathPage: React.FC = () => {
                 TAB 0: Video & Tutorials
             ═══════════════════════════════════════════════════════ */}
             <TabPanel value={tab} index={0}>
-                {/* Search Bar */}
-                <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', alignItems: 'center' }}>
-                    <TextField
-                        size="small"
-                        placeholder="Search videos & tutorials..."
-                        value={searchQuery}
-                        onChange={(e: any) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e: any) => e.key === 'Enter' && handleSearch()}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start"><SearchIcon sx={{ color: 'text.secondary' }} /></InputAdornment>
-                            ),
-                        }}
-                        sx={{ minWidth: 300 }}
-                    />
-                    <Button variant="contained" onClick={handleSearch} disabled={searchLoading}
-                        sx={{ textTransform: 'none', borderRadius: 2.5 }}>
-                        {searchLoading ? <CircularProgress size={20} /> : 'Search'}
-                    </Button>
-                    <ToggleButtonGroup
-                        value={levelFilter}
-                        exclusive
-                        onChange={(_, v) => handleLevelFilter(v || '')}
-                        size="small"
-                    >
-                        <ToggleButton value="">All</ToggleButton>
-                        <ToggleButton value="Beginner">Beginner</ToggleButton>
-                        <ToggleButton value="Intermediate">Intermediate</ToggleButton>
-                        <ToggleButton value="Advanced">Advanced</ToggleButton>
-                    </ToggleButtonGroup>
+                {/* ── Intelligent Search Bar ── */}
+                <Box sx={{ mb: 3 }}>
+                    <Box sx={{
+                        display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center',
+                        p: 2.5, borderRadius: 3,
+                        bgcolor: 'rgba(108,99,255,0.04)',
+                        border: '1px solid rgba(108,99,255,0.08)',
+                    }}>
+                        <TextField
+                            fullWidth
+                            size="small"
+                            placeholder="Search videos, tutorials, courses... (e.g. React hooks, Python basics, CSS grid)"
+                            value={searchQuery}
+                            onChange={(e: any) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e: any) => e.key === 'Enter' && handleSearch()}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        {searchLoading ? (
+                                            <CircularProgress size={18} sx={{ color: '#6C5CE7' }} />
+                                        ) : (
+                                            <SearchIcon sx={{ color: 'text.secondary' }} />
+                                        )}
+                                    </InputAdornment>
+                                ),
+                                endAdornment: searchQuery ? (
+                                    <InputAdornment position="end">
+                                        <Button
+                                            size="small"
+                                            onClick={() => { setSearchQuery(''); setSearchResults([]); }}
+                                            sx={{ minWidth: 'auto', color: 'text.secondary', textTransform: 'none', fontSize: '0.75rem' }}
+                                        >
+                                            Clear
+                                        </Button>
+                                    </InputAdornment>
+                                ) : undefined,
+                            }}
+                            sx={{
+                                flex: 1, minWidth: 300,
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: 2.5,
+                                    bgcolor: 'background.paper',
+                                    '&:hover': { borderColor: '#6C5CE7' },
+                                    '&.Mui-focused': { boxShadow: '0 0 0 3px rgba(108,92,231,0.1)' },
+                                },
+                            }}
+                        />
+                        <ToggleButtonGroup
+                            value={levelFilter}
+                            exclusive
+                            onChange={(_, v) => handleLevelFilter(v || '')}
+                            size="small"
+                            sx={{
+                                '& .MuiToggleButton-root': {
+                                    textTransform: 'none', fontWeight: 600, fontSize: '0.78rem',
+                                    px: 2, borderRadius: 2,
+                                },
+                            }}
+                        >
+                            <ToggleButton value="">All</ToggleButton>
+                            <ToggleButton value="Beginner">Beginner</ToggleButton>
+                            <ToggleButton value="Intermediate">Intermediate</ToggleButton>
+                            <ToggleButton value="Advanced">Advanced</ToggleButton>
+                        </ToggleButtonGroup>
+                    </Box>
+
+                    {/* Quick search suggestions */}
+                    {!searchQuery && (
+                        <Box sx={{ display: 'flex', gap: 0.8, flexWrap: 'wrap', mt: 1.5, px: 0.5 }}>
+                            <Typography variant="caption" color="text.secondary" sx={{ mr: 0.5, lineHeight: '24px' }}>
+                                Quick search:
+                            </Typography>
+                            {['React', 'Python', 'JavaScript', 'Docker', 'Machine Learning', 'CSS'].map((q) => (
+                                <Chip
+                                    key={q}
+                                    label={q}
+                                    size="small"
+                                    onClick={() => setSearchQuery(q)}
+                                    sx={{
+                                        cursor: 'pointer', fontSize: '0.7rem', fontWeight: 500, height: 24,
+                                        bgcolor: 'rgba(108,99,255,0.06)', color: '#A29BFE',
+                                        border: '1px solid rgba(108,99,255,0.12)',
+                                        '&:hover': { bgcolor: 'rgba(108,99,255,0.12)' },
+                                    }}
+                                />
+                            ))}
+                        </Box>
+                    )}
                 </Box>
 
-                {/* Search Results */}
-                {searchResults.length > 0 && (
+                {/* ── Search Results ── */}
+                {searchQuery.trim() && (
                     <Box sx={{ mb: 4 }}>
-                        <Typography variant="h6" sx={{ mb: 2 }}>
-                            Search Results ({searchResults.length})
-                        </Typography>
-                        <Grid container spacing={2}>
-                            {searchResults.map((r: any) => (
-                                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={r.id}>
-                                    {r.source === 'youtube' ? (
-                                        <Card sx={{
-                                            height: '100%', cursor: 'pointer',
-                                            '&:hover': { bgcolor: 'action.hover' },
-                                        }}
-                                            onClick={() => { setActiveVideo(r); setVideoDialog(true); }}>
-                                            <CardMedia component="img" height="140" image={r.thumbnail} alt={r.title}
-                                                sx={{ objectFit: 'cover' }} />
-                                            <CardContent sx={{ p: 1.5 }}>
-                                                <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5, lineClamp: 2, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                                                    {r.title}
-                                                </Typography>
-                                                <Typography variant="caption" color="text.secondary">{r.channel}</Typography>
-                                                <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5, flexWrap: 'wrap' }}>
-                                                    <Chip label={r.skill} size="small" sx={{ fontSize: '0.65rem', height: 20 }} />
-                                                    <Chip label={r.level} size="small" sx={{ fontSize: '0.65rem', height: 20, bgcolor: `${getLevelColor(r.level)}22`, color: getLevelColor(r.level) }} />
-                                                </Box>
-                                            </CardContent>
-                                        </Card>
-                                    ) : (
-                                        <Card sx={{
-                                            height: '100%', cursor: 'pointer',
-                                            '&:hover': { bgcolor: 'action.hover' },
-                                        }}
-                                            onClick={() => window.open(r.url, '_blank')}>
-                                            <CardContent sx={{ p: 2 }}>
-                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                                                    <LanguageIcon sx={{ color: '#04AA6D' }} />
-                                                    <Typography variant="caption" color="#04AA6D" fontWeight={600}>W3Schools</Typography>
-                                                </Box>
-                                                <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>{r.title}</Typography>
-                                                <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                                                    <Chip label={r.skill} size="small" sx={{ fontSize: '0.65rem', height: 20 }} />
-                                                    <Chip label={r.level} size="small" sx={{ fontSize: '0.65rem', height: 20, bgcolor: `${getLevelColor(r.level)}22`, color: getLevelColor(r.level) }} />
-                                                </Box>
-                                            </CardContent>
-                                        </Card>
-                                    )}
-                                </Grid>
-                            ))}
-                        </Grid>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                            <SearchIcon sx={{ color: '#6C5CE7', fontSize: 20 }} />
+                            <Typography variant="h6" fontWeight={600}>
+                                {searchLoading ? 'Searching...' : `Results for "${searchQuery}" (${searchResults.length})`}
+                            </Typography>
+                        </Box>
+                        {!searchLoading && searchResults.length === 0 && (
+                            <Paper sx={{
+                                p: 4, textAlign: 'center', borderRadius: 3,
+                                bgcolor: 'rgba(108,99,255,0.03)',
+                                border: '1px dashed rgba(108,99,255,0.15)',
+                            }}>
+                                <SearchIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1, opacity: 0.4 }} />
+                                <Typography color="text.secondary" sx={{ mb: 1 }}>
+                                    No results found for "{searchQuery}"
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                    Try a different keyword or browse by skill below
+                                </Typography>
+                            </Paper>
+                        )}
+                        {searchResults.length > 0 && (
+                            <Grid container spacing={2}>
+                                {searchResults.map((r: any) => (
+                                    <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={r.id}>
+                                        {r.source === 'youtube' ? (
+                                            <Card sx={{
+                                                height: '100%', cursor: 'pointer',
+                                                transition: 'all 0.2s',
+                                                '&:hover': { bgcolor: 'action.hover', transform: 'translateY(-2px)' },
+                                            }}
+                                                onClick={() => { setActiveVideo(r); setVideoDialog(true); }}>
+                                                <CardMedia component="img" height="140" image={r.thumbnail} alt={r.title}
+                                                    sx={{ objectFit: 'cover' }} />
+                                                <CardContent sx={{ p: 1.5 }}>
+                                                    <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5, lineClamp: 2, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                                        {r.title}
+                                                    </Typography>
+                                                    <Typography variant="caption" color="text.secondary">{r.channel}</Typography>
+                                                    <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5, flexWrap: 'wrap' }}>
+                                                        <Chip label={r.skill} size="small" sx={{ fontSize: '0.65rem', height: 20 }} />
+                                                        <Chip label={r.level} size="small" sx={{ fontSize: '0.65rem', height: 20, bgcolor: `${getLevelColor(r.level)}22`, color: getLevelColor(r.level) }} />
+                                                    </Box>
+                                                </CardContent>
+                                            </Card>
+                                        ) : (
+                                            <Card sx={{
+                                                height: '100%', cursor: 'pointer',
+                                                transition: 'all 0.2s',
+                                                '&:hover': { bgcolor: 'action.hover', transform: 'translateY(-2px)' },
+                                            }}
+                                                onClick={() => window.open(r.url, '_blank')}>
+                                                <CardContent sx={{ p: 2 }}>
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                                                        <LanguageIcon sx={{ color: '#04AA6D' }} />
+                                                        <Typography variant="caption" color="#04AA6D" fontWeight={600}>W3Schools</Typography>
+                                                    </Box>
+                                                    <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>{r.title}</Typography>
+                                                    <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                                                        <Chip label={r.skill} size="small" sx={{ fontSize: '0.65rem', height: 20 }} />
+                                                        <Chip label={r.level} size="small" sx={{ fontSize: '0.65rem', height: 20, bgcolor: `${getLevelColor(r.level)}22`, color: getLevelColor(r.level) }} />
+                                                    </Box>
+                                                </CardContent>
+                                            </Card>
+                                        )}
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        )}
                         <Divider sx={{ my: 3 }} />
                     </Box>
                 )}

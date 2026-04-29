@@ -88,6 +88,7 @@ class SkillTrendsResponse(BaseModel):
 
 class ChatRequest(BaseModel):
     message: str = Field(..., description="User message/question")
+    conversation_id: Optional[str] = Field(None, description="Unique conversation/session ID for memory isolation")
 
 
 class ChatResponse(BaseModel):

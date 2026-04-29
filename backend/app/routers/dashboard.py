@@ -2,12 +2,13 @@ from fastapi import APIRouter, Depends, Query
 from typing import List, Optional
 from ..database import get_db, is_neo4j_available
 from .. import fallback_data
+from ..auth_guards import require_auth, require_manager
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
 
 
 @router.get("/stats")
-async def get_global_stats(db=Depends(get_db)):
+async def get_global_stats(db=Depends(get_db), _user: dict = Depends(require_auth)):
     """
     Get global platform statistics.
     Uses: Requête Aggregation (count, sum)
@@ -117,7 +118,7 @@ async def get_skill_gaps(
 
 
 @router.get("/departments")
-async def get_department_stats(db=Depends(get_db)):
+async def get_department_stats(db=Depends(get_db), _user: dict = Depends(require_auth)):
     """
     Get statistics by department.
     Uses: Requête Aggregation (GROUP BY equivalent)
@@ -143,7 +144,7 @@ async def get_department_stats(db=Depends(get_db)):
 
 
 @router.get("/skill-distribution")
-async def get_skill_distribution(db=Depends(get_db)):
+async def get_skill_distribution(db=Depends(get_db), _user: dict = Depends(require_auth)):
     """
     Get skill distribution by category.
     Uses: Requête Aggregation (category grouping)
@@ -167,7 +168,7 @@ async def get_skill_distribution(db=Depends(get_db)):
 
 
 @router.get("/project-status")
-async def get_project_status(db=Depends(get_db)):
+async def get_project_status(db=Depends(get_db), _user: dict = Depends(require_auth)):
     """
     Get project statistics by status.
     Uses: Requête Aggregation (status grouping)
@@ -182,7 +183,12 @@ async def get_project_status(db=Depends(get_db)):
                 status_counts[status] = {"status": status, "count": 0, "total_budget": 0}
             status_counts[status]["count"] += 1
             status_counts[status]["total_budget"] += p.get("budget", 0)
-        return list(status_counts.values())
+        # Compute avg_budget for each status group
+        result = []
+        for entry in status_counts.values():
+            entry["avg_budget"] = round(entry["total_budget"] / entry["count"]) if entry["count"] > 0 else 0
+            result.append(entry)
+        return result
     
     query = """
     MATCH (proj:Project)
@@ -200,7 +206,7 @@ async def get_project_status(db=Depends(get_db)):
 
 
 @router.get("/collaboration-rate")
-async def get_collaboration_rate(db=Depends(get_db)):
+async def get_collaboration_rate(db=Depends(get_db), _user: dict = Depends(require_auth)):
     """
     Analyze inter-department collaboration.
     Uses: Requête Chemin (cross-department connections through projects)
@@ -227,7 +233,7 @@ async def get_collaboration_rate(db=Depends(get_db)):
 
 
 @router.get("/knowledge-silos")
-async def detect_knowledge_silos(db=Depends(get_db)):
+async def detect_knowledge_silos(db=Depends(get_db), _user: dict = Depends(require_auth)):
     """
     Detect potential knowledge silos (skills held by few experts).
     Uses: Requête Aggregation + Filter
@@ -260,7 +266,7 @@ async def detect_knowledge_silos(db=Depends(get_db)):
 from ..ml.analytics import analytics
 
 @router.get("/predict-shortages")
-async def predict_skill_shortages():
+async def predict_skill_shortages(_user: dict = Depends(require_auth)):
     """
     AI-powered skill shortage prediction for the next 6 months.
     Uses PySpark (if available) or Pandas for trend forecasting.
@@ -269,7 +275,7 @@ async def predict_skill_shortages():
 
 
 @router.get("/skill-trends")
-async def get_skill_trends():
+async def get_skill_trends(_user: dict = Depends(require_auth)):
     """
     Quarterly skill trend data for visualization charts.
     """

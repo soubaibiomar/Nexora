@@ -10,9 +10,10 @@ import shutil
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Optional
-from fastapi import APIRouter, Query, UploadFile, File, Form
+from fastapi import APIRouter, Depends, Query, UploadFile, File, Form
 from pydantic import BaseModel
 import random
+from ..auth_guards import require_auth
 
 router = APIRouter(prefix="/api/feed", tags=["Feed"])
 
@@ -176,7 +177,7 @@ def _init_feed():
 # ── Endpoints ───────────────────────────────────────────────────────
 
 @router.get("")
-async def get_feed(skip: int = 0, limit: int = 10):
+async def get_feed(skip: int = 0, limit: int = 10, _user: dict = Depends(require_auth)):
     _init_feed()
     sorted_posts = sorted(_posts, key=lambda p: p["created_at"], reverse=True)
     return {
@@ -187,7 +188,7 @@ async def get_feed(skip: int = 0, limit: int = 10):
 
 
 @router.post("/posts")
-async def create_post(post: PostCreate):
+async def create_post(post: PostCreate, _user: dict = Depends(require_auth)):
     _init_feed()
     new_post = {
         "id": str(uuid.uuid4()),
@@ -289,7 +290,7 @@ async def create_post_with_media(
 
 
 @router.post("/posts/{post_id}/like")
-async def like_post(post_id: str, req: LikeRequest):
+async def like_post(post_id: str, req: LikeRequest, _user: dict = Depends(require_auth)):
     _init_feed()
     for post in _posts:
         if post["id"] == post_id:
@@ -305,7 +306,7 @@ async def like_post(post_id: str, req: LikeRequest):
 
 
 @router.post("/posts/{post_id}/comment")
-async def comment_post(post_id: str, comment: CommentCreate):
+async def comment_post(post_id: str, comment: CommentCreate, _user: dict = Depends(require_auth)):
     _init_feed()
     for post in _posts:
         if post["id"] == post_id:

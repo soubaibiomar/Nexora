@@ -10,8 +10,9 @@ import random
 from datetime import datetime
 from collections import deque
 from typing import Dict, List, Any, Optional
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
+from ..auth_guards import require_auth, require_admin
 
 router = APIRouter(prefix="/api/pipeline", tags=["pipeline"])
 
@@ -77,7 +78,7 @@ def _process_event(event: Dict[str, Any]) -> Dict[str, Any]:
 # ── Endpoints ──────────────────────────────────────────────────────
 
 @router.post("/ingest")
-async def ingest_event(event: IngestEvent):
+async def ingest_event(event: IngestEvent, _user: dict = Depends(require_auth)):
     """
     Ingest a single event into the pipeline.
     Simulates Kafka producer → topic → consumer pattern.
@@ -121,7 +122,7 @@ async def ingest_event(event: IngestEvent):
 
 
 @router.post("/ingest-batch")
-async def ingest_batch(request: BatchIngestRequest):
+async def ingest_batch(request: BatchIngestRequest, _user: dict = Depends(require_auth)):
     """
     Ingest a batch of events (simulates Kafka batch producer).
     Processes all events sequentially with throughput metrics.
@@ -170,7 +171,7 @@ async def ingest_batch(request: BatchIngestRequest):
 
 
 @router.get("/status")
-async def get_pipeline_status():
+async def get_pipeline_status(_user: dict = Depends(require_auth)):
     """
     Get current pipeline status, throughput metrics, and partition health.
     """
@@ -198,7 +199,7 @@ async def get_pipeline_status():
 
 
 @router.get("/metrics")
-async def get_pipeline_metrics():
+async def get_pipeline_metrics(_user: dict = Depends(require_auth)):
     """
     Detailed pipeline metrics including event type breakdown and latency histogram.
     """

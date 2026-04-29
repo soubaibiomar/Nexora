@@ -8,8 +8,9 @@ import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 import random
+from ..auth_guards import require_auth
 
 router = APIRouter(prefix="/api/notifications", tags=["Notifications"])
 
@@ -76,7 +77,7 @@ def _init_notifications():
 
 
 @router.get("")
-async def get_notifications(unread_only: bool = False):
+async def get_notifications(unread_only: bool = False, _user: dict = Depends(require_auth)):
     _init_notifications()
     notifs = _notifications
     if unread_only:
@@ -90,7 +91,7 @@ async def get_notifications(unread_only: bool = False):
 
 
 @router.put("/{notification_id}/read")
-async def mark_read(notification_id: str):
+async def mark_read(notification_id: str, _user: dict = Depends(require_auth)):
     _init_notifications()
     for n in _notifications:
         if n["id"] == notification_id:
@@ -100,7 +101,7 @@ async def mark_read(notification_id: str):
 
 
 @router.put("/read-all")
-async def mark_all_read():
+async def mark_all_read(_user: dict = Depends(require_auth)):
     _init_notifications()
     for n in _notifications:
         n["read"] = True

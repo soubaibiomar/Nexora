@@ -83,14 +83,14 @@ def generate_usecase_diagram():
 
     # ── Use Cases: User ──
     uc_user = [
-        (5.5, 11.0, "S'inscrire (UC01)"),
-        (5.5, 10.2, "Se connecter (UC02)"),
-        (5.5, 9.4, "Explorer le graphe 3D (UC03)"),
-        (5.5, 8.6, "Rechercher un expert (UC04)"),
-        (5.5, 7.8, "Recommandations IA (UC05)"),
-        (5.5, 7.0, "Chatbot Veda (UC06)"),
-        (5.5, 6.2, "Parcours d'apprentissage (UC07)"),
-        (5.5, 5.4, "Team Builder (UC08)"),
+        (5.5, 11.0, "S'inscrire"),
+        (5.5, 10.2, "Se connecter"),
+        (5.5, 9.4, "Explorer le reseau d'experts"),
+        (5.5, 8.6, "Rechercher un profil"),
+        (5.5, 7.8, "Obtenir des recommandations"),
+        (5.5, 7.0, "Discuter avec l'assistant"),
+        (5.5, 6.2, "Suivre un parcours de formation"),
+        (5.5, 5.4, "Composer une equipe"),
     ]
     for x, y, label in uc_user:
         draw_usecase(ax, x, y, label)
@@ -98,10 +98,10 @@ def generate_usecase_diagram():
 
     # ── Use Cases: Manager ──
     uc_mgr = [
-        (9.5, 4.6, "Competences emergentes (UC11)"),
-        (9.5, 3.8, "Previsions de demande (UC12)"),
-        (9.5, 3.0, "Suggestions collaboration (UC13)"),
-        (9.5, 2.2, "Dashboard analytique (UC14)"),
+        (9.5, 4.6, "Identifier les tendances"),
+        (9.5, 3.8, "Anticiper les besoins"),
+        (9.5, 3.0, "Scollab. inter-services"),
+        (9.5, 2.2, "Consulter les statistiques"),
     ]
     for x, y, label in uc_mgr:
         draw_usecase(ax, x, y, label, w=2.8)
@@ -109,9 +109,9 @@ def generate_usecase_diagram():
 
     # ── Use Cases: Admin ──
     uc_admin = [
-        (5.5, 1.4, "Gerer les utilisateurs (UC15)"),
-        (5.5, 0.6, "Modifier les roles (UC16)"),
-        (9.5, 1.0, "Metriques Big Data (UC17)"),
+        (5.5, 1.4, "Gerer les utilisateurs"),
+        (5.5, 0.6, "Modifier les acces"),
+        (9.5, 1.0, "Analyser les flux de donnees"),
     ]
     for x, y, label in uc_admin:
         draw_usecase(ax, x, y, label, w=2.6)
@@ -188,113 +188,113 @@ def draw_multiplicity(ax, x, y, text):
 
 
 def generate_class_diagram():
-    fig, ax = plt.subplots(1, 1, figsize=(16, 13))
+    fig, ax = plt.subplots(1, 1, figsize=(18, 16))
     ax.set_xlim(-1, 19)
-    ax.set_ylim(-5, 10)
+    ax.set_ylim(-6, 13)
     ax.set_aspect('equal')
     ax.axis('off')
 
     # Title
-    ax.text(9, 9.5, 'Diagramme de Classes -- Nexora', ha='center', fontsize=16,
+    ax.text(9, 12.5, 'Diagramme de Classes -- Nexora', ha='center', fontsize=16,
             fontweight='bold', color=BLUE)
 
     # ── Expert (center) ──
-    draw_class_box(ax, 9, 8.5, 'Expert', [
-        '- id: String',
-        '- name: String',
-        '- email: String',
-        '- department: String',
-        '- role: String',
-        '- location: String',
-        '- experience_years: Integer',
-        '- expertise_level: Integer',
-        '- hire_date: Date',
+    draw_class_box(ax, 9, 11.5, 'Collaborateur', [
+        '- identifiant',
+        '- nom',
+        '- email',
+        '- departement',
+        '- role',
+        '- localisation',
+        '- annees_experience',
+        '- niveau_expertise',
+        '- date_embauche',
     ], [
-        '+ getSkills(): List<Skill>',
-        '+ getProjects(): List<Project>',
-        '+ getDocuments(): List<Document>',
-        '+ getInfluenceScore(): Float',
+        '+ obtenirCompetences()',
+        '+ obtenirProjets()',
+        '+ obtenirDocuments()',
+        '+ obtenirScoreInfluence()',
     ], w=4.2)
 
     # ── Skill (left) ──
-    draw_class_box(ax, 2.5, 5.5, 'Skill', [
-        '- id: String',
-        '- name: String',
-        '- category: String',
-        '- level: String',
-        '- demand: Integer',
+    draw_class_box(ax, 2.5, 7.0, 'Competence', [
+        '- identifiant',
+        '- nom',
+        '- categorie',
+        '- niveau',
+        '- demande_marche',
     ], [
-        '+ getExperts(): List<Expert>',
-        '+ getAdoptionRate(): Float',
-    ], w=3.6)
-
-    # ── Project (right) ──
-    draw_class_box(ax, 15.5, 5.5, 'Project', [
-        '- id: String',
-        '- name: String',
-        '- domain: String',
-        '- status: String',
-        '- budget: Float',
-        '- required_skills: List',
-    ], [
-        '+ getTeam(): List<Expert>',
-        '+ getSkillCoverage(): Float',
+        '+ obtenirCollaborateurs()',
+        '+ obtenirTauxAdoption()',
     ], w=3.6)
 
     # ── Document (top right) ──
-    draw_class_box(ax, 15.5, 8.5, 'Document', [
-        '- id: String',
-        '- title: String',
-        '- type: String',
-        '- topic: String',
-        '- content: String',
-        '- author: String',
-        '- date: Date',
-        '- views: Integer',
-        '- rating: Float',
+    draw_class_box(ax, 15.5, 11.5, 'Document', [
+        '- identifiant',
+        '- titre',
+        '- type',
+        '- sujet',
+        '- contenu',
+        '- auteur',
+        '- date',
+        '- vues',
+        '- note',
     ], [
-        '+ getAuthor(): Expert',
-        '+ classify(): String',
+        '+ obtenirAuteur()',
+        '+ classifier()',
     ], w=3.6)
 
-    # ── User (bottom center) ──
-    draw_class_box(ax, 9, 0.5, 'User', [
-        '- username: String',
-        '- email: String',
-        '- hashed_password: String',
-        '- role: Enum(admin,manager,user)',
+    # ── Project (right) ──
+    draw_class_box(ax, 15.5, 4.5, 'Projet', [
+        '- identifiant',
+        '- nom',
+        '- domaine',
+        '- statut',
+        '- budget',
+        '- competences_requises',
     ], [
-        '+ verifyPassword(): Boolean',
-        '+ generateToken(): String',
-        '+ hasRole(r: String): Boolean',
+        '+ obtenirEquipe()',
+        '+ calculerCouvertureCompetences()',
+    ], w=4.0)
+
+    # ── User (bottom center) ──
+    draw_class_box(ax, 9, -0.5, 'Utilisateur', [
+        '- nom_utilisateur',
+        '- email',
+        '- mot_de_passe_securise',
+        '- role_acces',
+    ], [
+        '+ verifierIdentifiants()',
+        '+ ouvrirSession()',
+        '+ verifierDroits()',
     ], w=4.2)
 
     # ── Relations ──
-    # Expert -- HAS_SKILL --> Skill
-    draw_relation(ax, 6.8, 5.8, 4.3, 5.2, 'HAS_SKILL', 0.5)
-    draw_multiplicity(ax, 6.5, 5.5, 'N')
-    draw_multiplicity(ax, 4.5, 5.5, 'M')
+    # Expert -- Possede --> Skill
+    draw_relation(ax, 6.8, 8.0, 4.3, 6.8, 'Possede', 0.5)
+    draw_multiplicity(ax, 6.5, 7.6, '*..*')
+    draw_multiplicity(ax, 4.5, 7.2, '*..*')
 
-    # Expert -- WORKS_ON --> Project
-    draw_relation(ax, 11.2, 5.8, 13.7, 5.2, 'WORKS_ON', 0.5)
-    draw_multiplicity(ax, 11.5, 5.5, 'N')
-    draw_multiplicity(ax, 13.5, 5.5, 'M')
+    # Expert -- Travaille sur --> Project
+    draw_relation(ax, 11.2, 7.5, 13.5, 4.5, 'Travaille sur', 0.4)
+    draw_multiplicity(ax, 11.5, 7.0, '*..*')
+    draw_multiplicity(ax, 13.8, 4.8, '*..*')
 
-    # Expert -- AUTHORED --> Document
-    draw_relation(ax, 11.2, 7.5, 13.7, 7.5, 'AUTHORED', 0.5)
-    draw_multiplicity(ax, 11.5, 7.2, '1')
-    draw_multiplicity(ax, 13.5, 7.2, 'N')
+    # Expert -- A redige --> Document
+    draw_relation(ax, 11.2, 10.5, 13.7, 10.5, 'A redige', 0.5)
+    draw_multiplicity(ax, 11.5, 10.2, '1')
+    draw_multiplicity(ax, 13.5, 10.2, '1..*')
 
-    # Project -- REQUIRES_SKILL --> Skill
-    draw_relation(ax, 13.7, 3.2, 4.3, 3.2, 'REQUIRES_SKILL', 0.5)
-    draw_multiplicity(ax, 13.2, 3.5, 'N')
-    draw_multiplicity(ax, 4.8, 3.5, 'M')
+    # Project -- Requiert --> Skill
+    draw_relation(ax, 13.5, 2.2, 4.3, 4.8, 'Requiert', 0.5)
+    draw_multiplicity(ax, 13.0, 2.5, '*..*')
+    draw_multiplicity(ax, 4.6, 4.5, '*..*')
 
-    # Expert -- KNOWS --> Expert (self)
-    ax.annotate('', xy=(7, 4.2), xytext=(7, 3.0),
+    # Expert -- Connait --> Expert (self)
+    ax.annotate('', xy=(7, 7.5), xytext=(7, 6.0),
                 arrowprops=dict(arrowstyle='->', color=DARK, lw=1.2,
                                 connectionstyle='arc3,rad=0.8'))
-    ax.text(5.5, 3.6, 'KNOWS (N:M)', ha='center', fontsize=7, color=BLUE,
+    ax.text(5.3, 6.7, 'Connait (*..*)', ha='center', fontsize=7, color=BLUE,
             fontweight='bold', style='italic',
             bbox=dict(boxstyle='round,pad=0.15', facecolor=WHITE, edgecolor='none'))
 
@@ -304,9 +304,9 @@ def generate_class_diagram():
 # ═══════════════════════════════════════════════════════════════════
 # 3. SEQUENCE DIAGRAM: Authentication
 # ═══════════════════════════════════════════════════════════════════
-def draw_lifeline(ax, x, top_y, bottom_y, label, color=LIGHT_BLUE):
+def draw_lifeline(ax, x, top_y, bottom_y, label, color=LIGHT_BLUE, bw=1.6):
     """Draw a lifeline with box at top."""
-    bw, bh = 1.6, 0.5
+    bh = 0.5
     rect = FancyBboxPatch((x - bw/2, top_y - bh/2), bw, bh,
                           boxstyle="round,pad=0.05", facecolor=color,
                           edgecolor=DARK, linewidth=1.5)
@@ -337,12 +337,12 @@ def generate_sequence_auth():
     ax.set_aspect('equal')
     ax.axis('off')
 
-    ax.text(7, 1.2, 'Diagramme de Sequence : Authentification', ha='center',
+    ax.text(7, 1.2, 'Diagramme de Sequence : Connexion Securisee', ha='center',
             fontsize=14, fontweight='bold', color=BLUE)
 
     # Lifelines
-    ll = {'Client': 1, 'Nginx': 4, 'FastAPI': 7, 'bcrypt': 10, 'JWT': 13}
-    for name, x in ll.items():
+    lifelines = [('Utilisateur', 1), ('Relais', 4), ('Plateforme', 7), ('Securite', 10), ('Sessions', 13)]
+    for name, x in lifelines:
         draw_lifeline(ax, x, 0.5, -10, f':{name}')
 
     # Activation boxes
@@ -354,42 +354,42 @@ def generate_sequence_auth():
 
     # Messages - Login phase
     y = -0.5
-    draw_message(ax, 1, 4, y, '1: POST /api/auth/login {user, pass}')
+    draw_message(ax, 1, 4, y, '1: Demande de connexion')
     y -= 0.7
-    draw_message(ax, 4, 7, y, '2: forward request')
+    draw_message(ax, 4, 7, y, '2: Transfert de la demande')
     y -= 0.7
-    draw_message(ax, 7, 7.8, y, '3: check rate limit')
+    draw_message(ax, 7, 7.8, y, '3: Controle anti-abus')
     ax.plot([7.8, 7.8], [y - 0.3, y + 0.1], color=BLUE, linewidth=1)
     y -= 0.7
-    draw_message(ax, 7, 10, y, '4: verify(password, hash)')
+    draw_message(ax, 7, 10, y, '4: Verification du mot de passe')
     y -= 0.7
-    draw_message(ax, 10, 7, y, '5: true', dashed=True)
+    draw_message(ax, 10, 7, y, '5: Mot de passe valide', dashed=True)
     y -= 0.7
-    draw_message(ax, 7, 13, y, '6: encode({sub, role, exp})')
+    draw_message(ax, 7, 13, y, '6: Creer une session')
     y -= 0.7
-    draw_message(ax, 13, 7, y, '7: token JWT (HS256)', dashed=True)
+    draw_message(ax, 13, 7, y, '7: Cle d\'acces temporaire', dashed=True)
     y -= 0.7
-    draw_message(ax, 7, 4, y, '8: {access_token}', dashed=True)
+    draw_message(ax, 7, 4, y, '8: Acces autorise', dashed=True)
     draw_message(ax, 4, 1, y - 0.15, '', dashed=True)
 
     # Separator
     y -= 0.8
     ax.plot([0, 14], [y, y], color=BLUE, linewidth=1, linestyle='-.')
-    ax.text(7, y + 0.15, 'Requetes Authentifiees', ha='center', fontsize=8,
+    ax.text(7, y + 0.15, 'Actions Protegees', ha='center', fontsize=8,
             color=BLUE, fontweight='bold',
             bbox=dict(boxstyle='round,pad=0.2', facecolor=WHITE, edgecolor=BLUE))
 
     # Messages - Authenticated requests
     y -= 0.7
-    draw_message(ax, 1, 4, y, '9: GET /api/experts [Bearer token]')
+    draw_message(ax, 1, 4, y, '9: Consulter avec cle d\'acces')
     y -= 0.7
-    draw_message(ax, 4, 7, y, '10: forward')
+    draw_message(ax, 4, 7, y, '10: Transfert')
     y -= 0.7
-    draw_message(ax, 7, 13, y, '11: decode(token)')
+    draw_message(ax, 7, 13, y, '11: Verifier la cle')
     y -= 0.7
-    draw_message(ax, 13, 7, y, '12: {sub, role}', dashed=True)
+    draw_message(ax, 13, 7, y, '12: Identite confirmee', dashed=True)
     y -= 0.7
-    draw_message(ax, 7, 1, y, '13: 200 OK {data}', dashed=True)
+    draw_message(ax, 7, 1, y, '13: Donnees demandees', dashed=True)
 
     save_fig(fig, 'sequence_auth')
 
@@ -398,61 +398,62 @@ def generate_sequence_auth():
 # 4. SEQUENCE DIAGRAM: Recommendation
 # ═══════════════════════════════════════════════════════════════════
 def generate_sequence_recommend():
-    fig, ax = plt.subplots(1, 1, figsize=(14, 10))
-    ax.set_xlim(-0.5, 14)
-    ax.set_ylim(-10.5, 1.5)
+    fig, ax = plt.subplots(1, 1, figsize=(15, 11))
+    ax.set_xlim(-0.5, 15)
+    ax.set_ylim(-11.5, 1.5)
     ax.set_aspect('equal')
     ax.axis('off')
 
-    ax.text(7, 1.2, "Diagramme de Sequence : Recommandation d'Expert", ha='center',
+    ax.text(7.5, 1.2, "Diagramme de Sequence : Recherche du Meilleur Profil", ha='center',
             fontsize=14, fontweight='bold', color=BLUE)
 
-    ll = {'Client': 1, 'FastAPI': 4, 'Recommender': 7.5, 'TF-IDF': 11, 'JSONL': 13.5}
-    for name, x in ll.items():
-        draw_lifeline(ax, x, 0.5, -10, f':{name}')
+    lifelines = [('Utilisateur', 1), ('Plateforme', 4), ('Intelligence', 7.5), ('Comparaison', 11), ('Stockage', 14)]
+    for name, x in lifelines:
+        draw_lifeline(ax, x, 0.5, -11, f':{name}')
 
     # Activation box
-    rect = FancyBboxPatch((7.5 - 0.15, -8.5), 0.3, 7.5,
+    rect = FancyBboxPatch((7.5 - 0.15, -9.5), 0.3, 8.5,
                           boxstyle="square,pad=0", facecolor=VERY_LIGHT_BLUE,
                           edgecolor=BLUE, linewidth=1)
     ax.add_patch(rect)
 
     y = -0.5
-    draw_message(ax, 1, 4, y, '1: POST /api/ai/recommend {query}')
-    y -= 0.7
-    draw_message(ax, 4, 7.5, y, '2: recommend(query)')
+    draw_message(ax, 1, 4, y, '1: Rechercher un expert')
     y -= 0.8
+    draw_message(ax, 4, 7.5, y, '2: Analyser la demande')
+    y -= 1.0
 
     # Alt fragment
     alt_y = y
-    rect = FancyBboxPatch((6.5, y - 1.6), 8, 1.8,
+    rect = FancyBboxPatch((6.5, y - 1.8), 8.2, 2.1,
                           boxstyle="square,pad=0", facecolor='#FFFFF0',
                           edgecolor=BLUE, linewidth=1, linestyle='--')
     ax.add_patch(rect)
-    ax.text(6.7, alt_y + 0.05, '[if not trained]', fontsize=7, color=BLUE, fontstyle='italic')
+    ax.text(6.7, alt_y + 0.15, '[si premiere utilisation]', fontsize=7, color=BLUE, fontstyle='italic')
 
-    draw_message(ax, 7.5, 13.5, y, '3: load employees.jsonl')
-    y -= 0.7
-    draw_message(ax, 13.5, 7.5, y, '4: profiles[]', dashed=True)
-    y -= 0.7
-    draw_message(ax, 7.5, 11, y, '5: fit_transform(corpus)')
-    y -= 0.7
-    draw_message(ax, 11, 7.5, y, '6: tfidf_matrix', dashed=True)
-
+    y -= 0.3
+    draw_message(ax, 7.5, 14, y, '3: Charger les fiches employes')
     y -= 0.8
-    draw_message(ax, 7.5, 11, y, '7: transform(query)')
-    y -= 0.7
-    draw_message(ax, 11, 7.5, y, '8: query_vector', dashed=True)
-    y -= 0.7
-    draw_message(ax, 7.5, 7.5 + 0.8, y, '9: cosine_similarity()')
+    draw_message(ax, 14, 7.5, y, '4: Liste des profils', dashed=True)
+    y -= 0.8
+    draw_message(ax, 7.5, 11, y, '5: Preparer la comparaison')
+    y -= 0.8
+    draw_message(ax, 11, 7.5, y, '6: Profils prets', dashed=True)
+
+    y -= 1.0
+    draw_message(ax, 7.5, 11, y, '7: Comparer avec la demande')
+    y -= 0.8
+    draw_message(ax, 11, 7.5, y, '8: Degre de correspondance', dashed=True)
+    y -= 0.8
+    draw_message(ax, 7.5, 7.5 + 0.8, y, '9: Evaluer les affinites')
     ax.plot([7.5 + 0.8, 7.5 + 0.8], [y - 0.2, y + 0.1], color=BLUE, linewidth=1)
-    y -= 0.7
-    draw_message(ax, 7.5, 7.5 + 0.8, y, '10: sort top K')
+    y -= 0.8
+    draw_message(ax, 7.5, 7.5 + 0.8, y, '10: Classer par pertinence')
     ax.plot([7.5 + 0.8, 7.5 + 0.8], [y - 0.2, y + 0.1], color=BLUE, linewidth=1)
-    y -= 0.7
-    draw_message(ax, 7.5, 4, y, '11: results[]', dashed=True)
-    y -= 0.7
-    draw_message(ax, 4, 1, y, '12: [experts + scores]', dashed=True)
+    y -= 0.8
+    draw_message(ax, 7.5, 4, y, '11: Meilleurs profils', dashed=True)
+    y -= 0.8
+    draw_message(ax, 4, 1, y, '12: Afficher les resultats', dashed=True)
 
     save_fig(fig, 'sequence_recommend')
 
@@ -461,61 +462,61 @@ def generate_sequence_recommend():
 # 5. SEQUENCE DIAGRAM: PageRank
 # ═══════════════════════════════════════════════════════════════════
 def generate_sequence_pagerank():
-    fig, ax = plt.subplots(1, 1, figsize=(13, 9))
+    fig, ax = plt.subplots(1, 1, figsize=(13, 10))
     ax.set_xlim(-0.5, 13)
-    ax.set_ylim(-9.5, 1.5)
+    ax.set_ylim(-10.5, 1.5)
     ax.set_aspect('equal')
     ax.axis('off')
 
-    ax.text(6.5, 1.2, 'Diagramme de Sequence : PageRank des Experts', ha='center',
+    ax.text(6.5, 1.2, 'Diagramme de Sequence : Classement des Experts', ha='center',
             fontsize=14, fontweight='bold', color=BLUE)
 
-    ll = {'Client': 1, 'FastAPI': 4, 'PageRank': 7.5, 'JSONL': 11}
-    for name, x in ll.items():
-        draw_lifeline(ax, x, 0.5, -9, f':{name}')
+    lifelines = [('Utilisateur', 1), ('Plateforme', 4), ('Intelligence', 7.5), ('Stockage', 11)]
+    for name, x in lifelines:
+        draw_lifeline(ax, x, 0.5, -10, f':{name}')
 
-    rect = FancyBboxPatch((7.5 - 0.15, -8.0), 0.3, 7,
+    rect = FancyBboxPatch((7.5 - 0.15, -9.0), 0.3, 8,
                           boxstyle="square,pad=0", facecolor=VERY_LIGHT_BLUE,
                           edgecolor=BLUE, linewidth=1)
     ax.add_patch(rect)
 
     y = -0.5
-    draw_message(ax, 1, 4, y, '1: GET /api/ai/expert-rank')
-    y -= 0.7
-    draw_message(ax, 4, 7.5, y, '2: rank()')
-    y -= 0.7
-    draw_message(ax, 7.5, 11, y, '3: load employees, projects, documents')
-    y -= 0.7
-    draw_message(ax, 11, 7.5, y, '4: data[]', dashed=True)
+    draw_message(ax, 1, 4, y, '1: Voir les experts les plus influents')
     y -= 0.8
-    draw_message(ax, 7.5, 7.5 + 0.8, y, '5: build bipartite graph')
+    draw_message(ax, 4, 7.5, y, '2: Lancer le classement')
+    y -= 0.8
+    draw_message(ax, 7.5, 11, y, '3: Recuperer les donnees')
+    y -= 0.8
+    draw_message(ax, 11, 7.5, y, '4: Profils et projets', dashed=True)
+    y -= 0.9
+    draw_message(ax, 7.5, 7.5 + 0.8, y, '5: Cartographier le reseau')
     ax.plot([7.5 + 0.8, 7.5 + 0.8], [y - 0.2, y + 0.1], color=BLUE, linewidth=1)
-    ax.text(8.8, y, '(Expert <-> Skill <-> Project)', fontsize=6, color=GRAY, style='italic')
-    y -= 0.8
-    draw_message(ax, 7.5, 7.5 + 0.8, y, '6: compute base scores')
+    ax.text(8.8, y, '(Liens entre experts et projets)', fontsize=6, color=GRAY, style='italic')
+    y -= 0.9
+    draw_message(ax, 7.5, 7.5 + 0.8, y, '6: Attribuer un score initial')
     ax.plot([7.5 + 0.8, 7.5 + 0.8], [y - 0.2, y + 0.1], color=BLUE, linewidth=1)
 
     # Loop fragment
-    y -= 0.6
-    rect_loop = FancyBboxPatch((6.8, y - 1.2), 2.5, 1.5,
+    y -= 0.7
+    rect_loop = FancyBboxPatch((6.8, y - 1.4), 3.2, 1.8,
                                boxstyle="square,pad=0", facecolor='#FFFFF5',
                                edgecolor=BLUE, linewidth=1, linestyle='--')
     ax.add_patch(rect_loop)
-    ax.text(6.9, y + 0.2, 'loop [i = 1..20]', fontsize=7, color=BLUE, fontstyle='italic')
-    y -= 0.3
-    draw_message(ax, 7.5, 7.5 + 0.8, y, '7: iterate PageRank (d=0.85)')
+    ax.text(6.9, y + 0.2, 'Affinage progressif', fontsize=7, color=BLUE, fontstyle='italic')
+    y -= 0.4
+    draw_message(ax, 7.5, 7.5 + 0.8, y, '7: Propager l\'influence')
     ax.plot([7.5 + 0.8, 7.5 + 0.8], [y - 0.2, y + 0.1], color=BLUE, linewidth=1)
-    y -= 0.5
-    draw_message(ax, 7.5, 7.5 + 0.8, y, '8: normalize scores')
+    y -= 0.6
+    draw_message(ax, 7.5, 7.5 + 0.8, y, '8: Equilibrer les scores')
     ax.plot([7.5 + 0.8, 7.5 + 0.8], [y - 0.2, y + 0.1], color=BLUE, linewidth=1)
 
     y -= 1.0
-    draw_message(ax, 7.5, 7.5 + 0.8, y, '9: blend (60% PR + 40% base)')
+    draw_message(ax, 7.5, 7.5 + 0.8, y, '9: Score final')
     ax.plot([7.5 + 0.8, 7.5 + 0.8], [y - 0.2, y + 0.1], color=BLUE, linewidth=1)
-    y -= 0.7
-    draw_message(ax, 7.5, 4, y, '10: rankings[]', dashed=True)
-    y -= 0.7
-    draw_message(ax, 4, 1, y, '11: [ranked experts + scores]', dashed=True)
+    y -= 0.8
+    draw_message(ax, 7.5, 4, y, '10: Classement pret', dashed=True)
+    y -= 0.8
+    draw_message(ax, 4, 1, y, '11: Experts les plus influents', dashed=True)
 
     save_fig(fig, 'sequence_pagerank')
 
@@ -561,26 +562,26 @@ def generate_graph_schema():
             fontweight='bold', color=BLUE)
 
     # Nodes
-    draw_graph_node(ax, 5, 4, 'Expert', r=0.9, color=LIGHT_BLUE)
-    draw_graph_node(ax, 0.5, 4, 'Skill', r=0.8, color=LIGHT_CYAN)
-    draw_graph_node(ax, 9.5, 4, 'Project', r=0.8, color='#FEFCBF')
+    draw_graph_node(ax, 5, 4, 'Collaborateur', r=1.0, color=LIGHT_BLUE)
+    draw_graph_node(ax, 0.5, 4, 'Competence', r=0.8, color=LIGHT_CYAN)
+    draw_graph_node(ax, 9.5, 4, 'Projet', r=0.8, color='#FEFCBF')
     draw_graph_node(ax, 5, 7.3, 'Document', r=0.8, color='#FED7D7')
-    draw_graph_node(ax, 9.5, 7.3, 'Topic', r=0.7, color='#E9D8FD')
-    draw_graph_node(ax, 5, 0.8, 'Expert', r=0.6, color='#BEE3F8')
+    draw_graph_node(ax, 9.5, 7.3, 'Sujet', r=0.7, color='#E9D8FD')
+    draw_graph_node(ax, 5, 0.8, 'Collaborateur', r=0.8, color='#BEE3F8')
 
     # Edges
-    draw_graph_edge(ax, 5, 4, 0.5, 4, 'HAS_SKILL', offset=0.3)
-    draw_graph_edge(ax, 5, 4, 9.5, 4, 'WORKS_ON', offset=0.3)
-    draw_graph_edge(ax, 5, 4, 5, 7.3, 'AUTHORED', offset=0.4)
-    draw_graph_edge(ax, 5, 7.3, 9.5, 7.3, 'COVERS_TOPIC', offset=0.3)
-    draw_graph_edge(ax, 9.5, 4, 0.5, 4, 'REQUIRES_SKILL', offset=-0.5)
-    draw_graph_edge(ax, 5, 4, 5, 0.8, 'KNOWS', offset=0.4)
+    draw_graph_edge(ax, 5, 4, 0.5, 4, 'Possede', offset=0.3)
+    draw_graph_edge(ax, 5, 4, 9.5, 4, 'Travaille_Sur', offset=0.3)
+    draw_graph_edge(ax, 5, 4, 5, 7.3, 'A_redige', offset=0.4)
+    draw_graph_edge(ax, 5, 7.3, 9.5, 7.3, 'Traite_de', offset=0.3)
+    draw_graph_edge(ax, 9.5, 4, 0.5, 4, 'Requiert', offset=-0.5)
+    draw_graph_edge(ax, 5, 4, 5, 0.8, 'Connait', offset=0.4)
 
     # Cardinalities
-    ax.text(2.5, 4.55, 'N : M', fontsize=8, color=GRAY)
-    ax.text(7.2, 4.55, 'N : M', fontsize=8, color=GRAY)
-    ax.text(5.7, 5.8, '1 : N', fontsize=8, color=GRAY)
-    ax.text(5, 3.3, 'N : M', fontsize=8, color=GRAY, ha='center')
+    ax.text(2.5, 4.55, '* .. *', fontsize=8, color=GRAY)
+    ax.text(7.2, 4.55, '* .. *', fontsize=8, color=GRAY)
+    ax.text(5.7, 5.8, '1 .. *', fontsize=8, color=GRAY)
+    ax.text(5, 3.3, '* .. *', fontsize=8, color=GRAY, ha='center')
 
     save_fig(fig, 'graph_schema')
 
@@ -602,70 +603,70 @@ def generate_architecture():
     rect1 = FancyBboxPatch((1, 8), 12, 2, boxstyle="round,pad=0.2",
                            facecolor='#EBF8FF', edgecolor=BLUE, linewidth=2)
     ax.add_patch(rect1)
-    ax.text(7, 9.5, 'Couche Presentation (Frontend)', ha='center', fontsize=12,
+    ax.text(7, 9.5, 'Interface Utilisateur', ha='center', fontsize=12,
             fontweight='bold', color=BLUE)
-    ax.text(7, 8.9, 'React 18 + TypeScript + Material UI + Vite', ha='center',
+    ax.text(7, 8.9, 'Application Web Interactive', ha='center',
             fontsize=9, color=DARK)
-    ax.text(7, 8.4, 'react-force-graph-3d (WebGL / Three.js)', ha='center',
+    ax.text(7, 8.4, 'Visualisation 3D du reseau', ha='center',
             fontsize=9, color=GRAY)
 
     # Arrow down
     ax.annotate('', xy=(7, 7.7), xytext=(7, 7.95),
                 arrowprops=dict(arrowstyle='->', color=DARK, lw=2))
-    ax.text(8.5, 7.75, 'HTTP REST / WebSocket', fontsize=8, color=GRAY, style='italic')
+    ax.text(8.5, 7.75, 'Echanges securises', fontsize=8, color=GRAY, style='italic')
 
     # ── Layer 2: Backend ──
     rect2 = FancyBboxPatch((1, 4), 12, 3.5, boxstyle="round,pad=0.2",
                            facecolor='#FFFFF0', edgecolor=BLUE, linewidth=2)
     ax.add_patch(rect2)
-    ax.text(7, 7.1, 'Couche Metier (Backend)', ha='center', fontsize=12,
+    ax.text(7, 7.1, 'Systeme Central', ha='center', fontsize=12,
             fontweight='bold', color=BLUE)
-    ax.text(7, 6.5, 'FastAPI + Uvicorn (API REST + WebSocket)', ha='center',
+    ax.text(7, 6.5, 'Serveur de Traitement', ha='center',
             fontsize=9, color=DARK)
 
     # Sub-boxes
     ml_box = FancyBboxPatch((1.8, 4.5), 3.5, 1.6, boxstyle="round,pad=0.15",
                             facecolor=LIGHT_CYAN, edgecolor=BLUE, linewidth=1)
     ax.add_patch(ml_box)
-    ax.text(3.55, 5.8, 'Moteur ML', ha='center', fontsize=9, fontweight='bold', color=DARK)
-    ax.text(3.55, 5.35, 'PageRank | TF-IDF', ha='center', fontsize=7.5, color=DARK)
-    ax.text(3.55, 4.95, 'Collab. Filtering', ha='center', fontsize=7.5, color=DARK)
+    ax.text(3.55, 5.8, 'Intelligence', ha='center', fontsize=9, fontweight='bold', color=DARK)
+    ax.text(3.55, 5.35, 'Recommandation', ha='center', fontsize=7.5, color=DARK)
+    ax.text(3.55, 4.95, 'Score d\'Influence', ha='center', fontsize=7.5, color=DARK)
 
     auth_box = FancyBboxPatch((5.8, 4.5), 3, 1.6, boxstyle="round,pad=0.15",
                               facecolor='#FED7D7', edgecolor=BLUE, linewidth=1)
     ax.add_patch(auth_box)
-    ax.text(7.3, 5.8, 'Auth + RBAC', ha='center', fontsize=9, fontweight='bold', color=DARK)
-    ax.text(7.3, 5.35, 'JWT (HS256)', ha='center', fontsize=7.5, color=DARK)
-    ax.text(7.3, 4.95, 'bcrypt + Rate Limit', ha='center', fontsize=7.5, color=DARK)
+    ax.text(7.3, 5.8, 'Securite', ha='center', fontsize=9, fontweight='bold', color=DARK)
+    ax.text(7.3, 5.35, 'Controle d\'Acces', ha='center', fontsize=7.5, color=DARK)
+    ax.text(7.3, 4.95, 'Protection anti-abus', ha='center', fontsize=7.5, color=DARK)
 
     bd_box = FancyBboxPatch((9.3, 4.5), 3.5, 1.6, boxstyle="round,pad=0.15",
                             facecolor='#E9D8FD', edgecolor=BLUE, linewidth=1)
     ax.add_patch(bd_box)
-    ax.text(11.05, 5.8, 'Big Data', ha='center', fontsize=9, fontweight='bold', color=DARK)
-    ax.text(11.05, 5.35, 'Kafka Simulator', ha='center', fontsize=7.5, color=DARK)
-    ax.text(11.05, 4.95, 'PySpark Batch', ha='center', fontsize=7.5, color=DARK)
+    ax.text(11.05, 5.8, 'Analyses Globales', ha='center', fontsize=9, fontweight='bold', color=DARK)
+    ax.text(11.05, 5.35, 'Statistiques', ha='center', fontsize=7.5, color=DARK)
+    ax.text(11.05, 4.95, 'Tendances', ha='center', fontsize=7.5, color=DARK)
 
     # Arrow down
     ax.annotate('', xy=(7, 3.7), xytext=(7, 3.95),
                 arrowprops=dict(arrowstyle='->', color=DARK, lw=2))
-    ax.text(8.5, 3.75, 'Bolt (Cypher) / File I/O', fontsize=8, color=GRAY, style='italic')
+    ax.text(8.5, 3.75, 'Requetes internes', fontsize=8, color=GRAY, style='italic')
 
     # ── Layer 3: Data ──
     rect3 = FancyBboxPatch((1, 1.5), 12, 2, boxstyle="round,pad=0.2",
                            facecolor='#F0FFF4', edgecolor=BLUE, linewidth=2)
     ax.add_patch(rect3)
-    ax.text(7, 3.1, 'Couche Donnees', ha='center', fontsize=12,
+    ax.text(7, 3.1, 'Bases de Connaissances', ha='center', fontsize=12,
             fontweight='bold', color=BLUE)
 
     neo_box = FancyBboxPatch((2, 1.8), 4.5, 1, boxstyle="round,pad=0.15",
                              facecolor=LIGHT_BLUE, edgecolor=BLUE, linewidth=1)
     ax.add_patch(neo_box)
-    ax.text(4.25, 2.3, 'Neo4j 5 (Graph DB)', ha='center', fontsize=9, fontweight='bold', color=DARK)
+    ax.text(4.25, 2.3, 'Base Orientee Graphe', ha='center', fontsize=9, fontweight='bold', color=DARK)
 
     json_box = FancyBboxPatch((7.5, 1.8), 4.5, 1, boxstyle="round,pad=0.15",
                               facecolor='#FEFCBF', edgecolor=BLUE, linewidth=1)
     ax.add_patch(json_box)
-    ax.text(9.75, 2.3, 'Fichiers JSONL', ha='center', fontsize=9, fontweight='bold', color=DARK)
+    ax.text(9.75, 2.3, 'Stockage des Profils', ha='center', fontsize=9, fontweight='bold', color=DARK)
 
     save_fig(fig, 'architecture_diagram')
 

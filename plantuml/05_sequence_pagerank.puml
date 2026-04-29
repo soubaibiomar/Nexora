@@ -1,0 +1,62 @@
+@startuml Sequence_PageRank
+' ═══════════════════════════════════════════════════
+'  Diagramme de Séquence — PageRank des Experts
+' ═══════════════════════════════════════════════════
+
+skinparam backgroundColor #FEFEFE
+skinparam sequenceArrowThickness 2
+
+skinparam participant {
+    BackgroundColor #E8F0FE
+    BorderColor #2B6CB0
+    FontColor #1A365D
+}
+
+skinparam sequence {
+    ArrowColor #2B6CB0
+    LifeLineBorderColor #2B6CB0
+    LifeLineBackgroundColor #EBF4FF
+    GroupBackgroundColor #F7FAFC
+    GroupBorderColor #2B6CB0
+    DividerBackgroundColor #EBF4FF
+    DividerBorderColor #2B6CB0
+}
+
+title Séquence — PageRank des Experts (Scoring d'influence)
+
+participant "Frontend" as F
+participant "Backend" as B
+database "Database" as DB
+
+F -> B : GET /api/ai/expert-rank
+activate B
+
+B -> DB : Fetch experts, skills, projects
+activate DB
+DB --> B : données brutes
+deactivate DB
+
+B -> B : Construire le graphe biparti\n(Expert ↔ Skill ↔ Project)
+
+loop 20 itérations
+    B -> B : Appliquer l'algorithme PageRank
+end
+
+note right of B
+  Score final = pondération :
+  • 60% — Score PageRank (centralité)
+  • 40% — Features individuelles :
+    - Diversité des compétences
+    - Nombre de projets
+    - Documents publiés
+    - Années d'expérience
+end note
+
+B -> B : Combiner PageRank (60%)\n+ Features (40%)
+
+B -> B : Trier par score\nfinal décroissant
+
+B --> F : 200 OK\n[{name, rank, score, details}, ...]
+deactivate B
+
+@enduml

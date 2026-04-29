@@ -16,9 +16,12 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EmailIcon from '@mui/icons-material/Email';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import { expertService, networkService } from '../services/api';
+import { networkService } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../services/api';
 
 export default function Profile() {
+    const { fullName, username, email, role } = useAuth();
     const [profile, setProfile] = useState<any>(null);
     const [netStats, setNetStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -26,10 +29,19 @@ export default function Profile() {
     useEffect(() => {
         const load = async () => {
             try {
-                const expRes = await expertService.search({ limit: 1 });
-                const experts = expRes.data.experts || expRes.data || [];
-                if (experts.length > 0) setProfile(experts[0]);
-            } catch { /* use fallback */ }
+                // Fetch the authenticated user's own profile from /api/auth/me
+                const meRes = await api.get('/auth/me');
+                setProfile(meRes.data);
+            } catch {
+                // Fallback: use data from AuthContext
+                setProfile({
+                    full_name: fullName,
+                    username,
+                    email,
+                    role,
+                    headline: '',
+                });
+            }
             try {
                 const statsRes = await networkService.getStats();
                 setNetStats(statsRes.data);
@@ -37,7 +49,7 @@ export default function Profile() {
             setLoading(false);
         };
         load();
-    }, []);
+    }, [fullName, username, email, role]);
 
     if (loading) {
         return (
@@ -47,10 +59,25 @@ export default function Profile() {
         );
     }
 
-    const user = profile || {
-        name: 'Soubai Abderahim', role: 'Full Stack Developer', department: 'Engineering',
-        location: 'Morocco', experience_years: 3,
+    // Map auth profile fields to the template's expected shape
+    const user = profile ? {
+        name: profile.full_name || profile.name || fullName,
+        role: profile.headline || profile.role || role,
+        department: profile.department || '',
+        location: profile.location || '',
+        experience_years: profile.experience_years || 2,
+        skills: profile.skills || ['React', 'TypeScript', 'Python', 'Node.js', 'Docker', 'FastAPI', 'Neo4j', 'AWS'],
+        email: profile.email || email,
+        username: profile.username || username,
+    } : {
+        name: fullName || 'User',
+        role: role || 'user',
+        department: '',
+        location: '',
+        experience_years: 2,
         skills: ['React', 'TypeScript', 'Node.js', 'Python', 'FastAPI', 'Docker', 'Neo4j', 'PostgreSQL'],
+        email,
+        username,
     };
 
     const skills = user.skills || ['React', 'TypeScript', 'Python', 'Node.js', 'Docker', 'FastAPI', 'Neo4j', 'AWS'];
@@ -297,7 +324,7 @@ export default function Profile() {
                                 <IconButton size="small"><EditIcon sx={{ fontSize: 16 }} /></IconButton>
                             </Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
-                                <LinkIcon sx={{ fontSize: 16, color: '#6C5CE7' }} /> nexora.io/in/{user.name?.toLowerCase().replace(/\s+/g, '-')}
+                                <LinkIcon sx={{ fontSize: 16, color: '#6C5CE7' }} /> nexora.io/in/{user.username || user.name?.toLowerCase().replace(/\s+/g, '-')}
                             </Typography>
                         </CardContent>
                     </Card>

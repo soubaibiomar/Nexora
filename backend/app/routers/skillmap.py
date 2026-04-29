@@ -4,12 +4,13 @@ Provides endpoints for interactive skill visualization and AI-powered team assem
 Uses skills.jsonl catalog + employees.jsonl to create meaningful skill assignments.
 """
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from typing import List, Optional, Dict, Any
 import json
 from pathlib import Path
 from collections import Counter, defaultdict
 import hashlib
+from ..auth_guards import require_auth, require_manager
 
 router = APIRouter(prefix="/api/skills", tags=["skills"])
 
@@ -118,7 +119,7 @@ def _get_enriched_employees() -> list:
 # ── Skill Map Endpoints ────────────────────────────────────────────
 
 @router.get("/map")
-async def get_skill_map():
+async def get_skill_map(_user: dict = Depends(require_auth)):
     """
     Returns org-wide skill map data: frequency, departments, levels, and trends.
     """
@@ -206,7 +207,7 @@ async def get_skill_map():
 # ── Team Builder Endpoints ─────────────────────────────────────────
 
 @router.post("/team-builder")
-async def build_team(request: dict):
+async def build_team(request: dict, _user: dict = Depends(require_auth)):
     """
     AI-powered team builder: given required skills and team size,
     suggests the optimal team composition from available experts.
@@ -305,7 +306,7 @@ async def build_team(request: dict):
 
 
 @router.get("/available")
-async def get_available_skills():
+async def get_available_skills(_user: dict = Depends(require_auth)):
     """Returns all unique skills in the organization for autocomplete."""
     skills_catalog = _load_jsonl("skills.jsonl")
     return {"skills": sorted(s.get("name", "") for s in skills_catalog)}

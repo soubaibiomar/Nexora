@@ -138,12 +138,16 @@ def require_role(*allowed_roles: str):
 
 
 # ── Models ──────────────────────────────────────────────────────────
+SELF_REGISTER_ROLES = ["user", "manager"]
+
+
 class RegisterRequest(BaseModel):
-    username: str = Field(..., min_length=3, max_length=30)
-    email: str
-    password: str = Field(..., min_length=4)
+    username: str = Field(..., min_length=3, max_length=30, pattern=r'^[a-zA-Z0-9_]+$')
+    email: str = Field(..., pattern=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+    password: str = Field(..., min_length=6)
     full_name: str = Field(..., min_length=2)
     headline: Optional[str] = ""
+    role: Optional[str] = Field("user", description="Account type: 'user' or 'manager'")
 
 
 class RegisterResponse(BaseModel):
@@ -193,6 +197,14 @@ async def register(req: RegisterRequest):
                 detail="Email already registered",
             )
 
+    # Validate role (self-registration only allows user/manager)
+    chosen_role = (req.role or "user").lower()
+    if chosen_role not in SELF_REGISTER_ROLES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid role. Choose one of: {', '.join(SELF_REGISTER_ROLES)}",
+        )
+
     # Create user
     user_id = str(uuid.uuid4())
     _users[req.username.lower()] = {
@@ -204,7 +216,7 @@ async def register(req: RegisterRequest):
         "hashed_password": hash_password(req.password),
         "created_at": datetime.utcnow().isoformat(),
         "is_active": True,
-        "role": "user",
+        "role": chosen_role,
     }
     # Persist to disk
     _save_users()
@@ -223,12 +235,20 @@ async def register(req: RegisterRequest):
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     _init_default_users()
 
-    username_key = form_data.username.lower()
+    login_input = form_data.username.strip().lower()
 
     # Rate-limit check BEFORE password verification
-    _check_rate_limit(username_key)
+    _check_rate_limit(login_input)
 
-    user = _users.get(username_key)
+    # Support login by email: if input looks like an email, find user by email
+    user = None
+    if "@" in login_input:
+        for u in _users.values():
+            if u["email"].lower() == login_input:
+                user = u
+                break
+    else:
+        user = _users.get(login_input)
     if not user or not verify_password(form_data.password, user["hashed_password"]):
         _record_attempt(username_key)
         raise HTTPException(
@@ -305,3 +325,124 @@ async def update_user_role(
     user["role"] = role
     _save_users()
     return {"message": f"Role for {username} updated to {role}", "username": username, "role": role}
+
+
+# ── Admin: Create User ─────────────────────────────────────────────
+class AdminCreateUserRequest(BaseModel):
+    username: str = Field(..., min_length=3, max_length=30, pattern=r'^[a-zA-Z0-9_]+$')
+    email: str = Field(..., pattern=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+    password: str = Field(..., min_length=6)
+    full_name: str = Field(..., min_length=2)
+    headline: Optional[str] = ""
+    role: str = Field("user", description="Role to assign: admin, manager, or user")
+
+
+@router.post("/users", status_code=201)
+async def admin_create_user(
+    req: AdminCreateUserRequest,
+    admin: str = Depends(require_role("admin")),
+):
+    """Create a new user (admin only). Admins can assign any role including admin."""
+    _init_default_users()
+
+    if req.role not in VALID_ROLES:
+        raise HTTPException(400, detail=f"Invalid role. Must be one of: {', '.join(VALID_ROLES)}")
+    if req.username.lower() in _users:
+        raise HTTPException(400, detail="Username already taken")
+    for user in _users.values():
+        if user["email"].lower() == req.email.lower():
+            raise HTTPException(400, detail="Email already registered")
+
+    user_id = str(uuid.uuid4())
+    _users[req.username.lower()] = {
+        "id": user_id,
+        "username": req.username,
+        "email": req.email,
+        "full_name": req.full_name,
+        "headline": req.headline or "",
+        "hashed_password": hash_password(req.password),
+        "created_at": datetime.utcnow().isoformat(),
+        "is_active": True,
+        "role": req.role,
+    }
+    _save_users()
+    return {
+        "id": user_id,
+        "username": req.username,
+        "email": req.email,
+        "full_name": req.full_name,
+        "role": req.role,
+        "message": f"User {req.username} created with role {req.role}.",
+    }
+
+
+# ── Admin: Update User ─────────────────────────────────────────────
+class AdminUpdateUserRequest(BaseModel):
+    email: Optional[str] = None
+    full_name: Optional[str] = None
+    headline: Optional[str] = None
+    role: Optional[str] = None
+    password: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+@router.put("/users/{username}")
+async def admin_update_user(
+    username: str,
+    req: AdminUpdateUserRequest,
+    admin: str = Depends(require_role("admin")),
+):
+    """Update a user's details (admin only)."""
+    _init_default_users()
+    user = _users.get(username.lower())
+    if not user:
+        raise HTTPException(404, detail="User not found")
+
+    if req.role is not None:
+        if req.role not in VALID_ROLES:
+            raise HTTPException(400, detail=f"Invalid role. Must be one of: {', '.join(VALID_ROLES)}")
+        user["role"] = req.role
+    if req.email is not None:
+        # Check for duplicate email
+        for u in _users.values():
+            if u["username"].lower() != username.lower() and u["email"].lower() == req.email.lower():
+                raise HTTPException(400, detail="Email already registered by another user")
+        user["email"] = req.email
+    if req.full_name is not None:
+        user["full_name"] = req.full_name
+    if req.headline is not None:
+        user["headline"] = req.headline
+    if req.password is not None:
+        user["hashed_password"] = hash_password(req.password)
+    if req.is_active is not None:
+        user["is_active"] = req.is_active
+
+    _save_users()
+    return {
+        "message": f"User {username} updated successfully.",
+        "username": username,
+        "role": user.get("role", "user"),
+    }
+
+
+# ── Admin: Delete User ─────────────────────────────────────────────
+@router.delete("/users/{username}")
+async def admin_delete_user(
+    username: str,
+    admin: str = Depends(require_role("admin")),
+):
+    """Delete a user (admin only). Cannot delete yourself."""
+    _init_default_users()
+    target_key = username.lower()
+
+    if target_key not in _users:
+        raise HTTPException(404, detail="User not found")
+    if target_key == admin.lower():
+        raise HTTPException(400, detail="Cannot delete your own account")
+
+    deleted_user = _users.pop(target_key)
+    _save_users()
+    return {
+        "message": f"User {deleted_user['username']} deleted.",
+        "username": deleted_user["username"],
+    }

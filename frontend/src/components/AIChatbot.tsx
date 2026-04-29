@@ -9,23 +9,30 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import PersonIcon from '@mui/icons-material/Person';
 import MinimizeIcon from '@mui/icons-material/Remove';
 import { aiService } from '../services/api';
+import { useThemeMode } from '../App';
 
 interface Message {
     text: string;
     sender: 'user' | 'bot';
     timestamp?: string;
     suggestions?: string[];
+    data?: any[];
+    type?: string;
+    extra?: Record<string, any>;
 }
 
 const AIChatbot: React.FC = () => {
+    const { mode } = useThemeMode();
+    const isDark = mode === 'dark';
     const [open, setOpen] = useState(false);
     const [input, setInput] = useState('');
+    const [conversationId] = useState(() => crypto.randomUUID?.() || `conv_${Date.now()}_${Math.random().toString(36).slice(2)}`);
     const [messages, setMessages] = useState<Message[]>([
         {
             text: "Hi! I'm Veda, your intelligent AI assistant. Ask me anything — from finding experts and skills to general knowledge about companies and technologies! ✨",
             sender: 'bot',
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            suggestions: ['Who are the top experts?', 'What skills are trending?', 'Tell me about Google'],
+            suggestions: ['Who are the top experts?', 'What skills are trending?', 'Show me projects about AI'],
         }
     ]);
     const [loading, setLoading] = useState(false);
@@ -49,14 +56,19 @@ const AIChatbot: React.FC = () => {
         setLoading(true);
 
         try {
-            const response = await aiService.chat(userMsg);
+            const response = await aiService.chat(userMsg, conversationId);
             const botMsg = response.data.message || "I don't understand.";
             const suggestions = response.data.suggestions || [];
+            const data = response.data.data;
+            const type = response.data.type;
             setMessages(prev => [...prev, {
                 text: botMsg,
                 sender: 'bot',
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 suggestions,
+                data: Array.isArray(data) ? data : undefined,
+                type,
+                extra: (!Array.isArray(data) && typeof data === 'object') ? data : undefined,
             }]);
         } catch (error) {
             console.error(error);
@@ -76,6 +88,23 @@ const AIChatbot: React.FC = () => {
             handleSend();
         }
     };
+
+    // Theme-aware colors
+    const chatBg = isDark ? 'background.paper' : '#ffffff';
+    const headerBg = isDark ? 'primary.dark' : 'linear-gradient(135deg, #5A52D5, #6C63FF)';
+    const msgBotBg = isDark ? 'action.selected' : 'rgba(108,99,255,0.06)';
+    const msgBotBorder = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(108,99,255,0.12)';
+    const msgTextColor = isDark ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.85)';
+    const metaColor = isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)';
+    const inputBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)';
+    const inputBorder = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)';
+    const inputPlaceholder = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.35)';
+    const footerText = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.2)';
+    const scrollThumb = isDark ? 'rgba(108,92,231,0.3)' : 'rgba(108,92,231,0.2)';
+    const windowBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
+    const windowShadow = isDark
+        ? '0 16px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(108,99,255,0.08)'
+        : '0 16px 50px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05)';
 
     return (
         <>
@@ -115,10 +144,11 @@ const AIChatbot: React.FC = () => {
                         display: open ? 'flex' : 'none',
                         flexDirection: 'column',
                         overflow: 'hidden',
-                        borderRadius: '8px',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        bgcolor: 'background.paper',
-                        boxShadow: 3,
+                        borderRadius: '12px',
+                        border: '1px solid',
+                        borderColor: windowBorder,
+                        bgcolor: chatBg,
+                        boxShadow: windowShadow,
                     }}
                 >
                     {/* Header */}
@@ -127,12 +157,12 @@ const AIChatbot: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        bgcolor: 'primary.dark',
+                        background: headerBg,
                     }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
                             <Box sx={{
                                 width: 36, height: 36, borderRadius: '12px',
-                                bgcolor: 'primary.main',
+                                bgcolor: 'rgba(255,255,255,0.15)',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                             }}>
                                 <AutoAwesomeIcon sx={{ fontSize: 20, color: 'white' }} />
@@ -141,20 +171,20 @@ const AIChatbot: React.FC = () => {
                                 <Typography sx={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', lineHeight: 1.2 }}>
                                     Veda
                                 </Typography>
-                                <Typography sx={{ fontSize: '0.65rem', color: 'rgba(162,155,254,0.8)', fontWeight: 500, letterSpacing: 0.5 }}>
+                                <Typography sx={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.65)', fontWeight: 500, letterSpacing: 0.5 }}>
                                     AI Assistant • Online
                                 </Typography>
                             </Box>
                         </Box>
                         <Box sx={{ display: 'flex', gap: 0.3 }}>
                             <IconButton size="small" onClick={() => setOpen(false)} sx={{
-                                color: 'rgba(255,255,255,0.4)',
-                                '&:hover': { color: 'white', bgcolor: 'rgba(255,255,255,0.05)' },
+                                color: 'rgba(255,255,255,0.5)',
+                                '&:hover': { color: 'white', bgcolor: 'rgba(255,255,255,0.1)' },
                             }}>
                                 <MinimizeIcon sx={{ fontSize: 18 }} />
                             </IconButton>
                             <IconButton size="small" onClick={() => setOpen(false)} sx={{
-                                color: 'rgba(255,255,255,0.4)',
+                                color: 'rgba(255,255,255,0.5)',
                                 '&:hover': { color: '#ef4444', bgcolor: 'rgba(239,68,68,0.1)' },
                             }}>
                                 <CloseIcon sx={{ fontSize: 18 }} />
@@ -168,7 +198,7 @@ const AIChatbot: React.FC = () => {
                         display: 'flex', flexDirection: 'column', gap: 2,
                         '&::-webkit-scrollbar': { width: 4 },
                         '&::-webkit-scrollbar-thumb': {
-                            bgcolor: 'rgba(108,92,231,0.3)', borderRadius: 10,
+                            bgcolor: scrollThumb, borderRadius: 10,
                         },
                     }}>
                         {messages.map((msg, idx) => (
@@ -185,7 +215,7 @@ const AIChatbot: React.FC = () => {
                                         ) : (
                                             <PersonIcon sx={{ fontSize: 12, color: '#6C5CE7' }} />
                                         )}
-                                        <Typography sx={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)', fontWeight: 500 }}>
+                                        <Typography sx={{ fontSize: '0.65rem', color: metaColor, fontWeight: 500 }}>
                                             {msg.sender === 'bot' ? 'Veda' : 'You'}
                                             {msg.timestamp && ` · ${msg.timestamp}`}
                                         </Typography>
@@ -198,15 +228,102 @@ const AIChatbot: React.FC = () => {
                                         borderRadius: '16px',
                                         borderTopLeftRadius: msg.sender === 'bot' ? '4px' : '16px',
                                         borderTopRightRadius: msg.sender === 'user' ? '4px' : '16px',
-                                        bgcolor: msg.sender === 'user' ? 'primary.main' : 'action.selected',
-                                        border: msg.sender === 'bot' ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                                        bgcolor: msg.sender === 'user' ? 'primary.main' : msgBotBg,
+                                        border: msg.sender === 'bot' ? `1px solid ${msgBotBorder}` : 'none',
                                     }}>
                                         <Typography sx={{
-                                            fontSize: '0.82rem', color: 'rgba(255,255,255,0.9)',
+                                            fontSize: '0.82rem',
+                                            color: msg.sender === 'user' ? '#fff' : msgTextColor,
                                             whiteSpace: 'pre-wrap', lineHeight: 1.55,
                                         }}>
                                             {msg.text}
                                         </Typography>
+
+                                        {/* Structured data rendering */}
+                                        {msg.data && msg.data.length > 0 && (
+                                            <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 0.8 }}>
+                                                {msg.data.map((item: any, i: number) => (
+                                                    <Box key={i} sx={{
+                                                        p: 1, borderRadius: '8px',
+                                                        bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+                                                        border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
+                                                    }}>
+                                                        {msg.type === 'projects' && (
+                                                            <>
+                                                                <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, color: '#A29BFE' }}>
+                                                                    📂 {item.name}
+                                                                </Typography>
+                                                                <Typography sx={{ fontSize: '0.7rem', color: metaColor, mt: 0.2 }}>
+                                                                    {item.domain && `${item.domain} • `}{item.status && `${item.status} • `}{item.team_size ? `${item.team_size} members` : ''}
+                                                                </Typography>
+                                                                {item.required_skills?.length > 0 && (
+                                                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.3, mt: 0.5 }}>
+                                                                        {item.required_skills.slice(0, 4).map((s: string, j: number) => (
+                                                                            <Chip key={j} label={s} size="small" sx={{
+                                                                                height: 18, fontSize: '0.6rem',
+                                                                                bgcolor: isDark ? 'rgba(108,92,231,0.12)' : 'rgba(108,92,231,0.08)',
+                                                                                color: '#A29BFE',
+                                                                            }} />
+                                                                        ))}
+                                                                    </Box>
+                                                                )}
+                                                            </>
+                                                        )}
+                                                        {msg.type === 'experts' && (
+                                                            <>
+                                                                <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, color: '#6C5CE7' }}>
+                                                                    👤 {item.name}
+                                                                </Typography>
+                                                                <Typography sx={{ fontSize: '0.7rem', color: metaColor, mt: 0.2 }}>
+                                                                    {item.title && `${item.title} • `}{item.department || ''}{item.score ? ` • Score: ${Math.round(item.score)}%` : ''}
+                                                                </Typography>
+                                                                {item.skills?.length > 0 && (
+                                                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.3, mt: 0.5 }}>
+                                                                        {item.skills.slice(0, 5).map((s: string, j: number) => (
+                                                                            <Chip key={j} label={s} size="small" sx={{
+                                                                                height: 18, fontSize: '0.6rem',
+                                                                                bgcolor: isDark ? 'rgba(108,92,231,0.12)' : 'rgba(108,92,231,0.08)',
+                                                                                color: '#6C5CE7',
+                                                                            }} />
+                                                                        ))}
+                                                                    </Box>
+                                                                )}
+                                                            </>
+                                                        )}
+                                                        {msg.type === 'skills' && (
+                                                            <Typography sx={{ fontSize: '0.75rem', color: msgTextColor }}>
+                                                                🏷️ <strong>{item.name}</strong>{item.category ? ` — ${item.category}` : ''}{item.demand ? ` (demand: ${item.demand})` : ''}
+                                                            </Typography>
+                                                        )}
+                                                        {!['projects', 'experts', 'skills'].includes(msg.type || '') && (
+                                                            <Typography sx={{ fontSize: '0.75rem', color: msgTextColor }}>
+                                                                {JSON.stringify(item).slice(0, 120)}
+                                                            </Typography>
+                                                        )}
+                                                    </Box>
+                                                ))}
+                                            </Box>
+                                        )}
+
+                                        {/* Statistics rendering */}
+                                        {msg.type === 'statistics' && msg.extra && (
+                                            <Box sx={{ mt: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0.6 }}>
+                                                {Object.entries(msg.extra).filter(([k]) => typeof msg.extra![k] !== 'object').map(([key, val]) => (
+                                                    <Box key={key} sx={{
+                                                        p: 0.8, borderRadius: '6px', textAlign: 'center',
+                                                        bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+                                                        border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
+                                                    }}>
+                                                        <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: '#A29BFE' }}>
+                                                            {String(val)}
+                                                        </Typography>
+                                                        <Typography sx={{ fontSize: '0.6rem', color: metaColor, textTransform: 'capitalize' }}>
+                                                            {key.replace(/_/g, ' ')}
+                                                        </Typography>
+                                                    </Box>
+                                                ))}
+                                            </Box>
+                                        )}
                                     </Box>
 
                                     {/* Suggestion chips */}
@@ -222,13 +339,13 @@ const AIChatbot: React.FC = () => {
                                                         height: 24,
                                                         fontSize: '0.68rem',
                                                         fontWeight: 500,
-                                                        bgcolor: 'rgba(108,92,231,0.08)',
+                                                        bgcolor: isDark ? 'rgba(108,92,231,0.08)' : 'rgba(108,92,231,0.06)',
                                                         color: '#A29BFE',
-                                                        border: '1px solid rgba(108,92,231,0.15)',
+                                                        border: `1px solid ${isDark ? 'rgba(108,92,231,0.15)' : 'rgba(108,92,231,0.15)'}`,
                                                         cursor: 'pointer',
                                                         transition: 'all 0.2s',
                                                         '&:hover': {
-                                                            bgcolor: 'rgba(108,92,231,0.15)',
+                                                            bgcolor: isDark ? 'rgba(108,92,231,0.15)' : 'rgba(108,92,231,0.12)',
                                                             borderColor: 'rgba(108,92,231,0.3)',
                                                             transform: 'translateY(-1px)',
                                                         },
@@ -247,14 +364,14 @@ const AIChatbot: React.FC = () => {
                                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.4, px: 0.5 }}>
                                         <AutoAwesomeIcon sx={{ fontSize: 12, color: '#A29BFE' }} />
-                                        <Typography sx={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)', fontWeight: 500 }}>
+                                        <Typography sx={{ fontSize: '0.65rem', color: metaColor, fontWeight: 500 }}>
                                             Veda is thinking…
                                         </Typography>
                                     </Box>
                                     <Box sx={{
                                         p: 1.5, borderRadius: '16px', borderTopLeftRadius: '4px',
-                                        bgcolor: 'rgba(255,255,255,0.04)',
-                                        border: '1px solid rgba(255,255,255,0.06)',
+                                        bgcolor: msgBotBg,
+                                        border: `1px solid ${msgBotBorder}`,
                                         display: 'flex', alignItems: 'center', gap: 1,
                                     }}>
                                         <Box sx={{ display: 'flex', gap: 0.4 }}>
@@ -281,14 +398,15 @@ const AIChatbot: React.FC = () => {
                     {/* Input Area */}
                     <Box sx={{
                         px: 2, py: 1.5,
-                        borderTop: '1px solid rgba(255,255,255,0.06)',
-                        bgcolor: 'background.default',
+                        borderTop: '1px solid',
+                        borderColor: inputBorder,
+                        bgcolor: isDark ? 'background.default' : '#fafafa',
                     }}>
                         <Box sx={{
                             display: 'flex', alignItems: 'center', gap: 0.8,
-                            bgcolor: 'rgba(255,255,255,0.04)',
+                            bgcolor: inputBg,
                             borderRadius: '14px',
-                            border: '1px solid rgba(255,255,255,0.06)',
+                            border: `1px solid ${inputBorder}`,
                             px: 1.5, py: 0.3,
                             transition: 'all 0.2s',
                             '&:focus-within': {
@@ -306,10 +424,10 @@ const AIChatbot: React.FC = () => {
                                 InputProps={{ disableUnderline: true }}
                                 sx={{
                                     '& .MuiInputBase-input': {
-                                        color: 'rgba(255,255,255,0.85)',
+                                        color: msgTextColor,
                                         fontSize: '0.83rem',
                                         py: 0.8,
-                                        '&::placeholder': { color: 'rgba(255,255,255,0.25)', opacity: 1 },
+                                        '&::placeholder': { color: inputPlaceholder, opacity: 1 },
                                     },
                                 }}
                             />
@@ -329,7 +447,7 @@ const AIChatbot: React.FC = () => {
                                 <SendIcon sx={{ fontSize: 16, color: 'white' }} />
                             </IconButton>
                         </Box>
-                        <Typography sx={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.15)', textAlign: 'center', mt: 0.6 }}>
+                        <Typography sx={{ fontSize: '0.6rem', color: footerText, textAlign: 'center', mt: 0.6 }}>
                             Powered by Veda AI • Nexora
                         </Typography>
                     </Box>

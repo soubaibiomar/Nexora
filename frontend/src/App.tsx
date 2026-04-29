@@ -45,7 +45,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import TeamWorkspace from './pages/TeamWorkspace';
 import SkillEvolution from './pages/SkillEvolution';
+import Forbidden from './pages/Forbidden';
 import AIChatbot from './components/AIChatbot';
+import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // ── Theme Mode Context ─────────────────────────────────────────────
@@ -63,7 +65,7 @@ const NAVBAR_HEIGHT = 56;
 
 // ── Top Navigation Bar ─────────────────────────────────────────────
 function TopNavBar() {
-  const { isAuthenticated, username, fullName, logout } = useAuth();
+  const { isAuthenticated, username, fullName, role, isAdmin, isManager, logout } = useAuth();
   const location = useLocation();
   const { mode, toggleMode } = useThemeMode();
   const [profileMenu, setProfileMenu] = useState<null | HTMLElement>(null);
@@ -106,13 +108,17 @@ function TopNavBar() {
 
   const moreItems = [
     { label: 'Skill Map', icon: <MapIcon />, path: '/skill-map' },
-    { label: 'Team Builder', icon: <GroupWorkIcon />, path: '/team-builder' },
-    { label: 'Graph Explorer', icon: <BubbleChartIcon />, path: '/graph' },
+    ...(isManager ? [
+      { label: 'Team Builder', icon: <GroupWorkIcon />, path: '/team-builder' },
+      { label: 'Graph Explorer', icon: <BubbleChartIcon />, path: '/graph' },
+    ] : []),
     { label: 'Learning Paths', icon: <SchoolIcon />, path: '/learning' },
-    { label: 'AI Insights', icon: <AutoAwesomeIcon />, path: '/ai-insights' },
-    { label: 'Skill Evolution', icon: <TimelineIcon />, path: '/skill-evolution' },
+    ...(isManager ? [
+      { label: 'AI Insights', icon: <AutoAwesomeIcon />, path: '/ai-insights' },
+      { label: 'Skill Evolution', icon: <TimelineIcon />, path: '/skill-evolution' },
+    ] : []),
     { label: 'Workspaces', icon: <GroupWorkIcon />, path: '/workspaces' },
-    { label: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
+    { label: isManager ? 'Analytics Dashboard' : 'My Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
   ];
 
   const isMoreActive = moreItems.some((item) => location.pathname === item.path);
@@ -475,9 +481,25 @@ function TopNavBar() {
                 {(fullName || 'U').charAt(0)}
               </Avatar>
               <Box>
-                <Typography variant="body2" fontWeight={600}>
-                  {fullName || 'User'}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {fullName || 'User'}
+                  </Typography>
+                  <Box sx={{
+                    px: 0.8, py: 0.15, borderRadius: 1,
+                    bgcolor: isAdmin ? 'rgba(255,71,87,0.12)' : isManager ? 'rgba(108,99,255,0.12)' : 'rgba(0,206,201,0.12)',
+                    border: '1px solid',
+                    borderColor: isAdmin ? 'rgba(255,71,87,0.25)' : isManager ? 'rgba(108,99,255,0.25)' : 'rgba(0,206,201,0.25)',
+                  }}>
+                    <Typography sx={{
+                      fontSize: '0.55rem', fontWeight: 700, textTransform: 'uppercase',
+                      color: isAdmin ? '#FF6B81' : isManager ? '#A78BFA' : '#00CEC9',
+                      letterSpacing: '0.05em',
+                    }}>
+                      {role || 'user'}
+                    </Typography>
+                  </Box>
+                </Box>
                 <Typography variant="caption" color="text.secondary">
                   @{username || 'user'}
                 </Typography>
@@ -573,6 +595,7 @@ const AppContent: React.FC = () => {
             }}
           >
             <Routes>
+              {/* ── Public (any authenticated user) ── */}
               <Route path="/" element={<Feed />} />
               <Route path="/network" element={<MyNetwork />} />
               <Route path="/jobs" element={<Jobs />} />
@@ -580,13 +603,18 @@ const AppContent: React.FC = () => {
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/skill-map" element={<SkillMap />} />
-              <Route path="/team-builder" element={<TeamBuilder />} />
-              <Route path="/graph" element={<GraphVisualization />} />
               <Route path="/learning" element={<LearningPath />} />
-              <Route path="/ai-insights" element={<AIInsights />} />
-              <Route path="/skill-evolution" element={<SkillEvolution />} />
               <Route path="/workspaces" element={<TeamWorkspace />} />
+              <Route path="/forbidden" element={<Forbidden />} />
+
+              {/* ── Manager+ only ── */}
+              <Route path="/team-builder" element={<ProtectedRoute requiredRole="manager"><TeamBuilder /></ProtectedRoute>} />
+              <Route path="/graph" element={<ProtectedRoute requiredRole="manager"><GraphVisualization /></ProtectedRoute>} />
+              <Route path="/ai-insights" element={<ProtectedRoute requiredRole="manager"><AIInsights /></ProtectedRoute>} />
+              <Route path="/skill-evolution" element={<ProtectedRoute requiredRole="manager"><SkillEvolution /></ProtectedRoute>} />
               <Route path="/dashboard" element={<Dashboard />} />
+
+              {/* ── Redirects ── */}
               <Route path="/login" element={<Navigate to="/" replace />} />
               <Route path="/register" element={<Navigate to="/" replace />} />
               <Route path="*" element={<Navigate to="/" replace />} />

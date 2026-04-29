@@ -1,0 +1,69 @@
+@startuml Architecture_3Tiers
+' ═══════════════════════════════════════════════════
+'  Architecture 3-Tiers — Nexora
+' ═══════════════════════════════════════════════════
+
+skinparam backgroundColor #FEFEFE
+skinparam linetype ortho
+
+skinparam package {
+    BackgroundColor #E8F0FE
+    BorderColor #2B6CB0
+    FontColor #1A365D
+    StereotypeFontColor #2B6CB0
+}
+
+skinparam component {
+    BackgroundColor #EBF4FF
+    BorderColor #2B6CB0
+    FontColor #1A365D
+}
+
+skinparam database {
+    BackgroundColor #E8F0FE
+    BorderColor #2B6CB0
+    FontColor #1A365D
+}
+
+title Architecture 3-Tiers — Nexora
+
+package "Couche Présentation (Frontend)" as PRES {
+    component "React 18 + TypeScript" as REACT
+    component "Material UI" as MUI
+    component "Vite (Build)" as VITE
+    component "react-force-graph-3d\n(WebGL / Three.js)" as GRAPH3D
+}
+
+package "Couche Métier (Backend)" as METIER {
+    component "FastAPI + Uvicorn\n(API REST)" as API
+
+    package "Moteur ML" as ML_PKG {
+        component "PageRank" as PR
+        component "TF-IDF" as TFIDF
+        component "Filtrage Collaboratif" as CF
+        component "Classificateur" as CLASSIF
+    }
+
+    package "Services" as SVC_PKG {
+        component "Auth + RBAC (JWT)" as AUTH
+        component "Kafka Simulator" as KAFKA
+        component "Spark Batch" as SPARK
+    }
+}
+
+package "Couche Données" as DONNEES {
+    database "Neo4j 5\n(Graph DB)" as NEO
+    database "Fichiers JSONL\n(Données ML)" as JSONL
+}
+
+' ── Connexions entre couches ──
+PRES -[#2B6CB0]-> METIER : HTTP REST / WebSocket
+METIER -[#2B6CB0]-> DONNEES : Bolt (Cypher) / File I/O
+
+' ── Connexions internes ──
+REACT --> MUI
+REACT --> GRAPH3D
+API --> ML_PKG
+API --> SVC_PKG
+
+@enduml

@@ -187,17 +187,42 @@ def get_dashboard_stats() -> Dict[str, Any]:
         topic = doc.get("topic", "Other")
         topic_counts[topic] = topic_counts.get(topic, 0) + 1
     
-    # Department distribution
-    dept_counts = {}
+    # Department distribution (with person_count and avg_expertise)
+    dept_data = {}
     for emp in employees:
         dept = emp.get("department", "Other")
-        dept_counts[dept] = dept_counts.get(dept, 0) + 1
+        if dept not in dept_data:
+            dept_data[dept] = {"person_count": 0, "total_expertise": 0, "total_experience": 0}
+        dept_data[dept]["person_count"] += 1
+        dept_data[dept]["total_expertise"] += emp.get("expertise_level", 3)
+        dept_data[dept]["total_experience"] += emp.get("experience_years", 2)
     
-    # Skill category distribution
+    # Skill category distribution (with skill_count and expert_count)
     skill_cats = {}
     for skill in skills:
         cat = skill.get("category", "Other")
-        skill_cats[cat] = skill_cats.get(cat, 0) + 1
+        if cat not in skill_cats:
+            skill_cats[cat] = {"skill_count": 0, "expert_count": 0}
+        skill_cats[cat]["skill_count"] += 1
+        skill_cats[cat]["expert_count"] += skill.get("demand", 0) // 10  # approximate
+    
+    department_distribution = []
+    for dept, data in dept_data.items():
+        count = data["person_count"]
+        department_distribution.append({
+            "department": dept,
+            "person_count": count,
+            "avg_experience": round(data["total_experience"] / count, 1) if count else 0,
+            "avg_expertise": round(data["total_expertise"] / count, 1) if count else 0,
+        })
+    
+    skill_categories = []
+    for cat, data in skill_cats.items():
+        skill_categories.append({
+            "category": cat,
+            "skill_count": data["skill_count"],
+            "expert_count": data["expert_count"],
+        })
     
     return {
         "total_experts": len(employees),
@@ -205,53 +230,108 @@ def get_dashboard_stats() -> Dict[str, Any]:
         "total_skills": len(skills),
         "total_projects": len(projects),
         "topic_distribution": [{"topic": k, "count": v} for k, v in topic_counts.items()],
-        "department_distribution": [{"department": k, "count": v} for k, v in dept_counts.items()],
-        "skill_categories": [{"category": k, "count": v} for k, v in skill_cats.items()],
+        "department_distribution": department_distribution,
+        "skill_categories": skill_categories,
         "recent_documents": documents[:5] if documents else [],
         "top_experts": sorted(employees, key=lambda x: x.get("expertise_level", 0), reverse=True)[:5]
     }
 
 
-def get_graph_data() -> Dict[str, Any]:
-    """Get data for graph visualization."""
-    employees = get_employees()[:30]  # Limit for performance
-    skills = get_skills()[:20]
-    
+def get_graph_data(node_type: str = None, search: str = None, limit: int = 200) -> Dict[str, Any]:
+    """Get data for graph visualization with real project connections."""
+    employees = get_employees()
+    skills = get_skills()
+    projects = get_projects()
+
+    # Build lookup maps
+    skill_map = {s["id"]: s for s in skills}
+    skill_name_map = {s.get("name", "").lower(): s for s in skills}
+    emp_map = {e["id"]: e for e in employees}
+
     nodes = []
     links = []
-    
-    # Add employee nodes
-    for emp in employees:
-        nodes.append({
-            "id": emp["id"],
-            "name": emp.get("name", "Unknown"),
-            "type": "Person",
-            "group": emp.get("department", "Other")
-        })
-    
-    # Add skill nodes
-    for skill in skills:
-        nodes.append({
-            "id": skill["id"],
-            "name": skill.get("name", "Unknown"),
-            "type": "Skill",
-            "group": skill.get("category", "Other")
-        })
-    
-    # Create links between employees and skills
-    for emp in employees:
-        # Assign 2-4 random skills to each employee
-        emp_skills = random.sample(skills, min(random.randint(2, 4), len(skills)))
-        for skill in emp_skills:
-            links.append({
-                "source": emp["id"],
-                "target": skill["id"],
-                "type": "HAS_SKILL"
+    node_ids = set()
+
+    def add_node(nid, name, ntype, group="", props=None):
+        if nid not in node_ids:
+            node_ids.add(nid)
+            nodes.append({
+                "id": nid,
+                "label": name,
+                "name": name,
+                "type": ntype,
+                "group": group,
+                "properties": props or {},
             })
-    
+
+    # --- Add Project nodes + links to team members & required skills ---
+    for proj in projects[:40]:
+        pid = proj["id"]
+        add_node(pid, proj.get("name", ""), "Project", proj.get("domain", ""),
+                 {"status": proj.get("status"), "domain": proj.get("domain"),
+                  "team_size": proj.get("team_size", 0), "priority": proj.get("priority")})
+
+        # WORKS_ON links (employee -> project)
+        for emp_id in proj.get("team_members", []):
+            emp = emp_map.get(emp_id)
+            if emp:
+                add_node(emp_id, emp.get("name", ""), "Person", emp.get("department", ""),
+                         {"role": emp.get("role"), "department": emp.get("department"),
+                          "location": emp.get("location")})
+                links.append({"source": emp_id, "target": pid, "type": "WORKS_ON"})
+
+        # REQUIRES links (project -> skill)
+        for skill_name in proj.get("required_skills", []):
+            sk = skill_name_map.get(skill_name.lower())
+            if sk:
+                add_node(sk["id"], sk.get("name", ""), "Skill", sk.get("category", ""))
+                links.append({"source": pid, "target": sk["id"], "type": "REQUIRES"})
+
+    # --- Add HAS_SKILL links from employee skills ---
+    for emp in employees[:60]:
+        eid = emp["id"]
+        for skill_name in emp.get("skills", []):
+            sk = skill_name_map.get(skill_name.lower())
+            if sk and eid in node_ids:
+                add_node(sk["id"], sk.get("name", ""), "Skill", sk.get("category", ""))
+                links.append({"source": eid, "target": sk["id"], "type": "HAS_SKILL"})
+
+    # --- Filtering ---
+    if node_type:
+        allowed_ids = {n["id"] for n in nodes if n["type"] == node_type}
+        # Also keep connected nodes
+        for link in links:
+            s, t = link["source"], link["target"]
+            if s in allowed_ids:
+                allowed_ids.add(t)
+            if t in allowed_ids:
+                allowed_ids.add(s)
+        nodes = [n for n in nodes if n["id"] in allowed_ids]
+        links = [l for l in links if l["source"] in allowed_ids and l["target"] in allowed_ids]
+
+    if search:
+        q = search.lower()
+        match_ids = {n["id"] for n in nodes if q in (n.get("label") or n.get("name") or "").lower()}
+        for link in links:
+            if link["source"] in match_ids:
+                match_ids.add(link["target"])
+            if link["target"] in match_ids:
+                match_ids.add(link["source"])
+        nodes = [n for n in nodes if n["id"] in match_ids]
+        links = [l for l in links if l["source"] in match_ids and l["target"] in match_ids]
+
+    # Deduplicate links
+    seen = set()
+    unique_links = []
+    for l in links:
+        key = (l["source"], l["target"], l["type"])
+        if key not in seen:
+            seen.add(key)
+            unique_links.append(l)
+
     return {
-        "nodes": nodes,
-        "links": links
+        "nodes": nodes[:limit],
+        "links": unique_links,
     }
 
 

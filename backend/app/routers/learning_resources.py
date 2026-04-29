@@ -8,8 +8,9 @@ import json
 import random
 from typing import List, Optional
 from pathlib import Path
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
+from ..auth_guards import require_auth
 
 router = APIRouter(prefix="/api/learning-resources", tags=["Learning Resources"])
 
@@ -429,7 +430,7 @@ COURSES_CATALOG = {
 # ── API Endpoints ──────────────────────────────────────────────────
 
 @router.get("/skills")
-async def get_available_skills():
+async def get_available_skills(_user: dict = Depends(require_auth)):
     """Get all skills with learning resources available."""
     yt_skills = set(YOUTUBE_CATALOG.keys())
     w3_skills = set(W3SCHOOLS_CATALOG.keys())

@@ -9,10 +9,11 @@ import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Optional
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect, HTTPException
 from pydantic import BaseModel
 
 from ..ws_manager import ConnectionManager
+from ..auth_guards import require_auth
 
 router = APIRouter(prefix="/api/workspaces", tags=["Workspaces"])
 
@@ -233,7 +234,7 @@ def _init_workspaces():
 # ── REST Endpoints ─────────────────────────────────────────────────
 
 @router.get("")
-async def list_workspaces():
+async def list_workspaces(_user: dict = Depends(require_auth)):
     """List workspaces visible to the current user (member-only)."""
     _init_workspaces()
     result = []
@@ -259,7 +260,7 @@ async def list_workspaces():
 
 
 @router.post("")
-async def create_workspace(data: CreateWorkspace):
+async def create_workspace(data: CreateWorkspace, _user: dict = Depends(require_auth)):
     """Create a new private workspace."""
     _init_workspaces()
     employees = _load_employees()
@@ -304,14 +305,14 @@ async def create_workspace(data: CreateWorkspace):
 
 
 @router.get("/{workspace_id}")
-async def get_workspace(workspace_id: str):
+async def get_workspace(workspace_id: str, _user: dict = Depends(require_auth)):
     """Get full workspace details (members only)."""
     ws = _get_workspace_or_403(workspace_id)
     return {**ws, "active_call": _active_calls.get(workspace_id)}
 
 
 @router.post("/{workspace_id}/messages")
-async def send_workspace_message(workspace_id: str, msg: SendWorkspaceMessage):
+async def send_workspace_message(workspace_id: str, msg: SendWorkspaceMessage, _user: dict = Depends(require_auth)):
     """Send a message in a workspace chat (members only)."""
     ws = _get_workspace_or_403(workspace_id)
     new_msg = {
@@ -335,14 +336,14 @@ async def send_workspace_message(workspace_id: str, msg: SendWorkspaceMessage):
 
 
 @router.get("/{workspace_id}/progress")
-async def get_progress(workspace_id: str):
+async def get_progress(workspace_id: str, _user: dict = Depends(require_auth)):
     """Get progress updates (members only)."""
     ws = _get_workspace_or_403(workspace_id)
     return {"progress": ws["progress"]}
 
 
 @router.post("/{workspace_id}/progress")
-async def post_progress(workspace_id: str, data: PostProgress):
+async def post_progress(workspace_id: str, data: PostProgress, _user: dict = Depends(require_auth)):
     """Post a progress update (members only)."""
     ws = _get_workspace_or_403(workspace_id)
     item = {
@@ -360,7 +361,7 @@ async def post_progress(workspace_id: str, data: PostProgress):
 # ── Call Management Endpoints ──────────────────────────────────────
 
 @router.post("/{workspace_id}/call/start")
-async def start_call(workspace_id: str, data: StartCall):
+async def start_call(workspace_id: str, data: StartCall, _user: dict = Depends(require_auth)):
     """Start a voice or video call in a workspace (members only)."""
     ws = _get_workspace_or_403(workspace_id)
 
@@ -396,7 +397,7 @@ async def start_call(workspace_id: str, data: StartCall):
 
 
 @router.post("/{workspace_id}/call/join")
-async def join_call(workspace_id: str):
+async def join_call(workspace_id: str, _user: dict = Depends(require_auth)):
     """Join an active call in a workspace."""
     ws = _get_workspace_or_403(workspace_id)
 
@@ -420,7 +421,7 @@ async def join_call(workspace_id: str):
 
 
 @router.post("/{workspace_id}/call/end")
-async def end_call(workspace_id: str):
+async def end_call(workspace_id: str, _user: dict = Depends(require_auth)):
     """End the active call in a workspace."""
     ws = _get_workspace_or_403(workspace_id)
 
@@ -441,7 +442,7 @@ async def end_call(workspace_id: str):
 
 
 @router.get("/{workspace_id}/call")
-async def get_call_status(workspace_id: str):
+async def get_call_status(workspace_id: str, _user: dict = Depends(require_auth)):
     """Get current call status for a workspace."""
     ws = _get_workspace_or_403(workspace_id)
     call = _active_calls.get(workspace_id)
@@ -451,7 +452,7 @@ async def get_call_status(workspace_id: str):
 
 
 @router.post("/{workspace_id}/call/simulate-join")
-async def simulate_members_join(workspace_id: str):
+async def simulate_members_join(workspace_id: str, _user: dict = Depends(require_auth)):
     """Simulate other workspace members joining the call (for demo)."""
     ws = _get_workspace_or_403(workspace_id)
 

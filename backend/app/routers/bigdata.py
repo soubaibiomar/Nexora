@@ -5,13 +5,14 @@ for skill trends, document stats, and expert rankings.
 Falls back to in-memory computation if Spark output is unavailable.
 """
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from pathlib import Path
 from typing import Dict, Any, List
 import json
 from collections import Counter, defaultdict
 
 from .. import fallback_data
+from ..auth_guards import require_auth, require_manager
 
 router = APIRouter(prefix="/api/bigdata", tags=["bigdata"])
 
@@ -30,7 +31,7 @@ def _load_spark_results(filename: str) -> Dict[str, Any] | None:
 # ── Skill Analytics ────────────────────────────────────────────────
 
 @router.get("/skill-analytics")
-async def get_skill_analytics():
+async def get_skill_analytics(_user: dict = Depends(require_auth)):
     """
     Spark-computed skill analytics: frequency, co-occurrence, department breakdown.
     Falls back to in-memory computation if Spark output is unavailable.
@@ -107,7 +108,7 @@ async def get_skill_analytics():
 # ── Document Stats ─────────────────────────────────────────────────
 
 @router.get("/document-stats")
-async def get_document_stats():
+async def get_document_stats(_user: dict = Depends(require_auth)):
     """
     Spark-computed document statistics: topic distribution, word frequency,
     rating analysis. Falls back to in-memory computation.
@@ -271,7 +272,7 @@ async def get_companies(
 
 
 @router.get("/companies/{company_id}")
-async def get_company(company_id: str):
+async def get_company(company_id: str, _user: dict = Depends(require_auth)):
     """Single company details by ID."""
     spark_catalog = _load_spark_results("companies_catalog.json")
     companies = spark_catalog if spark_catalog else _load_companies_jsonl()
@@ -283,7 +284,7 @@ async def get_company(company_id: str):
 
 
 @router.get("/company-analytics")
-async def get_company_analytics():
+async def get_company_analytics(_user: dict = Depends(require_auth)):
     """
     Spark-computed company analytics: industry distribution, tech stack trends,
     geographic analysis, and company rankings.
@@ -338,7 +339,7 @@ async def get_company_analytics():
 # ── Pipeline Status ────────────────────────────────────────────────
 
 @router.get("/pipeline-status")
-async def get_pipeline_status():
+async def get_pipeline_status(_user: dict = Depends(require_auth)):
     """Check the status of Spark batch processing pipeline."""
     jobs = {
         "skill_analytics": SPARK_OUTPUT_DIR / "skill_analytics_results.json",

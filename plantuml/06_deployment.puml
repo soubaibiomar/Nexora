@@ -1,0 +1,90 @@
+@startuml Diagramme_Deploiement
+' ═══════════════════════════════════════════════════
+'  Diagramme de Déploiement — Docker Compose
+' ═══════════════════════════════════════════════════
+
+skinparam backgroundColor #FEFEFE
+skinparam linetype ortho
+
+skinparam node {
+    BackgroundColor #E8F0FE
+    BorderColor #2B6CB0
+    FontColor #1A365D
+}
+
+skinparam component {
+    BackgroundColor #EBF4FF
+    BorderColor #2B6CB0
+    FontColor #1A365D
+}
+
+skinparam database {
+    BackgroundColor #E8F0FE
+    BorderColor #2B6CB0
+    FontColor #1A365D
+}
+
+skinparam artifact {
+    BackgroundColor #F7FAFC
+    BorderColor #718096
+    FontColor #2D3748
+}
+
+title Diagramme de Déploiement — Nexora (Docker Compose)
+
+node "Docker Host" as DH {
+
+    node "Container : neo4j" as CN {
+        database "Neo4j 5\nGraph Database" as NEO {
+        }
+        component "Bolt Protocol" as BOLT
+        artifact "Volume :\nneo4j_data\n(persistant)" as VOL
+
+        note bottom of CN
+            Ports : 7474 (HTTP), 7687 (Bolt)
+            Healthcheck : cypher-shell
+        end note
+    }
+
+    node "Container : backend" as CB {
+        component "FastAPI\n+ Uvicorn (ASGI)" as API
+        component "Moteur ML\n(TF-IDF, PageRank,\nCollab. Filtering)" as ML
+        component "Auth + RBAC\n(JWT + bcrypt)" as AUTH
+        artifact "Monte : ./data\n→ /app/data" as DATA
+
+        note bottom of CB
+            Port : 8000
+            Dépend de : neo4j (healthy)
+        end note
+    }
+
+    node "Container : frontend" as CF {
+        component "Nginx Alpine\n(Serveur Web)" as NGX
+        component "React 18 SPA\n(Build Vite)" as REACT
+        artifact "nginx.conf\n(Proxy + SPA routing)" as CONF
+
+        note bottom of CF
+            Port : 3000 → 80
+            Routing SPA : fallback index.html
+        end note
+    }
+}
+
+' ── Relations ──
+REACT --> NGX : fichiers statiques\n(JS, CSS, HTML)
+NGX --> API : Proxy /api/*\n→ backend:8000
+API --> BOLT : Bolt (Cypher)\nport 7687
+API --> ML : appels internes
+API --> AUTH : vérification token
+API --> DATA : lecture JSONL
+BOLT --> NEO
+
+' ── Dépendances de démarrage ──
+CB ..> CN : <<depends_on>>\ncondition: service_healthy
+CF ..> CB : <<depends_on>>
+
+' ── Acteur externe ──
+actor "Navigateur\nWeb" as BROWSER
+BROWSER --> NGX : HTTP/HTTPS\nport 3000
+
+@enduml

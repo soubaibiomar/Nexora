@@ -254,8 +254,8 @@ export const aiService = {
 
   getSkillTrends: () => api.get('/ai/skill-trends'),
 
-  chat: (message: string) =>
-    api.post('/ai/chatbot', { message }),
+  chat: (message: string, conversationId?: string) =>
+    api.post('/ai/chatbot', { message, conversation_id: conversationId }),
 
   textSimilarity: (text1: string, text2: string) =>
     api.post('/ai/text-similarity', { text1, text2 }),

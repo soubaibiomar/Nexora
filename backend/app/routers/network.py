@@ -8,10 +8,11 @@ import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 import random
 from urllib.parse import quote
+from ..auth_guards import require_auth
 
 def _make_avatar(name: str) -> str:
     return f"https://ui-avatars.com/api/?name={quote(name)}&background=0A66C2&color=fff&size=128&bold=true"
@@ -83,7 +84,7 @@ def _init_network():
 
 
 @router.get("/suggestions")
-async def get_suggestions(limit: int = 12):
+async def get_suggestions(limit: int = 12, _user: dict = Depends(require_auth)):
     _init_network()
     employees = _load_employees()
     connected_ids = set(_connections.keys())
@@ -106,7 +107,7 @@ async def get_suggestions(limit: int = 12):
 
 
 @router.get("/connections")
-async def get_connections(skip: int = 0, limit: int = 20):
+async def get_connections(skip: int = 0, limit: int = 20, _user: dict = Depends(require_auth)):
     _init_network()
     conns = list(_connections.values())
     return {
@@ -116,13 +117,13 @@ async def get_connections(skip: int = 0, limit: int = 20):
 
 
 @router.get("/pending")
-async def get_pending():
+async def get_pending(_user: dict = Depends(require_auth)):
     _init_network()
     return {"requests": _pending}
 
 
 @router.post("/connect")
-async def send_connection(req: ConnectionRequest):
+async def send_connection(req: ConnectionRequest, _user: dict = Depends(require_auth)):
     _init_network()
     employees = _load_employees()
     target = None
@@ -148,7 +149,7 @@ async def send_connection(req: ConnectionRequest):
 
 
 @router.post("/accept/{request_id}")
-async def accept_request(request_id: str):
+async def accept_request(request_id: str, _user: dict = Depends(require_auth)):
     _init_network()
     for i, req in enumerate(_pending):
         if req["id"] == request_id:
@@ -168,7 +169,7 @@ async def accept_request(request_id: str):
 
 
 @router.get("/stats")
-async def get_network_stats():
+async def get_network_stats(_user: dict = Depends(require_auth)):
     _init_network()
     return {
         "total_connections": len(_connections),

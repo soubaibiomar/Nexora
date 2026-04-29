@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
 from ..database import get_db
+from ..auth_guards import require_auth
 
 router = APIRouter(prefix="/api/learning", tags=["learning"])
 
@@ -507,7 +508,7 @@ async def get_recommended_skills(
 
 
 @router.get("/skills/list")
-async def get_all_skills(db=Depends(get_db)):
+async def get_all_skills(db=Depends(get_db), _user: dict = Depends(require_auth)):
     """Get all unique skills from the graph, falling back to JSONL data."""
     try:
         query = "MATCH (s:Skill) RETURN DISTINCT s.name as name ORDER BY name"

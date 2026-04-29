@@ -4,7 +4,7 @@ Provides endpoints for expert recommendation, document classification,
 skill gap analysis, chatbot, and model statistics.
 """
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from typing import Optional
 
 from ..ml.recommender import recommender
@@ -19,6 +19,7 @@ from ..models.ai import (
     ModelStatsResponse,
     SimilarityRequest, SimilarityResponse,
 )
+from ..auth_guards import require_auth, require_admin
 
 router = APIRouter(prefix="/api/ai", tags=["ai"])
 
@@ -26,7 +27,7 @@ router = APIRouter(prefix="/api/ai", tags=["ai"])
 # ── Expert Recommendation ──────────────────────────────────────────
 
 @router.post("/recommend-experts", response_model=RecommendExpertsResponse)
-async def recommend_experts(request: RecommendExpertsRequest):
+async def recommend_experts(request: RecommendExpertsRequest, _user: dict = Depends(require_auth)):
     """
     ML-based expert recommendation using TF-IDF + Cosine Similarity.
     Returns ranked experts matching the free-text query.
@@ -57,7 +58,7 @@ async def find_similar_experts(
 # ── Document Classification ────────────────────────────────────────
 
 @router.post("/classify-document", response_model=ClassifyDocumentResponse)
-async def classify_document(request: ClassifyDocumentRequest):
+async def classify_document(request: ClassifyDocumentRequest, _user: dict = Depends(require_auth)):
     """
     Auto-classify a document by topic using TF-IDF + Logistic Regression.
     Returns predicted topic with confidence scores.
@@ -67,7 +68,7 @@ async def classify_document(request: ClassifyDocumentRequest):
 
 
 @router.get("/classification-report")
-async def get_classification_report():
+async def get_classification_report(_user: dict = Depends(require_auth)):
     """Get document classifier performance metrics."""
     return classifier.get_classification_report()
 
@@ -87,7 +88,7 @@ async def predict_skill_gaps(
 
 
 @router.get("/skill-trends")
-async def get_skill_trends():
+async def get_skill_trends(_user: dict = Depends(require_auth)):
     """
     Analyze skill trends across the organization.
     Returns adoption rates, average levels, and department breakdown.
@@ -101,7 +102,7 @@ from ..ml.pagerank import expert_pagerank
 
 
 @router.get("/emerging-skills")
-async def get_emerging_skills():
+async def get_emerging_skills(_user: dict = Depends(require_auth)):
     """
     Identify skills with the highest adoption growth rate.
     Compares skill adoption between recent hires vs older cohorts.
@@ -135,7 +136,7 @@ async def get_expert_rankings(
 
 
 @router.get("/cross-department-suggestions")
-async def get_cross_department_suggestions():
+async def get_cross_department_suggestions(_user: dict = Depends(require_auth)):
     """
     Find departments with complementary skill profiles for collaboration.
     Identifies potential cross-team projects and mentoring opportunities.
@@ -167,35 +168,54 @@ async def get_personalized_recommendations(
 from ..ml.graph_rag import graph_rag
 import json as _json
 from collections import Counter
+import time as _time
+import uuid as _uuid
 
-# Conversation memory store (session-based, keyed by a simple counter)
+# ---------------------------------------------------------------------------
+# Conversation memory store (keyed by conversation_id)
+# ---------------------------------------------------------------------------
 _conversation_histories: dict = {}
 _MAX_HISTORY = 20  # Max messages to keep per conversation
+_MAX_CONVERSATIONS = 200  # Limit total stored conversations to prevent memory leak
+
+
+def _cleanup_old_conversations():
+    """Remove oldest conversations if we exceed the maximum."""
+    if len(_conversation_histories) > _MAX_CONVERSATIONS:
+        # Sort by last activity and keep only the most recent
+        sorted_ids = sorted(
+            _conversation_histories.keys(),
+            key=lambda k: _conversation_histories[k].get("_last_active", 0),
+        )
+        for cid in sorted_ids[: len(sorted_ids) - _MAX_CONVERSATIONS]:
+            del _conversation_histories[cid]
 
 
 def _build_organization_context() -> str:
-    """Build a rich context summary of the organization's data for GPT."""
+    """Build a rich context summary of the organization's data for the LLM."""
     chatbot._ensure_loaded()
 
     # Employees summary
     total_employees = len(chatbot._employees)
     departments = Counter(e.get("department", "Unknown") for e in chatbot._employees)
     locations = Counter(e.get("location", "Unknown") for e in chatbot._employees)
-    roles = Counter(e.get("role", "Unknown") for e in chatbot._employees)
     exp_years = [e.get("experience_years", 0) for e in chatbot._employees]
     avg_exp = round(sum(exp_years) / len(exp_years), 1) if exp_years else 0
 
-    # Build employee directory (compact format for GPT)
+    # Build employee directory (compact format — cap at 50 to stay within token limits)
     employee_entries = []
-    for emp in chatbot._employees[:100]:  # Top 100 for context window
-        skills_str = ", ".join(emp.get("skills", [])[:5]) if emp.get("skills") else "N/A"
+    for emp in chatbot._employees[:50]:
+        skills_raw = emp.get("skills", [])
+        if skills_raw and isinstance(skills_raw[0], dict):
+            skills_str = ", ".join(s.get("name", "") for s in skills_raw[:6])
+        else:
+            skills_str = ", ".join(str(s) for s in skills_raw[:6])
         employee_entries.append(
             f"- {emp.get('name', 'N/A')} | {emp.get('role', 'N/A')} | {emp.get('department', 'N/A')} | "
-            f"{emp.get('location', 'N/A')} | {emp.get('experience_years', 0)}yr exp | Skills: {skills_str}"
+            f"{emp.get('location', 'N/A')} | {emp.get('experience_years', 0)}yr | Skills: {skills_str}"
         )
 
     # Skills summary
-    skill_names = [s.get("name", "") for s in chatbot._skills]
     skill_categories = Counter(s.get("category", "Other") for s in chatbot._skills)
     top_skills = sorted(chatbot._skills, key=lambda s: s.get("demand", 0), reverse=True)[:15]
     top_skills_str = ", ".join(f"{s.get('name', '')} (demand: {s.get('demand', 0)})" for s in top_skills)
@@ -203,18 +223,19 @@ def _build_organization_context() -> str:
     # Documents summary
     doc_topics = Counter(d.get("topic", "General") for d in chatbot._documents)
     top_docs = sorted(chatbot._documents, key=lambda d: d.get("rating", 0), reverse=True)[:10]
-    doc_entries = []
-    for doc in top_docs:
-        doc_entries.append(f"- \"{doc.get('title', 'N/A')}\" (topic: {doc.get('topic', 'N/A')}, rating: {doc.get('rating', 0)})")
+    doc_entries = [
+        f"- \"{d.get('title', 'N/A')}\" (topic: {d.get('topic', 'N/A')}, rating: {d.get('rating', 0)})"
+        for d in top_docs
+    ]
 
     # Projects summary
     project_entries = []
-    for proj in chatbot._projects[:20]:
-        members_str = ", ".join(proj.get("members", [])[:3]) if proj.get("members") else "N/A"
-        tech_str = ", ".join(proj.get("technologies", [])[:5]) if proj.get("technologies") else "N/A"
+    for proj in chatbot._projects[:15]:
+        tech_str = proj.get("tech_stack", "N/A")
+        members = proj.get("team_members", [])
         project_entries.append(
             f"- {proj.get('name', 'N/A')} ({proj.get('status', 'N/A')}) | Tech: {tech_str} | "
-            f"Members: {members_str}"
+            f"Team size: {proj.get('team_size', len(members))}"
         )
 
     context = f"""=== NEXORA ORGANIZATION DATA ===
@@ -235,7 +256,7 @@ TOP IN-DEMAND SKILLS:
 SKILL CATEGORIES:
 {', '.join(f'{cat} ({count})' for cat, count in skill_categories.most_common())}
 
-EMPLOYEE DIRECTORY:
+EMPLOYEE DIRECTORY (sample of {len(employee_entries)}):
 {chr(10).join(employee_entries)}
 
 TOP-RATED DOCUMENTS:
@@ -251,13 +272,12 @@ PROJECTS:
 
 
 # Cache the organization context (rebuild every 5 minutes)
-_org_context_cache = {"data": None, "timestamp": 0}
+_org_context_cache: dict = {"data": None, "timestamp": 0}
 
 
 def _get_org_context() -> str:
     """Get cached organization context."""
-    import time
-    now = time.time()
+    now = _time.time()
     if _org_context_cache["data"] is None or now - _org_context_cache["timestamp"] > 300:
         _org_context_cache["data"] = _build_organization_context()
         _org_context_cache["timestamp"] = now
@@ -304,20 +324,24 @@ For internal queries, suggest related internal searches. For general knowledge, 
 
 
 async def _ask_veda(message: str, conversation_id: str = "default") -> dict:
-    """Use GPT with full organization context to answer any question."""
+    """Use Groq LLM with full organization context to answer any question."""
     import os
-    api_key = os.environ.get("OPENAI_API_KEY")
+    api_key = os.environ.get("GROQ_API_KEY")
     if not api_key:
         return None
 
     try:
-        from openai import OpenAI
-        client = OpenAI(api_key=api_key)
+        from groq import Groq
+        client = Groq(api_key=api_key)
 
-        # Get or create conversation history
+        # Get or create conversation history (isolated by conversation_id)
         if conversation_id not in _conversation_histories:
-            _conversation_histories[conversation_id] = []
-        history = _conversation_histories[conversation_id]
+            _conversation_histories[conversation_id] = {"messages": [], "_last_active": _time.time()}
+            _cleanup_old_conversations()
+
+        conv = _conversation_histories[conversation_id]
+        conv["_last_active"] = _time.time()
+        history = conv["messages"]
 
         # Build messages with system prompt + conversation history
         org_context = _get_org_context()
@@ -330,7 +354,7 @@ async def _ask_veda(message: str, conversation_id: str = "default") -> dict:
         messages.append({"role": "user", "content": message})
 
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="llama-3.3-70b-versatile",
             messages=messages,
             max_tokens=800,
             temperature=0.7,
@@ -342,7 +366,7 @@ async def _ask_veda(message: str, conversation_id: str = "default") -> dict:
         history.append({"role": "assistant", "content": raw})
         # Trim history if too long
         if len(history) > _MAX_HISTORY * 2:
-            _conversation_histories[conversation_id] = history[-_MAX_HISTORY:]
+            conv["messages"] = history[-_MAX_HISTORY:]
 
         # Parse suggestions from the response
         suggestions = []
@@ -368,11 +392,13 @@ async def _ask_veda(message: str, conversation_id: str = "default") -> dict:
 
         # Check if response mentions specific employees from our data
         mentioned_employees = []
+        answer_lower = answer.lower()
         for emp in chatbot._employees:
-            if emp.get("name", "").lower() in answer.lower():
+            emp_name = emp.get("name", "")
+            if emp_name and emp_name.lower() in answer_lower:
                 mentioned_employees.append({
                     "id": emp.get("id"),
-                    "name": emp.get("name"),
+                    "name": emp_name,
                     "role": emp.get("role"),
                     "department": emp.get("department"),
                     "location": emp.get("location", ""),
@@ -390,24 +416,26 @@ async def _ask_veda(message: str, conversation_id: str = "default") -> dict:
             "suggestions": suggestions[:3],
         }
     except Exception as e:
-        print(f"Veda GPT error: {e}")
+        print(f"Veda Groq error: {e}")
         import traceback
         traceback.print_exc()
         return None
 
 
 @router.post("/chatbot", response_model=ChatResponse)
-async def chat_with_ai(request: ChatRequest):
+async def chat_with_ai(request: ChatRequest, _user: dict = Depends(require_auth)):
     """
     Veda — Intelligent AI Assistant for Nexora.
-    GPT-first architecture with full organization data context.
-    Falls back to rule-based engine when GPT is unavailable.
+    Groq LLM-first architecture with full organization data context.
+    Falls back to rule-based engine when Groq is unavailable.
     """
     import os
-    conversation_id = getattr(request, 'conversation_id', 'default') or 'default'
 
-    # ── Primary: Veda AI (GPT with org context) ────────────────────
-    if os.environ.get("OPENAI_API_KEY"):
+    # Use provided conversation_id, or generate a new one
+    conversation_id = request.conversation_id or str(_uuid.uuid4())
+
+    # ── Primary: Veda AI (Groq LLM with org context) ───────────────
+    if os.environ.get("GROQ_API_KEY"):
         result = await _ask_veda(request.message, conversation_id)
         if result:
             return ChatResponse(**result)
@@ -420,7 +448,7 @@ async def chat_with_ai(request: ChatRequest):
 # ── Similarity ─────────────────────────────────────────────────────
 
 @router.post("/text-similarity")
-async def compute_text_similarity(request: SimilarityRequest):
+async def compute_text_similarity(request: SimilarityRequest, _user: dict = Depends(require_auth)):
     """Compute cosine similarity between two text strings."""
     return embedding_engine.compute_similarity(request.text1, request.text2)
 
@@ -428,7 +456,7 @@ async def compute_text_similarity(request: SimilarityRequest):
 # ── Model Stats ────────────────────────────────────────────────────
 
 @router.get("/model-stats", response_model=ModelStatsResponse)
-async def get_model_stats():
+async def get_model_stats(_user: dict = Depends(require_auth)):
     """Get performance metrics and status for all ML models."""
     return ModelStatsResponse(
         recommender=recommender.get_model_info(),
@@ -439,7 +467,7 @@ async def get_model_stats():
 
 
 @router.post("/train-all")
-async def train_all_models():
+async def train_all_models(_user: dict = Depends(require_auth)):
     """Train/retrain all ML models. Use after data updates."""
     results = {
         "recommender": recommender.train(),

@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-load_dotenv()  # Load .env vars (OPENAI_API_KEY, etc.) into os.environ
+load_dotenv()  # Load .env vars (GROQ_API_KEY, etc.) into os.environ
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
