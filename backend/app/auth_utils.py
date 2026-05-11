@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from .config import get_settings
 
 settings = get_settings()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login/form")
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

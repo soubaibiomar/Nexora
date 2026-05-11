@@ -4,7 +4,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {
   Box, Typography, Avatar, Badge, InputBase, Menu, MenuItem,
-  Divider, ListItemIcon, ListItemText, Button, Popover,
+  Divider, ListItemIcon, ListItemText, Button, Popover, CircularProgress,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import HomeIcon from '@mui/icons-material/Home';
@@ -13,8 +13,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import ChatIcon from '@mui/icons-material/Chat';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import TimelineIcon from '@mui/icons-material/Timeline';
+
 import MapIcon from '@mui/icons-material/Map';
 import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import GroupWorkIcon from '@mui/icons-material/GroupWork';
@@ -40,11 +39,10 @@ import TeamBuilder from './pages/TeamBuilder';
 import GraphVisualization from './pages/GraphVisualization';
 import LearningPath from './pages/LearningPath';
 import Dashboard from './pages/Dashboard';
-import AIInsights from './pages/AIInsights';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import TeamWorkspace from './pages/TeamWorkspace';
-import SkillEvolution from './pages/SkillEvolution';
+
 import Forbidden from './pages/Forbidden';
 import AIChatbot from './components/AIChatbot';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -78,9 +76,11 @@ function TopNavBar() {
   useEffect(() => {
     const fetchBadges = async () => {
       try {
+        const token = localStorage.getItem('token');
+        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
         const [msgRes, notifRes] = await Promise.all([
-          fetch('http://localhost:8000/api/messaging/conversations').then((r) => r.json()),
-          fetch('http://localhost:8000/api/notifications?unread_only=true').then((r) => r.json()),
+          fetch('http://localhost:8000/api/messaging/conversations', { headers: authHeaders }).then((r) => r.json()),
+          fetch('http://localhost:8000/api/notifications?unread_only=true', { headers: authHeaders }).then((r) => r.json()),
         ]);
         const msgUnread = (msgRes.conversations || []).reduce(
           (sum: number, c: any) => sum + (c.unread || 0),
@@ -108,17 +108,13 @@ function TopNavBar() {
 
   const moreItems = [
     { label: 'Skill Map', icon: <MapIcon />, path: '/skill-map' },
+    { label: 'Graph Explorer', icon: <BubbleChartIcon />, path: '/graph' },
     ...(isManager ? [
       { label: 'Team Builder', icon: <GroupWorkIcon />, path: '/team-builder' },
-      { label: 'Graph Explorer', icon: <BubbleChartIcon />, path: '/graph' },
     ] : []),
     { label: 'Learning Paths', icon: <SchoolIcon />, path: '/learning' },
-    ...(isManager ? [
-      { label: 'AI Insights', icon: <AutoAwesomeIcon />, path: '/ai-insights' },
-      { label: 'Skill Evolution', icon: <TimelineIcon />, path: '/skill-evolution' },
-    ] : []),
     { label: 'Workspaces', icon: <GroupWorkIcon />, path: '/workspaces' },
-    { label: isManager ? 'Analytics Dashboard' : 'My Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
+    { label: isAdmin ? 'Admin Panel' : isManager ? 'Analytics Dashboard' : 'My Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
   ];
 
   const isMoreActive = moreItems.some((item) => location.pathname === item.path);
@@ -579,7 +575,38 @@ function TopNavBar() {
 
 // ── App Content (needs AuthContext) ────────────────────────────────
 const AppContent: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+
+  // Show loading spinner while verifying token
+  if (loading) {
+    return (
+      <Box sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #0a0a1a 0%, #141428 50%, #1a1040 100%)',
+      }}>
+        <Box sx={{ textAlign: 'center' }}>
+          <Box sx={{
+            width: 56, height: 56, mx: 'auto', mb: 2,
+            borderRadius: 3,
+            background: 'linear-gradient(135deg, #6C63FF 0%, #A78BFA 100%)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 8px 32px rgba(108,99,255,0.35)',
+            animation: 'pulse 1.5s ease-in-out infinite',
+            '@keyframes pulse': {
+              '0%, 100%': { transform: 'scale(1)', opacity: 1 },
+              '50%': { transform: 'scale(1.05)', opacity: 0.8 },
+            },
+          }}>
+            <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.5rem' }}>N</Typography>
+          </Box>
+          <CircularProgress size={24} sx={{ color: '#6C63FF' }} />
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <BrowserRouter>
@@ -605,14 +632,12 @@ const AppContent: React.FC = () => {
               <Route path="/skill-map" element={<SkillMap />} />
               <Route path="/learning" element={<LearningPath />} />
               <Route path="/workspaces" element={<TeamWorkspace />} />
+              <Route path="/graph" element={<GraphVisualization />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/forbidden" element={<Forbidden />} />
 
               {/* ── Manager+ only ── */}
               <Route path="/team-builder" element={<ProtectedRoute requiredRole="manager"><TeamBuilder /></ProtectedRoute>} />
-              <Route path="/graph" element={<ProtectedRoute requiredRole="manager"><GraphVisualization /></ProtectedRoute>} />
-              <Route path="/ai-insights" element={<ProtectedRoute requiredRole="manager"><AIInsights /></ProtectedRoute>} />
-              <Route path="/skill-evolution" element={<ProtectedRoute requiredRole="manager"><SkillEvolution /></ProtectedRoute>} />
-              <Route path="/dashboard" element={<Dashboard />} />
 
               {/* ── Redirects ── */}
               <Route path="/login" element={<Navigate to="/" replace />} />

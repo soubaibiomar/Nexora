@@ -35,15 +35,9 @@ function getPasswordStrength(pw: string): number {
 const STRENGTH_LABELS = ['', 'Weak', 'Fair', 'Good', 'Strong'];
 const STRENGTH_COLORS = ['', '#FF4757', '#FFA502', '#2ED573', '#00CEC9'];
 
-/** Redirect destination based on user role after login. */
-function getRedirectForRole(role: string): string {
-    switch (role) {
-        case 'admin':
-        case 'manager':
-            return '/dashboard';
-        default:
-            return '/';
-    }
+/** Redirect destination after login. */
+function getRedirectForRole(_role: string): string {
+    return '/dashboard';
 }
 
 // ---------------------------------------------------------------------------
@@ -122,22 +116,21 @@ const Register: React.FC = () => {
 
             setSuccess('Account created successfully! Signing you in...');
 
-            // Auto-login after registration
-            const formData = new URLSearchParams();
-            formData.append('username', username.trim().toLowerCase());
-            formData.append('password', password);
-
+            // Auto-login after registration using email
             const loginResponse = await fetch('http://localhost:8000/api/auth/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: formData.toString(),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: email.trim().toLowerCase(),
+                    password,
+                }),
             });
 
             if (loginResponse.ok) {
                 const data = await loginResponse.json();
-                const role = data.role || 'user';
-                login(data.access_token, data.username, data.full_name, data.email, role);
-                navigate(getRedirectForRole(role), { replace: true });
+                const userRole = data.role || 'user';
+                login(data.access_token, data.username, data.full_name, data.email, userRole, data.user_id);
+                navigate(getRedirectForRole(userRole), { replace: true });
             } else {
                 // Registration succeeded but auto-login failed; redirect to login
                 navigate('/login');

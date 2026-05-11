@@ -1,0 +1,43 @@
+\babel@toc {french}{}\relax 
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {1.1}{\ignorespaces Récapitulatif des technologies de NEXORA}}{4}{table.caption.9}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Comparaison : Base Relationnelle vs Base Graphe}}{8}{table.caption.11}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces WBS (Work Breakdown Structure) spécifique à NEXORA}}{27}{table.caption.16}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Analyse PERT --- calcul des dates et marges (en semaines)}}{30}{table.caption.18}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Backlog produit organisé par sprints (priorité MoSCoW)}}{31}{table.caption.19}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Tableau de bord d'avancement par sprint}}{31}{table.caption.20}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces Matrice RACI détaillée pour NEXORA}}{32}{table.caption.21}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces Matrice des risques et plans de mitigation (NEXORA)}}{33}{table.caption.22}%
+\contentsline {table}{\numberline {4.7}{\ignorespaces Tableau de bord des KPI du projet NEXORA}}{34}{table.caption.23}%
+\contentsline {table}{\numberline {4.8}{\ignorespaces Synthèse des pratiques de gestion de projet appliquées}}{34}{table.caption.24}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Analyse PESTEL de NEXORA}}{35}{table.caption.25}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Analyse SWOT de NEXORA}}{36}{table.caption.26}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Analyse des 5 forces de Porter pour NEXORA}}{37}{table.caption.27}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces Matrice de recommandations stratégiques (croisement SWOT--PESTEL)}}{37}{table.caption.28}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Business Model Canvas de NEXORA}}{38}{table.caption.29}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces Matériels informatiques nécessaires}}{39}{table.caption.30}%
+\contentsline {table}{\numberline {5.7}{\ignorespaces Ressources humaines nécessaires}}{39}{table.caption.31}%
+\contentsline {table}{\numberline {5.8}{\ignorespaces Logiciels et services}}{40}{table.caption.32}%
+\contentsline {table}{\numberline {5.9}{\ignorespaces Stratégie marketing (4P) pour NEXORA}}{40}{table.caption.33}%
+\contentsline {table}{\numberline {5.10}{\ignorespaces Budget de prospection et ventes (semestriel)}}{41}{table.caption.34}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Types de nœuds dans Neo4j}}{43}{table.caption.35}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Statistiques de la base (ordres de grandeur)}}{43}{table.caption.36}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {7.1}{\ignorespaces Endpoints d'authentification}}{47}{table.caption.39}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {10.1}{\ignorespaces Variables d'environnement principales}}{61}{table.caption.49}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {11.1}{\ignorespaces Fichiers de données JSONL}}{63}{table.caption.50}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {12.1}{\ignorespaces Matrice RBAC (synthèse)}}{69}{table.caption.53}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {13.1}{\ignorespaces Synthèse des objectifs et état d'implémentation}}{72}{table.caption.56}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }

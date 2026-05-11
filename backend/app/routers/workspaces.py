@@ -6,6 +6,8 @@ members, and progress tracking. All workspaces are private — only members can 
 
 import json
 import uuid
+import secrets
+import string
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Optional
@@ -46,11 +48,25 @@ class StartCall(BaseModel):
     call_type: str = "voice"  # voice or video
 
 
+class JoinByCode(BaseModel):
+    code: str
+
+
 # ── In-Memory Data ─────────────────────────────────────────────────
 
 _workspaces: List[dict] = []
+_invite_codes: dict = {}  # code -> workspace_id
 _active_calls: dict = {}  # workspace_id -> call state
 _initialized = False
+
+
+def _generate_invite_code(length: int = 8) -> str:
+    """Generate a unique alphanumeric invite code."""
+    chars = string.ascii_uppercase + string.digits
+    while True:
+        code = ''.join(secrets.choice(chars) for _ in range(length))
+        if code not in _invite_codes:
+            return code
 
 
 def _load_employees():
@@ -216,12 +232,16 @@ def _init_workspaces():
                 "author": members[1]["name"],
             })
 
+        invite_code = _generate_invite_code()
+        _invite_codes[invite_code] = ws_id
+
         _workspaces.append({
             "id": ws_id,
             "name": ws_def["name"],
             "description": ws_def["description"],
             "color": ws_def["color"],
             "is_private": True,
+            "invite_code": invite_code,
             "created_at": (now - timedelta(days=14)).isoformat(),
             "members": members,
             "messages": messages,
@@ -289,12 +309,17 @@ async def create_workspace(data: CreateWorkspace, _user: dict = Depends(require_
         "joined_at": datetime.utcnow().isoformat(),
     })
 
+    invite_code = _generate_invite_code()
+    ws_id = str(uuid.uuid4())
+    _invite_codes[invite_code] = ws_id
+
     ws = {
-        "id": str(uuid.uuid4()),
+        "id": ws_id,
         "name": data.name,
         "description": data.description,
         "color": "#6C63FF",
         "is_private": True,
+        "invite_code": invite_code,
         "created_at": datetime.utcnow().isoformat(),
         "members": members,
         "messages": [],
@@ -309,6 +334,127 @@ async def get_workspace(workspace_id: str, _user: dict = Depends(require_auth)):
     """Get full workspace details (members only)."""
     ws = _get_workspace_or_403(workspace_id)
     return {**ws, "active_call": _active_calls.get(workspace_id)}
+
+
+# ── Invite / Join-by-Code Endpoints ────────────────────────────────
+
+@router.get("/{workspace_id}/invite")
+async def get_invite_code(workspace_id: str, _user: dict = Depends(require_auth)):
+    """Get or regenerate the invite code for a workspace (members only)."""
+    ws = _get_workspace_or_403(workspace_id)
+    code = ws.get("invite_code")
+    if not code:
+        code = _generate_invite_code()
+        ws["invite_code"] = code
+        _invite_codes[code] = workspace_id
+    return {
+        "code": code,
+        "workspace_id": workspace_id,
+        "workspace_name": ws["name"],
+        "link": f"/workspaces/join/{code}",
+    }
+
+
+@router.post("/{workspace_id}/invite/regenerate")
+async def regenerate_invite_code(workspace_id: str, _user: dict = Depends(require_auth)):
+    """Regenerate the invite code (revokes old one). Members only."""
+    ws = _get_workspace_or_403(workspace_id)
+    # Revoke old code
+    old_code = ws.get("invite_code")
+    if old_code and old_code in _invite_codes:
+        del _invite_codes[old_code]
+    # Generate new
+    new_code = _generate_invite_code()
+    ws["invite_code"] = new_code
+    _invite_codes[new_code] = workspace_id
+    return {
+        "code": new_code,
+        "workspace_id": workspace_id,
+        "workspace_name": ws["name"],
+        "link": f"/workspaces/join/{new_code}",
+    }
+
+
+@router.delete("/{workspace_id}/invite")
+async def revoke_invite(workspace_id: str, _user: dict = Depends(require_auth)):
+    """Revoke the invite code for a workspace. Members only."""
+    ws = _get_workspace_or_403(workspace_id)
+    old_code = ws.get("invite_code")
+    if old_code and old_code in _invite_codes:
+        del _invite_codes[old_code]
+    ws["invite_code"] = None
+    return {"message": "Invite code revoked"}
+
+
+@router.get("/join/{code}/preview")
+async def preview_workspace_by_code(code: str, _user: dict = Depends(require_auth)):
+    """Preview workspace info from an invite code (no membership required)."""
+    _init_workspaces()
+    code = code.upper().strip()
+    ws_id = _invite_codes.get(code)
+    if not ws_id:
+        raise HTTPException(status_code=404, detail="Invalid or expired invite code")
+    ws = None
+    for w in _workspaces:
+        if w["id"] == ws_id:
+            ws = w
+            break
+    if not ws:
+        raise HTTPException(status_code=404, detail="Workspace not found")
+    already_member = _is_member(ws, "current_user")
+    return {
+        "workspace_id": ws["id"],
+        "name": ws["name"],
+        "description": ws["description"],
+        "color": ws.get("color", "#6C63FF"),
+        "member_count": len(ws["members"]),
+        "members_preview": [{"name": m["name"], "avatar": m["avatar"]} for m in ws["members"][:5]],
+        "already_member": already_member,
+    }
+
+
+@router.post("/join/{code}")
+async def join_workspace_by_code(code: str, _user: dict = Depends(require_auth)):
+    """Join a workspace using an invite code."""
+    _init_workspaces()
+    code = code.upper().strip()
+    ws_id = _invite_codes.get(code)
+    if not ws_id:
+        raise HTTPException(status_code=404, detail="Invalid or expired invite code")
+    ws = None
+    for w in _workspaces:
+        if w["id"] == ws_id:
+            ws = w
+            break
+    if not ws:
+        raise HTTPException(status_code=404, detail="Workspace not found")
+
+    # Check if already a member
+    if _is_member(ws, "current_user"):
+        return {"message": "Already a member", "workspace_id": ws["id"], "already_member": True}
+
+    # Add user as member
+    ws["members"].append({
+        "id": "current_user",
+        "name": "You",
+        "role": "Member",
+        "department": "",
+        "avatar": "https://ui-avatars.com/api/?name=You&background=6C63FF&color=fff&size=128&bold=true",
+        "online": True,
+        "joined_at": datetime.utcnow().isoformat(),
+    })
+
+    # Add a system message
+    ws["messages"].append({
+        "id": str(uuid.uuid4()),
+        "sender_id": "system",
+        "sender_name": "System",
+        "sender_avatar": "",
+        "content": "📨 A new member joined via invite link!",
+        "timestamp": datetime.utcnow().isoformat(),
+    })
+
+    return {"message": "Joined successfully", "workspace_id": ws["id"], "already_member": False}
 
 
 @router.post("/{workspace_id}/messages")

@@ -158,9 +158,16 @@ class RegisterResponse(BaseModel):
     message: str
 
 
+class LoginRequest(BaseModel):
+    """JSON login body — accepts email (or username for admin)."""
+    identifier: str = Field(..., description="Email address (or 'admin' username)")
+    password: str = Field(..., min_length=1)
+
+
 class LoginResponse(BaseModel):
     access_token: str
     token_type: str
+    user_id: str
     username: str
     full_name: str
     email: str
@@ -231,42 +238,74 @@ async def register(req: RegisterRequest):
 
 
 # ── Login (with rate limiting) ─────────────────────────────────────
+# JSON-based login: email for regular users, username for admin
 @router.post("/login", response_model=LoginResponse)
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(req: LoginRequest):
     _init_default_users()
 
-    login_input = form_data.username.strip().lower()
+    identifier = req.identifier.strip().lower()
 
     # Rate-limit check BEFORE password verification
-    _check_rate_limit(login_input)
+    _check_rate_limit(identifier)
 
-    # Support login by email: if input looks like an email, find user by email
     user = None
-    if "@" in login_input:
+    # Admin can login by username "admin"
+    if identifier == "admin":
+        user = _users.get("admin")
+    elif "@" in identifier:
+        # Email-based login for all users
         for u in _users.values():
-            if u["email"].lower() == login_input:
+            if u["email"].lower() == identifier:
                 user = u
                 break
     else:
-        user = _users.get(login_input)
-    if not user or not verify_password(form_data.password, user["hashed_password"]):
-        _record_attempt(username_key)
+        # Fallback: try username lookup (for backward compat)
+        user = _users.get(identifier)
+
+    if not user or not verify_password(req.password, user["hashed_password"]):
+        _record_attempt(identifier)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
     # Successful login clears attempt history
-    _login_attempts.pop(username_key, None)
+    _login_attempts.pop(identifier, None)
 
     access_token = create_access_token(data={"sub": user["username"], "role": user.get("role", "user")})
     return {
         "access_token": access_token,
         "token_type": "bearer",
+        "user_id": user["id"],
         "username": user["username"],
         "full_name": user["full_name"],
         "email": user["email"],
+        "role": user.get("role", "user"),
+    }
+
+
+# Legacy form-based login for OAuth2 token URL (used by Swagger /docs)
+@router.post("/login/form", response_model=LoginResponse)
+async def login_form(form_data: OAuth2PasswordRequestForm = Depends()):
+    """Form-based login for OAuth2 compatibility (Swagger UI)."""
+    return await login(LoginRequest(identifier=form_data.username, password=form_data.password))
+
+
+# ── Token Verification ─────────────────────────────────────────────
+@router.get("/verify")
+async def verify_token(current_username: str = Depends(get_current_user)):
+    """Validate the current JWT token and return user info."""
+    _init_default_users()
+    user = _users.get(current_username.lower())
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    return {
+        "valid": True,
+        "user_id": user["id"],
+        "username": user["username"],
+        "email": user["email"],
+        "full_name": user["full_name"],
         "role": user.get("role", "user"),
     }
 

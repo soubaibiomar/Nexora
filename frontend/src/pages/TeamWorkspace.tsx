@@ -2,10 +2,17 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     Box, Typography, Card, CardContent, Grid, Avatar, AvatarGroup, IconButton,
     TextField, Button, Chip, CircularProgress, Tabs, Tab, Dialog, DialogTitle,
-    DialogContent, DialogActions, Fade, Badge, InputAdornment,
+    DialogContent, DialogActions, Fade, Badge, InputAdornment, Snackbar, Alert,
+    Tooltip,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ShareIcon from '@mui/icons-material/Share';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import LinkIcon from '@mui/icons-material/Link';
+import LoginIcon from '@mui/icons-material/Login';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import CheckIcon from '@mui/icons-material/Check';
 import AddIcon from '@mui/icons-material/Add';
 import ChatIcon from '@mui/icons-material/Chat';
 import PeopleIcon from '@mui/icons-material/People';
@@ -73,6 +80,18 @@ const TeamWorkspace: React.FC = () => {
     const [isVideoOn, setIsVideoOn] = useState(false);
     const [callTimer, setCallTimer] = useState('00:00');
     const callTimerRef = useRef<any>(null);
+    // Invite state
+    const [inviteOpen, setInviteOpen] = useState(false);
+    const [inviteCode, setInviteCode] = useState('');
+    const [inviteLoading, setInviteLoading] = useState(false);
+    const [copied, setCopied] = useState<'code' | 'link' | null>(null);
+    // Join-by-code state
+    const [joinOpen, setJoinOpen] = useState(false);
+    const [joinCode, setJoinCode] = useState('');
+    const [joinLoading, setJoinLoading] = useState(false);
+    const [joinPreview, setJoinPreview] = useState<any>(null);
+    const [joinError, setJoinError] = useState('');
+    const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' | 'info' }>({ open: false, message: '', severity: 'success' });
 
     const loadWorkspaces = useCallback(async () => {
         try { const r = await workspaceService.getAll(); setWorkspaces(r.data.workspaces || []); }
@@ -132,7 +151,6 @@ const TeamWorkspace: React.FC = () => {
         try {
             const r = await workspaceService.startCall(activeWorkspace.id, type);
             setActiveCall(r.data); setIsVideoOn(type === 'video'); setIsMuted(false);
-            // Auto-simulate members joining after 2s
             setTimeout(async () => {
                 try { const r2 = await workspaceService.simulateJoin(activeWorkspace.id); setActiveCall(r2.data); } catch { }
             }, 2000);
@@ -143,6 +161,70 @@ const TeamWorkspace: React.FC = () => {
         if (!activeWorkspace) return;
         try { await workspaceService.endCall(activeWorkspace.id); setActiveCall(null); }
         catch { console.error('End call failed'); }
+    };
+
+    // ── Invite handlers ──────────────────────────────────────────────
+    const handleOpenInvite = async () => {
+        if (!activeWorkspace) return;
+        setInviteOpen(true);
+        setInviteLoading(true);
+        try {
+            const r = await workspaceService.getInvite(activeWorkspace.id);
+            setInviteCode(r.data.code);
+        } catch { setInviteCode(''); }
+        finally { setInviteLoading(false); }
+    };
+
+    const handleRegenerateCode = async () => {
+        if (!activeWorkspace) return;
+        setInviteLoading(true);
+        try {
+            const r = await workspaceService.regenerateInvite(activeWorkspace.id);
+            setInviteCode(r.data.code);
+            setSnackbar({ open: true, message: 'Invite code regenerated!', severity: 'success' });
+        } catch { setSnackbar({ open: true, message: 'Failed to regenerate code', severity: 'error' }); }
+        finally { setInviteLoading(false); }
+    };
+
+    const handleCopy = (type: 'code' | 'link') => {
+        const text = type === 'code' ? inviteCode : `${window.location.origin}/workspaces/join/${inviteCode}`;
+        navigator.clipboard.writeText(text);
+        setCopied(type);
+        setTimeout(() => setCopied(null), 2000);
+    };
+
+    // ── Join by code handlers ────────────────────────────────────────
+    const handlePreviewCode = async () => {
+        if (!joinCode.trim()) return;
+        setJoinLoading(true);
+        setJoinError('');
+        setJoinPreview(null);
+        try {
+            const r = await workspaceService.previewByCode(joinCode.trim());
+            setJoinPreview(r.data);
+        } catch {
+            setJoinError('Invalid or expired invite code. Please check and try again.');
+        } finally { setJoinLoading(false); }
+    };
+
+    const handleJoinByCode = async () => {
+        if (!joinCode.trim()) return;
+        setJoinLoading(true);
+        try {
+            const r = await workspaceService.joinByCode(joinCode.trim());
+            setJoinOpen(false);
+            setJoinCode('');
+            setJoinPreview(null);
+            if (r.data.already_member) {
+                setSnackbar({ open: true, message: 'You are already a member of this workspace!', severity: 'info' });
+            } else {
+                setSnackbar({ open: true, message: 'Successfully joined the workspace! 🎉', severity: 'success' });
+            }
+            loadWorkspaces();
+            if (r.data.workspace_id) openWorkspace(r.data.workspace_id);
+        } catch {
+            setSnackbar({ open: true, message: 'Failed to join workspace', severity: 'error' });
+        } finally { setJoinLoading(false); }
     };
 
     // ── Workspace List View ─────────────────────────────────────────
@@ -157,10 +239,16 @@ const TeamWorkspace: React.FC = () => {
                                 Team Workspaces
                             </Typography>
                         </Box>
-                        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateOpen(true)}
-                            sx={{ px: 3, py: 1, fontWeight: 600, fontSize: '0.85rem', background: 'linear-gradient(135deg, #6C63FF, #8B83FF)', boxShadow: '0 4px 16px rgba(108,99,255,0.3)', borderRadius: 3, '&:hover': { background: 'linear-gradient(135deg, #7C73FF, #9B93FF)', transform: 'translateY(-1px)' } }}>
-                            New Workspace
-                        </Button>
+                        <Box sx={{ display: 'flex', gap: 1.5 }}>
+                            <Button variant="outlined" startIcon={<LoginIcon />} onClick={() => { setJoinOpen(true); setJoinCode(''); setJoinPreview(null); setJoinError(''); }}
+                                sx={{ px: 3, py: 1, fontWeight: 600, fontSize: '0.85rem', borderColor: 'rgba(108,99,255,0.4)', color: '#A78BFA', borderRadius: 3, '&:hover': { borderColor: '#6C63FF', bgcolor: 'rgba(108,99,255,0.08)' } }}>
+                                Join with Code
+                            </Button>
+                            <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateOpen(true)}
+                                sx={{ px: 3, py: 1, fontWeight: 600, fontSize: '0.85rem', background: 'linear-gradient(135deg, #6C63FF, #8B83FF)', boxShadow: '0 4px 16px rgba(108,99,255,0.3)', borderRadius: 3, '&:hover': { background: 'linear-gradient(135deg, #7C73FF, #9B93FF)', transform: 'translateY(-1px)' } }}>
+                                New Workspace
+                            </Button>
+                        </Box>
                     </Box>
                     <Typography color="text.secondary" sx={{ fontSize: '0.9rem' }}>
                         Private spaces for your teams to collaborate, chat, call, and track progress
@@ -247,6 +335,75 @@ const TeamWorkspace: React.FC = () => {
                             sx={{ borderRadius: 2.5, px: 3, background: 'linear-gradient(135deg, #6C63FF, #8B83FF)', '&:hover': { background: 'linear-gradient(135deg, #7C73FF, #9B93FF)' } }}>Create</Button>
                     </DialogActions>
                 </Dialog>
+
+                {/* Join by Code Dialog */}
+                <Dialog open={joinOpen} onClose={() => { setJoinOpen(false); setJoinPreview(null); setJoinError(''); }} maxWidth="sm" fullWidth
+                    PaperProps={{ sx: { borderRadius: 4, bgcolor: 'background.paper', border: '1px solid rgba(108,99,255,0.15)' } }}>
+                    <DialogTitle sx={{ fontWeight: 700, pb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <LoginIcon sx={{ color: '#6C63FF' }} /> Join a Workspace
+                    </DialogTitle>
+                    <DialogContent>
+                        <Typography sx={{ fontSize: '0.85rem', color: 'text.secondary', mb: 2.5 }}>
+                            Enter an invite code shared by a workspace member to join their team.
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1.5, mb: 2 }}>
+                            <TextField fullWidth autoFocus size="small" label="Invite Code" placeholder="e.g. AB12CD34"
+                                value={joinCode} onChange={e => setJoinCode(e.target.value.toUpperCase())}
+                                onKeyDown={e => { if (e.key === 'Enter') handlePreviewCode(); }}
+                                inputProps={{ style: { letterSpacing: '0.15em', fontWeight: 700, fontSize: '1.1rem', textAlign: 'center' } }}
+                                sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2.5 } }} />
+                            <Button variant="contained" onClick={handlePreviewCode} disabled={joinLoading || !joinCode.trim()}
+                                sx={{ px: 3, borderRadius: 2.5, background: 'linear-gradient(135deg, #6C63FF, #8B83FF)', '&:hover': { background: 'linear-gradient(135deg, #7C73FF, #9B93FF)' } }}>
+                                {joinLoading ? <CircularProgress size={20} /> : 'Verify'}
+                            </Button>
+                        </Box>
+
+                        {joinError && <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>{joinError}</Alert>}
+
+                        {joinPreview && (
+                            <Fade in>
+                                <Card sx={{ background: 'rgba(108,99,255,0.04)', border: '1px solid rgba(108,99,255,0.15)', borderRadius: 3 }}>
+                                    <CardContent sx={{ p: 2.5 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                                            <Box sx={{ width: 44, height: 44, borderRadius: 2.5, background: `${joinPreview.color || '#6C63FF'}20`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <RocketLaunchIcon sx={{ fontSize: 22, color: joinPreview.color || '#6C63FF' }} />
+                                            </Box>
+                                            <Box>
+                                                <Typography sx={{ fontWeight: 700, fontSize: '1.05rem' }}>{joinPreview.name}</Typography>
+                                                <Typography sx={{ fontSize: '0.78rem', color: 'text.secondary' }}>{joinPreview.description}</Typography>
+                                            </Box>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                                            <AvatarGroup max={5} sx={{ '& .MuiAvatar-root': { width: 26, height: 26, fontSize: '0.6rem', fontWeight: 700 } }}>
+                                                {(joinPreview.members_preview || []).map((m: any, i: number) => <Avatar key={i} src={m.avatar} alt={m.name} />)}
+                                            </AvatarGroup>
+                                            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>{joinPreview.member_count} members</Typography>
+                                        </Box>
+                                        {joinPreview.already_member ? (
+                                            <Alert severity="info" sx={{ borderRadius: 2 }}>You're already a member of this workspace!</Alert>
+                                        ) : (
+                                            <Button fullWidth variant="contained" onClick={handleJoinByCode} disabled={joinLoading}
+                                                startIcon={joinLoading ? <CircularProgress size={18} /> : <LoginIcon />}
+                                                sx={{ borderRadius: 2.5, py: 1.2, fontWeight: 700, fontSize: '0.9rem', background: 'linear-gradient(135deg, #10B981, #059669)', boxShadow: '0 4px 16px rgba(16,185,129,0.3)', '&:hover': { background: 'linear-gradient(135deg, #059669, #047857)' } }}>
+                                                Join This Workspace
+                                            </Button>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </Fade>
+                        )}
+                    </DialogContent>
+                    <DialogActions sx={{ px: 3, pb: 2.5 }}>
+                        <Button onClick={() => { setJoinOpen(false); setJoinPreview(null); setJoinError(''); }} sx={{ borderRadius: 2.5 }}>Cancel</Button>
+                    </DialogActions>
+                </Dialog>
+
+                {/* Snackbar */}
+                <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar(s => ({ ...s, open: false }))} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+                    <Alert onClose={() => setSnackbar(s => ({ ...s, open: false }))} severity={snackbar.severity} sx={{ borderRadius: 3, fontWeight: 600 }}>
+                        {snackbar.message}
+                    </Alert>
+                </Snackbar>
             </Box>
         );
     }
@@ -334,6 +491,7 @@ const TeamWorkspace: React.FC = () => {
     const wsColor = activeWorkspace.color || '#6C63FF';
 
     return (
+    <>
         <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3, height: 'calc(100vh - 80px)', display: 'flex', flexDirection: 'column' }}>
             <CallOverlay />
             {/* Header */}
@@ -354,8 +512,14 @@ const TeamWorkspace: React.FC = () => {
                         </Box>
                         <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>{activeWorkspace.description}</Typography>
                     </Box>
-                    {/* Call Buttons */}
+                    {/* Call + Invite Buttons */}
                     <Box sx={{ display: 'flex', gap: 1, mr: 1 }}>
+                        <Tooltip title="Share invite code" arrow>
+                            <IconButton onClick={handleOpenInvite} size="small"
+                                sx={{ bgcolor: 'rgba(253,203,110,0.1)', color: '#FDCB6E', '&:hover': { bgcolor: 'rgba(253,203,110,0.2)', transform: 'scale(1.05)' }, transition: 'all 0.15s' }}>
+                                <ShareIcon sx={{ fontSize: 20 }} />
+                            </IconButton>
+                        </Tooltip>
                         <IconButton onClick={() => handleStartCall('voice')} size="small" title="Start Voice Call"
                             sx={{ bgcolor: 'rgba(16,185,129,0.1)', color: '#10B981', '&:hover': { bgcolor: 'rgba(16,185,129,0.2)', transform: 'scale(1.05)' }, transition: 'all 0.15s' }}>
                             <CallIcon sx={{ fontSize: 20 }} />
@@ -505,6 +669,79 @@ const TeamWorkspace: React.FC = () => {
                 </Box>
             )}
         </Box>
+
+        {/* Invite Dialog */}
+        <Dialog open={inviteOpen} onClose={() => { setInviteOpen(false); setCopied(null); }} maxWidth="sm" fullWidth
+            PaperProps={{ sx: { borderRadius: 4, bgcolor: 'background.paper', border: '1px solid rgba(108,99,255,0.15)' } }}>
+            <DialogTitle sx={{ fontWeight: 700, pb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <ShareIcon sx={{ color: '#FDCB6E' }} /> Invite to {activeWorkspace?.name}
+            </DialogTitle>
+            <DialogContent>
+                <Typography sx={{ fontSize: '0.85rem', color: 'text.secondary', mb: 3 }}>
+                    Share this invite code or link with anyone you'd like to add to the workspace.
+                </Typography>
+
+                {inviteLoading ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}><CircularProgress sx={{ color: '#6C63FF' }} /></Box>
+                ) : (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+                        {/* Invite Code */}
+                        <Box>
+                            <Typography sx={{ fontSize: '0.72rem', fontWeight: 600, color: 'text.secondary', mb: 0.8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Invite Code</Typography>
+                            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                                <Box sx={{ flex: 1, py: 1.8, px: 2.5, borderRadius: 3, bgcolor: 'rgba(108,99,255,0.06)', border: '1px solid rgba(108,99,255,0.15)', textAlign: 'center' }}>
+                                    <Typography sx={{ fontFamily: 'monospace', fontWeight: 800, fontSize: '1.5rem', letterSpacing: '0.25em', color: '#A78BFA' }}>
+                                        {inviteCode}
+                                    </Typography>
+                                </Box>
+                                <Tooltip title={copied === 'code' ? 'Copied!' : 'Copy code'} arrow>
+                                    <IconButton onClick={() => handleCopy('code')}
+                                        sx={{ bgcolor: copied === 'code' ? 'rgba(16,185,129,0.15)' : 'rgba(108,99,255,0.08)', color: copied === 'code' ? '#10B981' : '#A78BFA', '&:hover': { bgcolor: 'rgba(108,99,255,0.15)' }, transition: 'all 0.2s' }}>
+                                        {copied === 'code' ? <CheckIcon /> : <ContentCopyIcon />}
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
+                        </Box>
+
+                        {/* Invite Link */}
+                        <Box>
+                            <Typography sx={{ fontSize: '0.72rem', fontWeight: 600, color: 'text.secondary', mb: 0.8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Invite Link</Typography>
+                            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                                <Box sx={{ flex: 1, py: 1.2, px: 2, borderRadius: 3, bgcolor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', gap: 1, overflow: 'hidden' }}>
+                                    <LinkIcon sx={{ fontSize: 18, color: 'text.secondary', flexShrink: 0 }} />
+                                    <Typography sx={{ fontSize: '0.78rem', color: 'text.secondary', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {window.location.origin}/workspaces/join/{inviteCode}
+                                    </Typography>
+                                </Box>
+                                <Tooltip title={copied === 'link' ? 'Copied!' : 'Copy link'} arrow>
+                                    <IconButton onClick={() => handleCopy('link')}
+                                        sx={{ bgcolor: copied === 'link' ? 'rgba(16,185,129,0.15)' : 'rgba(108,99,255,0.08)', color: copied === 'link' ? '#10B981' : '#A78BFA', '&:hover': { bgcolor: 'rgba(108,99,255,0.15)' }, transition: 'all 0.2s' }}>
+                                        {copied === 'link' ? <CheckIcon /> : <ContentCopyIcon />}
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
+                        </Box>
+
+                        {/* Regenerate */}
+                        <Button variant="text" startIcon={<RefreshIcon />} onClick={handleRegenerateCode} size="small"
+                            sx={{ alignSelf: 'flex-start', color: 'text.secondary', fontSize: '0.78rem', textTransform: 'none', '&:hover': { color: '#A78BFA', bgcolor: 'rgba(108,99,255,0.06)' } }}>
+                            Regenerate Code
+                        </Button>
+                    </Box>
+                )}
+            </DialogContent>
+            <DialogActions sx={{ px: 3, pb: 2.5 }}>
+                <Button onClick={() => { setInviteOpen(false); setCopied(null); }} sx={{ borderRadius: 2.5 }}>Close</Button>
+            </DialogActions>
+        </Dialog>
+
+        {/* Snackbar (detail view) */}
+        <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar(s => ({ ...s, open: false }))} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+            <Alert onClose={() => setSnackbar(s => ({ ...s, open: false }))} severity={snackbar.severity} sx={{ borderRadius: 3, fontWeight: 600 }}>
+                {snackbar.message}
+            </Alert>
+        </Snackbar>
+    </>
     );
 };
 

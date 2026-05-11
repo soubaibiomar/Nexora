@@ -393,6 +393,12 @@ export const workspaceService = {
   getProgress: (id: string) => api.get(`/workspaces/${id}/progress`),
   postProgress: (id: string, data: { title: string; description?: string; status?: string }) =>
     api.post(`/workspaces/${id}/progress`, data),
+  // Invite / join-by-code
+  getInvite: (id: string) => api.get(`/workspaces/${id}/invite`),
+  regenerateInvite: (id: string) => api.post(`/workspaces/${id}/invite/regenerate`),
+  revokeInvite: (id: string) => api.delete(`/workspaces/${id}/invite`),
+  previewByCode: (code: string) => api.get(`/workspaces/join/${encodeURIComponent(code)}/preview`),
+  joinByCode: (code: string) => api.post(`/workspaces/join/${encodeURIComponent(code)}`),
   // Call management
   startCall: (id: string, callType: string = 'voice') =>
     api.post(`/workspaces/${id}/call/start`, { call_type: callType }),
